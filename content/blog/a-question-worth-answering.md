@@ -25,7 +25,7 @@ Let's explore the possibility space
 - How much do I want to earn?
 - How much vacation do you get?
 
-We can keep doing this until we have enough, and after that we can even rank them so that we answer the important ones. I think of this process as wandering around looking for questions.
+We can keep doing this until we have enough, then rank them to focus on the important ones. I think of this process as wandering around looking for questions.
 
 I remember a conversation with my close childhood friend - Ivaylo Andreev.  We were out on a walk in Glasgow, taking photos of this beautiful pedestrian bridge during the golden hour of the sunset. I asked him: "Why do people identify with what they *don't* do so much?".  When I was a teenager I remember caring about what music I *didn't* listen to more than the kind I liked. We grew up in Bulgaria, I thought that was just a quirk of the culture. He answered:
 
