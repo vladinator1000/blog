@@ -5,6 +5,8 @@ import PageLayout from "../layouts/PageLayout.astro";
 import PageMeta from "../components/PageMeta.astro";
 import { SITE_TITLE } from "../config";
 
+export const prerender = true
+
 const posts = await readAll({
   directory: "blog",
   frontmatterSchema: blog,
