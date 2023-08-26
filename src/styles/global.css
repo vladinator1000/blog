@@ -12,8 +12,8 @@
 
     /* light theme */
     .theme-sleek {
-        /* Tailwind orange-500 #f97316 */
-        --color-primary-main: 249 115 22;
+        /* Tailwind zink-600 #52525b */
+        --color-primary-main: 82 82 91;
 
         /* Tailwind gray-700 #374151 */
         --color-text-body: 55 65 81;
@@ -24,7 +24,7 @@
         /* Tailwind gray-500 #6b7280 */
         --color-text-muted: 107 114 128;
         /* Tailwind orange-500 #f97316 */
-        --color-text-link: 249 115 22;
+        --color-text-link: 82 82 91;
         /* black */
         --color-text-code: 0 0 0;
         /* black */
