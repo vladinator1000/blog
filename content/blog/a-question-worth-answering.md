@@ -35,7 +35,7 @@ I paused for a second, took out my phone and told him that I'm writing a note wi
 
 This idea of negative space feels fascinating to me. You're telling me I can paint blobs on a canvas, and eventually, a silhouette will appear? I once saw the portfolio of a visual effects artist. They had made a beautiful, flickering fire. In the breakdown, they showed circle particles animating up and around the center, painted the same color as the background. This created the illusion of a dancing flame!
 
-These memories make me think, we are so busy doing stuff that we forget to stop, look around and maybe smell the roses if they're in season. When Ivaylo and I were kids, I was visiting their house and his dad said something I will never forget.
+These memories make me think, we are so busy that we forget to stop and look around. When Ivaylo and I were kids, I was visiting their house and his dad said something I will never forget.
 
 > I love going on random walks. 
 > You never know what your mind will come up with, if you let it wander with you.
