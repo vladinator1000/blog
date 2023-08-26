@@ -17,6 +17,16 @@ Do you remember hearing a child ask their parent why the world works a certain w
 
 Advice is relative. It depends on personal goals and constraints. You can use them to weigh the choices before you, but how did you come up with the choices? Some questions take a long time to answer - it matters which ones we ask before we start answering.
 
+Let's explore the possibility space
+- What kind of activities give me energy?
+- What drains my energy?
+- What is the nature of the work?
+- How do people who are in that profession feel about their job?
+- How much do I want to earn?
+- How much vacation do you get?
+
+We can keep doing this until we have enough, and after that we can even rank them so that we answer the important ones. I think of this process as wandering around looking for questions.
+
 I remember a conversation with my close childhood friend - Ivaylo Andreev.  We were out on a walk in Glasgow, taking photos of this beautiful pedestrian bridge during the golden hour of the sunset. I asked him: "Why do people identify with what they *don't* do so much?".  When I was a teenager I remember caring about what music I *didn't* listen to more than the kind I liked. We grew up in Bulgaria, I thought that was just a quirk of the culture. He answered:
 
 > Nowadays we have access to more information than we can process. It's easier to decide what you don't like, rather than trying everything under the sun to see if you like it. 
