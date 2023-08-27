@@ -8,12 +8,12 @@ export const prerender = true
 
 <PageLayout>
   <PageMeta title={`${SITE_TITLE}`} slot="meta" />
-  <section slot="main" class="grid gap-4">
+  <section slot="main" class="grid gap-5">
     <div id="experience">
       <h1><b>Experience</b></h1>
 
       <div id="experience-content" class="grid gap-4">
-        <section class="grid gap-3">
+        <section>
           <div class="flex justify-between">
             <h2>
               <a href="https://webflow.com" target="_blank">Webflow</a> - software
@@ -22,7 +22,7 @@ export const prerender = true
             <small>2021 - Present</small>
           </div>
 
-          <p>
+          <p class="mb-3">
             Contributed to foundational systems that power almost every major
             feature in the product.
           </p>
@@ -83,7 +83,7 @@ export const prerender = true
             <small>2019 - 2021</small>
           </div>
 
-          <p>
+          <p class="mb-3">
             Contributed to critical account, wallet and Sportsbook features.
           </p>
 
@@ -118,7 +118,9 @@ export const prerender = true
             <small>2015 - Present</small>
           </div>
 
-          <p>Developed almost every feature and system in the product.</p>
+          <p class="mb-3">
+            Developed almost every feature and system in the product.
+          </p>
 
           <ul>
             <li>
@@ -205,7 +207,7 @@ export const prerender = true
 
 <style>
   h1 {
-    font-size: 1.2rem;
+    font-size: 1.25rem;
   }
   li,
   p {
