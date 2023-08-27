@@ -69,7 +69,7 @@ The more opportunities you have to check how you did, the faster you will be abl
 
 ## 4. Use affordances
 
-Leveraging things that people are already familiar with can make it easier to learn new concepts. You know, spikes hurt, ice is slippery, coins let you buy things, keys open locks, let age = 5 assigns a variable. By leaning on things people already know, sometimes you wont even need a tutorial.
+Leveraging things that people are already familiar with can make it easier to learn new concepts. You know, spikes hurt, ice is slippery, coins let you buy things, keys open locks, `let age = 5` assigns a variable. By leaning on things people already know, sometimes you wont even need a tutorial.
 
 ## Other techniques
 
