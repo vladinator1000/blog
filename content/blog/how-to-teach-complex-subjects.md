@@ -49,8 +49,7 @@ What if the system we’re teaching doesn’t accommodate that and we must front
 
 > As far as the game is concerned, I have advanced. But as far as my brain is concerned, I've learned nothing.
 
-Asher Vollmer - designer, Threes
-source: How to make great game tutorials, GDC Vault
+Asher Vollmer - designer on the game Threes, from the video "How to make great game tutorials" on GDC Vault.
 
 Blindly following instructions isn’t an effective way to learn. If you were teaching this puzzle game to people, you could ask these things:
 
