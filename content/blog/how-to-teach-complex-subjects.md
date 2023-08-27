@@ -86,7 +86,7 @@ Leveraging things that people are already familiar with can make it easier to le
 - Be intuitive, familiar and welcoming.
 - Get people through the learning experience without them falling asleep.
 
-I hope this was useful to you, this article was based on a video by Mark Brown from Game Maker's Toolkit. I'll leave you with a quote from him:
+I hope this was useful to you, this article was based on a video by Mark Brown from Game Maker's Toolkit. I'll leave you with a quote of his:
 
 > Teaching new people how to play is the only way for a franchise to grow its user base and avoid withering into irrelevance.
 
