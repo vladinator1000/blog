@@ -5,7 +5,7 @@ description: "Using game design methods to teach anything."
 date: 2023-08-27
 ---
 
-Complex subjects are tricky to teach, but there's a way to break them down and make them fun to learn! Let me borrow some techniques from the game design world and show you how to apply them to teach any subject.
+Complex subjects are tricky to teach, but there's a way to break them down and make them fun to learn! Let's borrow some techniques from the game design world apply them to teach any subject.
 
 ## 1. Chop up the tutorial
 
@@ -29,7 +29,7 @@ What if we have complex systems. Complex systems typically need to teach everyth
 
 Civilization uses a technique called the inverted pyramid of decision making. A term coined by the game designer Bruce Shelley. By using this technique, they let complexity grow organically.
 
-What if we approach it a bit differently? Instead of peppering tutorials throughout an exercise, we can zoom out and put tutorials inbetween entire chapters of play.
+What if we approach it a bit differently? Instead of peppering tutorials throughout an exercise, we can zoom out and put tutorials between entire chapters of play.
 
 ![](/images/how-to-teach-complex-subjects/small-tutorials.png)
 
@@ -37,7 +37,7 @@ It's not easy to do, but it can be effective at pacing the teaching with respect
 
 ## 2. Make learning fun
 
-What if the system we’re teaching doesn’t accomodate that and we must front-load the tutorials? In that case, can we come up with a more effective and fun way of learning the basics? I can think of a time where I had to follow a tutorial and it tells me where to click step by step.
+What if the system we’re teaching doesn’t accommodate that and we must front-load the tutorials? In that case, can we come up with a more effective and fun way of learning the basics? I can think of a time where I had to follow a tutorial and it tells me where to click step by step.
 
 > As far as the game is concerned, I have advanced. But as far as my brain is concerned, I've learned nothing.
 
