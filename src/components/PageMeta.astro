@@ -1,18 +1,18 @@
 ---
-import { getPageMeta } from "../lib/seo";
+import { getPageMeta } from "../lib/seo"
 import {
   SITE_TITLE,
   SITE_DESCRIPTION,
   SITE_URL,
   TWITTER_HANDLE,
-} from "../config";
+} from "../config"
 
 export interface Props {
-  title?: string;
-  description?: string;
+  title?: string
+  description?: string
 }
 
-const { title, description } = Astro.props;
+const { title, description } = Astro.props
 
 const { meta, og, twitter } = getPageMeta({
   title: title || SITE_TITLE,
@@ -24,7 +24,7 @@ const { meta, og, twitter } = getPageMeta({
   ogImageHeight: 630,
   siteOwnerTwitterHandle: TWITTER_HANDLE,
   contentAuthorTwitterHandle: TWITTER_HANDLE,
-});
+})
 ---
 
 <!-- Primary Meta Tags -->

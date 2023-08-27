@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from "zod"
 
 const baseSchema = z.object({
   draft: z.boolean().default(false),
@@ -12,7 +12,7 @@ const baseSchema = z.object({
     invalid_type_error:
       "date must be written in yyyy-mm-dd format without quotes: For example, Jan 22, 2000 should be written as 2000-01-22.",
   }),
-});
+})
 
 /*
   Blog posts could be of two types —
@@ -40,8 +40,8 @@ export const blog = z.discriminatedUnion("external", [
       invalid_type_error: "external should be string.",
     }),
   }),
-]);
+])
 
 export const project = baseSchema.extend({
   url: z.string(),
-});
+})

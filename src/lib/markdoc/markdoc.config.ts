@@ -1,7 +1,7 @@
-import Markdoc from "@markdoc/markdoc";
-import type { Config } from "@markdoc/markdoc";
+import Markdoc from "@markdoc/markdoc"
+import type { Config } from "@markdoc/markdoc"
 
-const { nodes, Tag } = Markdoc;
+const { nodes, Tag } = Markdoc
 
 /*
   Markdoc is a great tool to author content in Markdown.
@@ -106,9 +106,9 @@ export const config: Config = {
         level: { type: Number, required: true },
       },
       transform(node, config) {
-        const attributes = node.transformAttributes(config);
-        const children = node.transformChildren(config);
-        return new Tag(this.render, { ...attributes }, children);
+        const attributes = node.transformAttributes(config)
+        const children = node.transformChildren(config)
+        return new Tag(this.render, { ...attributes }, children)
       },
     },
     // if you want to customise default tags, this is where you'd do it
@@ -131,21 +131,21 @@ export const config: Config = {
         process: { type: Boolean, render: false, default: false },
       },
       transform(node, config) {
-        const attributes = node.transformAttributes(config);
-        const children = node.transformChildren(config);
+        const attributes = node.transformAttributes(config)
+        const children = node.transformChildren(config)
         if (children.some((child) => typeof child !== "string")) {
           throw new Error(
             `unexpected non-string child of code block from ${
               node.location?.file ?? "(unknown file)"
             }:${node.location?.start.line ?? "(unknown line)"}`
-          );
+          )
         }
         return new Tag(
           this.render,
           { ...attributes, content: children.join("") },
           []
-        );
+        )
       },
     },
   },
-};
+}

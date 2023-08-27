@@ -1,16 +1,16 @@
 ---
-import { readAll } from "../lib/markdoc/read";
-import { blog } from "../lib/markdoc/frontmatter.schema";
-import PageLayout from "../layouts/PageLayout.astro";
-import PageMeta from "../components/PageMeta.astro";
-import { SITE_TITLE } from "../config";
+import { readAll } from "../lib/markdoc/read"
+import { blog } from "../lib/markdoc/frontmatter.schema"
+import PageLayout from "../layouts/PageLayout.astro"
+import PageMeta from "../components/PageMeta.astro"
+import { SITE_TITLE } from "../config"
 
 export const prerender = true
 
 const posts = await readAll({
   directory: "blog",
   frontmatterSchema: blog,
-});
+})
 
 const sortedPosts = posts
   .filter((p) => p.frontmatter.draft !== true)
@@ -18,7 +18,7 @@ const sortedPosts = posts
     (a, b) =>
       new Date(b.frontmatter.date).valueOf() -
       new Date(a.frontmatter.date).valueOf()
-  );
+  )
 ---
 
 <PageLayout>
@@ -33,7 +33,7 @@ const sortedPosts = posts
             year: "numeric",
             month: "short",
             day: "numeric",
-          });
+          })
           return (
             <li class="grid grid-cols-[1fr] md:grid-cols-[1fr_auto] mb-3 md:gap-2 items-start">
               <div class="title">
@@ -63,7 +63,7 @@ const sortedPosts = posts
                 </time>
               </div>
             </li>
-          );
+          )
         })
       }
     </ul>
