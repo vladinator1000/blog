@@ -23,11 +23,19 @@ A person’s willingness to learn grows along with their level of investment.
 
 Dumping a lot of information at the start is often wasteful because it exceeds people’s willingness to learn. If there is a small initial amount of things to learn, you can jump straight into the action instead of having to go through something boring. In fact, if each step of the tutorial is small enough, it won’t feel like a tutorial at all. By delaying these tutorials, we can deliver messages when they are actually relevant.
 
-What if we have complex systems. Complex systems typically need to teach everything from the beginning, because every subsystem talks to each other, right? Let's say we're playing the game Civilization. A complex game. On your first turn of the complex game Civilization, you need to make 1 decision: Where should you settle your city? And one decision on your next turn: What should you build there? By the time you realize it, you’re making dozens of decisions per turn as you juggle all of the systems the game throws at you
+What if we have complex systems? Complex systems typically need to teach everything from the beginning, because every subsystem talks to each other, right? Let's say we're playing the game Civilization. A complex game. On your first turn, you need to make 1 decision:
+
+> Where should I settle my city?
+
+And one decision on your next turn:
+
+> What should I build there?
+
+By the time you realize it, you’re making dozens of decisions per turn, juggling all of the systems the game throws at you.
 
 ![](/images/how-to-teach-complex-subjects/pyramid-graph.png)
 
-Civilization uses a technique called the inverted pyramid of decision making. A term coined by the game designer Bruce Shelley. By using this technique, they let complexity grow organically.
+Civilization uses a technique called the inverted pyramid of decision making. A term coined by the game designer Bruce Shelley. This lets complexity grow organically.
 
 What if we approach it a bit differently? Instead of peppering tutorials throughout an exercise, we can zoom out and put tutorials between entire chapters of play.
 
