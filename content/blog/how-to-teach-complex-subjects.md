@@ -15,7 +15,7 @@ Let's say we sprinkle learning between the experience of playing. Imagine how th
 
 ![](/images/how-to-teach-complex-subjects/split-tutorial.png)
 
-It's good to have both learning and play, because learning gives us new information, play lets us have fun and experience it in different contexts, which makes it easier to understand and remember. But there's also a quirk of the human condition we need to take into account.
+It's good to have both learning and play. Learning gives us new information, while play lets us experience it in different contexts and have fun. But, there's a quirk of the human condition we need to take into account.
 
 A person’s willingness to learn grows along with their level of investment.
 
