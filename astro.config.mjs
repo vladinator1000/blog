@@ -43,4 +43,7 @@ export default defineConfig({
   ],
   output: "server",
   adapter: cloudflare(),
+  redirects: {
+    "0x": "https://confident-hopper-36c819.netlify.app/",
+  },
 })
