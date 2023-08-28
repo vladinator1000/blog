@@ -9,7 +9,7 @@ Remember playing when you were a kid? It's a wonderful experience, you're free t
 
 ## 1. Chop up the tutorial
 
-Let's say we sprinkle learning between the experience of playing. Imagine how these activities would look plotted over time, where blue is play and red is learning. They could look something like this:
+Let's say we sprinkle learning between the experience of playing. Imagine how these activities would look plotted over time, where blue is play and red is learning:
 
 ![](/images/how-to-teach-complex-subjects/split-tutorial.png)
 
