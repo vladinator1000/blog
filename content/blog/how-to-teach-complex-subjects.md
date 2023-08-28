@@ -69,12 +69,6 @@ The more opportunities you have to check how you did, the faster you will be abl
 
 Leveraging things that people are already familiar with can make it easier to learn new concepts. You know, spikes hurt, ice is slippery, coins let you buy things, keys open locks, `let age = 5` assigns a variable. By leaning on things people already know, sometimes you wont even need a tutorial.
 
-## Other techniques
-
-- Show, don’t tell.
-- Cut down on text, be consistent in language.
-- Provide multiple learning avenues for people who have different preferences.
-
 ## Summary
 
 - Break each thing you want to teach into a list of minimum required knowledge and prioritize them.
