@@ -19,7 +19,7 @@ A person’s willingness to learn grows along with their level of investment.
 
 ![](/images/how-to-teach-complex-subjects/willingness.png)
 
-Dumping a lot of information at the start is often wasteful because it exceeds people’s willingness to learn. If there is a small initial amount of things to learn, you can jump straight into the action instead of having to go through something boring. In fact, if each step of the tutorial is small enough, it won’t feel like a tutorial at all. By delaying these tutorials, we can deliver messages when they are actually relevant.
+Dumping a lot of information at the start is often wasteful because it exceeds people’s willingness to learn. If there is a small initial amount, you can jump straight into the action instead of having to go through something boring. In fact, if each step of the tutorial is small enough, it won’t feel like a tutorial at all. By delaying these tutorials, we can deliver messages when they are actually relevant.
 
 What if we have complex systems? Complex systems typically need to teach everything from the beginning, because every subsystem talks to each other, right? Let's say we're playing the game Civilization. A complex game. On your first turn, you need to make 1 decision:
 
