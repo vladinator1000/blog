@@ -5,7 +5,7 @@ description: "Using game design methods to teach anything."
 date: 2023-08-27
 ---
 
-Remember playing when you were a kid? It's a wonderful experience, you're free to poke at things and understand them on your own terms. Remember when you started school? If your education was like mine, I imagine it involved a lot of sitting on a desk and staying still while the teacher was pouring information into your mind. There must be something between those ends of the spectrum, a way to learn new things while not falling asleep...
+Remember playing when you were a kid? It's a wonderful experience, you're free to poke at things and understand them on your own terms. Remember when you started school? If your education was like mine, I imagine it involved a lot of sitting on a desk and staying still while the teacher was pouring information into your mind. There must be something between those ends of the spectrum, a way to learn new things without falling asleep...
 
 ## 1. Chop up the tutorial
 
