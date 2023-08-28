@@ -5,11 +5,9 @@ description: "Using game design methods to teach anything."
 date: 2023-08-27
 ---
 
-Complex subjects are tricky to teach, but there's a way to break them down and make them fun to learn! Let's borrow some techniques from the game design world apply them to teach any subject.
+Remember playing when you were a kid? It's a wonderful experience, you're free to poke at things and understand them on your own terms. Remember when you started school? If your education was like mine, I imagine it involved a lot of sitting on a desk and staying still while the teacher was pouring information into your mind.
 
 ## 1. Chop up the tutorial
-
-Remember playing when you were a kid? It's a wonderful experience, you're free to poke at things and understand them on your own terms. Remember when you started school? If your education was like mine, I imagine it involved a lot of sitting on a desk and staying still while the teacher was pouring information into your mind.
 
 Let's say we sprinkle learning between the experience of playing. Imagine how these activities would look plotted over time, where blue is play and red is learning. They could look something like this:
 
