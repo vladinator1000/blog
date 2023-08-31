@@ -10,7 +10,6 @@ import "../styles/global.css"
 import GoogleFont from "./GoogleFont.astro"
 import FontAwesome from "./FontAwesome.astro"
 import ThemeScript from "./ThemeScript.astro"
-import Favicon from "./Favicon.astro"
 import Header from "../components/Header.astro"
 import Footer from "../components/Footer.astro"
 
@@ -34,7 +33,6 @@ const formattedDate = new Date(date).toLocaleDateString("en-us", {
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <meta name="generator" content="vladinator1000" />
-    <Favicon />
     <slot name="meta" />
     <GoogleFont />
     <ThemeScript />
