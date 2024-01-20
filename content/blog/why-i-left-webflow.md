@@ -47,7 +47,7 @@ The Webflow Designer (the tool you use to edit your site) is not like a CRUD app
 
 Writing products like this requires an understanding of meta-programming and _a lot of testing._ It also has a _significant educational overhead_. Not everyone understands compilers and abstract syntax trees. If you want to work at Webflow, you _need_ to know about them. This technology can be a competitive advantage, but it can also cause friction if you want to move quickly. You can't just hire your way out of a problem. New employees often need to be specially trained. Oh, and you also need to invest in tooling, because now you have a custom piece of technology that doesn't have supporting tools (such as a debugger). That acts as a multiplier on the productivity of every developer.
 
-> Webflow is like a game engine for websites.``
+> Webflow is like a game engine for websites.
 
 If you want to imagine its future, look at Epic’s Unreal Engine. It's like a black hole - beyond its event horizon is an ever expanding collection of integrated tools, masquerading as a website editor.
 
