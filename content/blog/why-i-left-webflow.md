@@ -27,7 +27,7 @@ For the other side of the team, the culture was more centered on kindness. I lik
 
 The last (and first) time I saw them IRL was when we met on a team retreat in Toronto, Canada. This was the first time I set foot in North America. It felt surreal, like being in Grand Theft Auto, but everyone is nice. My highlights from Toronto:
 
-- Giving my brand new M1 laptop a rinse by accidentally spilling a glass of water. It went into a restart loop and wouldn't work after 😅.
+- Giving a colleague's brand new M1 laptop a rinse by accidentally spilling a glass of water. It went into a restart loop and wouldn't work after 😅.
 - Singing emo anthems with my team in a karaoke bar.
 - Meeting [Jon Q](https://itsjonq.com/) - the most organized person I know. He's on the design system team. We're big game development fans, I love when we geek out about [Extra Credits](https://www.youtube.com/@ExtraCredits) and game design.
 
