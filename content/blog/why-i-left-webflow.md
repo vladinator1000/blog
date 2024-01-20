@@ -1,7 +1,7 @@
 ---
 external: false
 title: "Why I left Webflow"
-description: "I left my job, what now?"
+description: "I left my job, what's next?"
 date: 2024-01-19
 ---
 
