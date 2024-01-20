@@ -37,7 +37,7 @@ To everyone at Webflow: I'm grateful for the privilege to learn from you. There 
 
 Here are some of the things we worked on:
 
-- A custom programming language that underpins the rendering and editing of elements and [components](https://university.webflow.com/lesson/components#how-to-create-a-component). (We had a book club on compiler development! If that's something you're into: [craftinginterpreters.com](https://www.notion.so/Why-I-left-my-job-at-Webflow-4f7468f10dfe4ce084526f7db1aa8ba7?pvs=21), [nearley parser toolkit](https://nearley.js.org/))
+- A custom programming language that underpins the rendering and editing of elements and [components](https://university.webflow.com/lesson/components#how-to-create-a-component). (We had a book club on compiler development! If that's something you're into: [craftinginterpreters.com](craftinginterpreters.com), [nearley parser toolkit](https://nearley.js.org/))
 - The universal bindings system that powers the [CMS](https://webflow.com/cms) and [Ecommerce](https://webflow.com/ecommerce).
 - [Libraries](https://webflow.com/libraries).
 
