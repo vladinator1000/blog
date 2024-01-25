@@ -61,7 +61,7 @@ Introducing **[Yupty](https://yupty.live/)** - _find the live music you're missi
 
 I have the privilege to collaborate on it with Doug Jagger. He's a professional musician who plays live shows every week, and knows the live music industry inside-out. We're equal partners in this venture. We've known each other for a long time. With his experience in the music industry and mine from the technology sphere, we set out to bring new opportunities and efficiencies in the live music market. We’re also doing a 4-day work week!
 
-We are self-funded and not looking for investment at the moment. If you'd like to be included if we change our mind, you can write to us here: “_investor at yupty dot live”_.
+We are self-funded and not looking for investment at the moment.
 
 **Why are you doing this?**
 
