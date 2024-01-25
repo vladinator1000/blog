@@ -69,7 +69,7 @@ To help fans create the memories of a lifetime, venues to manage the complexity 
 
 In other words, because I love live music.
 
-For now, I'll leave you with a photo of Doug and I. We took it at his recording studio during a work retreat:
+For now, I'll leave you with a photo of Doug and I at his studio.
 ![Doug and I at his studio](/images/why-i-left-webflow/doug-vlady.jpeg)
 
 ### 3. Summary
