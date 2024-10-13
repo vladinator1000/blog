@@ -5,7 +5,7 @@ description: "I left my job, what's next?"
 date: 2024-01-19
 ---
 
-Today is my 30th birthday. What a great opportunity to share a huge change in my life. I left my job as a platform engineer at Webflow! Let me tell you about what it was like to work there and what comes next.
+Today is my 30th birthday. A great opportunity to share a huge change in my life. I left my job as a platform engineer at Webflow! Let me tell you about what it was like to work there and what comes next.
 
 ### 1. Working at Webflow
 
