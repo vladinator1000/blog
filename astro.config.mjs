@@ -45,5 +45,6 @@ export default defineConfig({
   adapter: cloudflare(),
   redirects: {
     "0x": "https://confident-hopper-36c819.netlify.app/",
+    zoo: "https://rad-salamander-8f971d.netlify.app/",
   },
 })
