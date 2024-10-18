@@ -1,6 +1,6 @@
 ---
 external: false
-title: "Should I become a plumber or a programmer?"
+title: "Should I become a plumber or a programmer"
 description: "Should I stop studying programming and learn a trade instead?."
 date: 2023-08-26
 ---
