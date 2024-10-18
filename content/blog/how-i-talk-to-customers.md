@@ -55,6 +55,8 @@ If there's one thing you should take away from this article is, that if you want
 - Learn how to listen
 - Find people in the idea space and learn about them and their problems
 
+Question list based on: https://www.notion.so/yupty/Aidan-from-Blue-Nicotine-ea7faf5bae5048238568fb3deb7cc5ba#8ef14f586c6f4071863ae5ca3dfb75b1
+
 # Notes
 
 ## Notes on "What I've learned from users - Paul Graham"
