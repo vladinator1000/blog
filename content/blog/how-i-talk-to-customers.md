@@ -3,6 +3,7 @@ external: false
 title: "How I talk to customers"
 description: "What can we learn about talking to customers from actors, founders and game developers?"
 date: 2024-10-18
+draft: true
 ---
 
 # Outline
