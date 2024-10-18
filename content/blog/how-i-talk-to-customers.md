@@ -56,7 +56,7 @@ If there's one thing you should take away from this article is, that if you want
 
 # Notes
 
-## Notes on [What I've learned from users - Paul Graham](https://paulgraham.com/users.html)
+## Notes on "What I've learned from users - Paul Graham"
 
 - "Would you use this if you hadn't built it?"
 - Founders are bad at realizing what their problems are
@@ -72,7 +72,7 @@ Vlady thoughts:
 - How much delusion do you need? Also, how do you counter-balance it? (other systems such as stop loss)
 - Relatives asking about "will it work" (implying yes or no) instead of "How will it work?"
 
-## Notes on [How to get and evaluate startup ideas (video) - Jared Freidman](https://youtu.be/Th8JoIan4dg)
+## Notes on "How to get and evaluate startup ideas (video) - Jared Freidman"
 
 - This feels mostly irrelevant to talking to users, "finding good ideas" sounds like a topic for a separate article
 - Solution in search of a problem
@@ -88,7 +88,7 @@ Jared does go into talking to other people but says it requires skill.
 
 If there's one thing you should take away from this article, is that if you want advice on how to listen to other people, you should go to startup founders first, because they are widely known for their listening ability.
 
-## Notes on [How to actively listen to others - Scott Pierce](https://youtu.be/Yq5pJ0q3xuc)
+## Notes on "How to actively listen to others - Scott Pierce"
 
 It's not the note you play that's wrong, it's the note you play after that makes the first one right or wrong.
 When Herbie Hancock played with Myles Davis, he played a chord that sounded bad, but what Myles played after made it sound good.
@@ -115,7 +115,7 @@ Rules of improv:
 - If Myles didn't accept, Herbie's note would have became a mistake
 - Be wholly present, drop expectations, accept the point of view that you struggle with, and then - act.
 
-## Notes on [How Valve playetsts](https://youtu.be/9Yomqk0C6kE)
+## Notes on "Valve's secret weapon"
 
 - Shut up and observe
 - Players are good at finding that something is wrong, but bad at solving it because they lack context
