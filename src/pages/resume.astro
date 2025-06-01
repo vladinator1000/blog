@@ -10,26 +10,25 @@ export const prerender = true
   <PageMeta title={`${SITE_TITLE}`} slot="meta" />
   <section slot="main" class="grid gap-5">
     <section id="summary" class="">
-      <h1><b>Summary</b></h1>
+      <h1 class="text-xl"><b>Summary</b></h1>
       <p>
-        Experienced engineer (8 years) who shipped real-time design tools used by over 3.5M users.
+        Experienced engineer who shipped real-time design tools used by over 3.5M users.
       </p>
     </section>
-    
+
     <section>
-      <h2><b>Keywords</b></h2>
+      <h2 class="text-base"><b>Keywords</b></h2>
       <p>
         TypeScript, React, GraphQL, SQL, Rust, C++, Graphics, Performance, Machine Learning
       </p>
     </section>
 
-
     <div id="experience">
-      <h1><b>Experience</b></h1>
+      <h1 class="text-xl mb-2"><b>Experience</b></h1>
 
       <div id="experience-content" class="grid gap-4">
         <section>
-          <div class="flex justify-between">
+          <div class="flex justify-between mb-2">
             <h2>
               <a href="https://yupty.live/pricing" target="_blank">Yupty</a> - founding
               engineer
@@ -45,7 +44,7 @@ export const prerender = true
             <li>
               Built <a href="https://yupty.live/pricing" target="_blank"
                 >Ticket Splits</a
-              > - automatically routing revenue to each artist’s bank account using percentages they set.
+              > - automatic payouts to each artist’s bank account using percentages they set.
             </li>
             <li>
               Built WebGL tooling that lets users <a href="https://drive.google.com/file/d/1d2HJxuwCelSHb2ke21oQ9GwF-tgEhx1T/view">style their profiles</a> with immersive visuals.
@@ -59,7 +58,7 @@ export const prerender = true
         </section>
 
         <section>
-          <div class="flex justify-between">
+          <div class="flex justify-between mb-2">
             <h2>
               <a href="https://webflow.com" target="_blank">Webflow</a> - software
               engineer, platform
@@ -74,9 +73,7 @@ export const prerender = true
 
           <ul>
             <li>
-              Optimized compilation for user sites, which <b
-                >made publishing large sites twice as fast</b
-              >, letting us <a
+              <b>Reduced the compilation time of user sites by 2x</b>, letting us <a
                 href="https://webflow.com/blog/increased-page-limits"
                 target="_blank">raise platform limits</a
               > and land high-value enterprise contracts.
@@ -90,23 +87,19 @@ export const prerender = true
             </li>
 
             <li>
-              Contributed to the universal bindings system that powers <a
-                href="https://webflow.com/cms"
-                target="_blank">CMS</a
-              > and <a href="https://webflow.com/ecommerce">Ecommerce</a>.
-            </li>
-
-            <li>
               Shipped <a
                 href="https://webflow.com/libraries"
                 target="_blank">libraries</a
+              > and maintained the universal bindings system that powers the <a
+                href="https://webflow.com/cms"
+                target="_blank">CMS</a
               >.
             </li>
           </ul>
         </section>
 
         <section>
-          <div class="flex justify-between">
+          <div class="flex justify-between mb-2">
             <h2>
               <a href="https://fanduel.com" target="_blank">FanDuel</a> - frontend
               software engineer
@@ -125,9 +118,8 @@ export const prerender = true
               Shipped bank payments, saving millions of dollars in transaction fees for users.
             </li>
             <li>
-              Contributed to core features such as session management, content
-              rendering and placing bets for Sportsbook - a React Native app
-              with millions of customers.
+              Contributed to core features such as session management, rendering very large lists of content and placing bets for Sportsbook - a React Native app
+              with 4M+ customers.
             </li>
             <li>
               Made performance and bundling optimizations that <b
@@ -139,12 +131,13 @@ export const prerender = true
 
       </div>
     </div>
+
     <div id="education">
-      <h1><b>Education</b></h1>
+      <h1 class="text-xl mb-2"><b>Education</b></h1>
 
       <div id="education-content" class="grid gap-4">
         <section>
-          <div class="flex justify-between">
+          <div class="flex justify-between mb-2">
             <h2>University of Strathclyde - MSc Advanced Computer Science</h2>
             <small>2017 - 2018</small>
           </div>
@@ -157,39 +150,40 @@ export const prerender = true
                 >distinguish between multiple sounds within one audio signal</a
               >.
             </li>
-            <li>
-              Compared methods for <a
-                href="https://github.com/vladinator1000/algorithmic-trading"
-                >algorithmic trading of financial assets</a
-              >.
-            </li>
+
             <li>
               Solved <a
                 href="https://github.com/vladinator1000/multi-objective-optimisation"
                 target="_blank">multi-objective optimization</a
               > problems with genetic algorithms.
             </li>
+
+            <li>
+              Compared methods for <a
+                href="https://github.com/vladinator1000/algorithmic-trading"
+                >algorithmic trading of financial assets</a
+              >.
+            </li>
           </ul>
         </section>
 
         <section>
-          <div class="flex justify-between">
+          <div class="flex justify-between mb-2">
             <h2>Glasgow Caledonian University - BSc Audio Technology</h2>
             <small>2013 - 2017</small>
           </div>
 
           <ul>
             <li>
-              Worked on the BAFTA nominated game <a href="https://www.redbull.com/gb-en/rebound-dodgeball-evolved-interview">Rebound: Dodgeball Evolved</a> - built audio systems in Unreal Engine.
+              Worked (BAFTA nominated) <a href="https://www.redbull.com/gb-en/rebound-dodgeball-evolved-interview">Rebound: Dodgeball Evolved</a> - built audio systems in Unreal Engine.
             </li>
             <li>
               Created a multiplayer shooter where you <a
                 href="https://www.youtube.com/shorts/K5uPdCmERDc"
                 target="_blank">shoot by making noise</a
-              >
-              instead of clicking the mouse. (Code sample: <a
+              >. (code sample <a
                 href="https://github.com/vladinator1000/UnrealAudioInput/blob/main/Plugins/AudioInput/Source/AudioInput/Private/AudioInputSubsystem.cpp"
-                target="_blank">github.com/vladinator1000/UnrealAudioInput</a
+                target="_blank">available here</a
               >).
             </li>
             <li>
@@ -205,11 +199,8 @@ export const prerender = true
 </PageLayout>
 
 <style>
-  h1 {
-    font-size: 1.25rem;
-  }
   li,
   p {
-    font-size: 0.85rem;
+    @apply text-sm;
   }
 </style>

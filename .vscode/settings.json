@@ -1,9 +1,13 @@
 {
-  "prettier.documentSelectors": ["**/*.astro"],
+  "prettier.documentSelectors": [
+    "**/*.astro"
+  ],
   "[astro]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+    "editor.defaultFormatter": "astro-build.astro-vscode"
   },
   "editor.formatOnSave": true,
   "cSpell.enabled": true,
-  "cSpell.words": ["Webflow"]
+  "cSpell.words": [
+    "Webflow"
+  ]
 }
