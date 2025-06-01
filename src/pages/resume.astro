@@ -9,6 +9,21 @@ export const prerender = true
 <PageLayout>
   <PageMeta title={`${SITE_TITLE}`} slot="meta" />
   <section slot="main" class="grid gap-5">
+    <section id="summary" class="">
+      <h1><b>Summary</b></h1>
+      <p>
+        Experienced engineer (8 years) who shipped real-time design tools, used by over 3.5M users.
+      </p>
+    </section>
+    
+    <section>
+      <h2><b>Keywords</b></h2>
+      <p>
+        TypeScript, React, GraphQL, SQL, Rust, C++, Graphics, Performance, Machine Learning
+      </p>
+    </section>
+
+
     <div id="experience">
       <h1><b>Experience</b></h1>
 
@@ -23,31 +38,23 @@ export const prerender = true
           </div>
 
           <p class="mb-3">
-            Led the development of a live music discovery and ticketing service.
+            Led a team building a live music ticketing platform.
           </p>
 
           <ul>
             <li>
-              Created <a href="https://yupty.live/pricing" target="_blank"
+              Built <a href="https://yupty.live/pricing" target="_blank"
                 >Ticket Splits</a
-              >. When fans buy tickets, artist receive the proceeds in their
-              bank accounts, based on a split they agree on.
+              > - automatically routing revenue to each artist’s bank account using percentages they set.
             </li>
             <li>
-              Developed a novel visualization for the live music scene of a city
-              in the form of a <a
-                href="https://user-images.githubusercontent.com/1226564/223600700-cfb41853-5fbb-4198-bbae-938dd1494b70.gif"
-                target="_blank">constellation of stars</a
-              >, using <a
-                href="https://www.datacamp.com/tutorial/introduction-t-sne"
-                target="_blank">t-stochastic neighbour embedding</a
-              >.
+              Built WebGL tooling that lets users <a href="https://drive.google.com/file/d/1d2HJxuwCelSHb2ke21oQ9GwF-tgEhx1T/view">style their profiles</a> with immersive visuals.
             </li>
             <li>
-              Created systems for continuous delivery, authentication,
-              permissions, database and content management, using technologies
-              such as GraphQL, TypeScript, React and Remix.
+              Architected the platform stack — authentication, permissions, notifications, CI/CD, design, data & content systems.
             </li>
+
+            
           </ul>
         </section>
 
@@ -61,37 +68,25 @@ export const prerender = true
           </div>
 
           <p class="mb-3">
-            Contributed to foundational systems that power every major feature
-            in the product, on the front and back end, using procedural and
-            functional programming methods, with technologies such as
-            JavaScript, Flux, Flow, React and GraphQL.
+            Optimized foundational systems that power every major feature
+            in the product.
           </p>
 
           <ul>
             <li>
-              Optimized style compilation for user sites, which <b
+              Optimized compilation for user sites, which <b
                 >made publishing large sites twice as fast</b
-              >. This was one of the projects that let us <a
+              >, letting us <a
                 href="https://webflow.com/blog/increased-page-limits"
                 target="_blank">raise platform limits</a
-              > and land multiple enterprise contracts, which can run around $65,000
-              per year each.
+              > and land high-value enterprise contracts.
             </li>
             <li>
-              Contributed to <a
+              Built compiler and runtime tooling for <a
                 href="https://webflow.com/blog/webflow-design-language"
                 target="_blank">Webflow Design Language</a
               > - an interpreted programming language that underpins the core functionalities
               of Webflow.
-            </li>
-
-            <li>
-              Wrote a parser for a text representation of the WFDL language
-              (using the <a href="https://nearley.js.org" target="_blank"
-                >nearley parser toolkit</a
-              >) that greatly improved the development experience and prevented
-              many subtle bugs from reaching production by making it easier to
-              write tests.
             </li>
 
             <li>
@@ -102,14 +97,9 @@ export const prerender = true
             </li>
 
             <li>
-              Shipped the authoring experience of <a
+              Shipped <a
                 href="https://webflow.com/libraries"
                 target="_blank">libraries</a
-              >.
-            </li>
-            <li>
-              Overhauled the platform documentation, which <b
-                >sped up new hire onboarding by 2x</b
               >.
             </li>
           </ul>
@@ -132,8 +122,7 @@ export const prerender = true
 
           <ul>
             <li>
-              Shipped the most used payment method in the account and wallet
-              product - bank payments.
+              Shipped bank payments, saving millions of dollars in transaction fees for users.
             </li>
             <li>
               Contributed to core features such as session management, content
@@ -142,28 +131,12 @@ export const prerender = true
             </li>
             <li>
               Made performance and bundling optimizations that <b
-                >made the app load twice as fast</b
-              >.
-            </li>
-            <li>
-              Helped the quality of life for all developers on the project by <b
-                >improving compile times by 40%</b
-              >.
-            </li>
-            <li>
-              Contributed to hiring and onboarding. Fostered an inclusive
-              development community, organized knowledge sharing between teams.
+                >halved app startup time for users</b
+              > and improved compile times for developers by 40%.
             </li>
           </ul>
         </section>
 
-        <section>
-          <h2><b>Keywords</b></h2>
-          <p>
-            TypeScript, React, GraphQL, SQL, Rust, C++, Python, WebGL, Three.js,
-            Procedural Modeling, Unreal Engine, Machine Learning
-          </p>
-        </section>
       </div>
     </div>
     <div id="education">
@@ -178,17 +151,17 @@ export const prerender = true
 
           <ul>
             <li>
-              Trained a machine learning model to <a
+              Trained an AI model to <a
                 href="https://docs.google.com/document/d/1NQIByjKZk5kXNa86-8UiqPb0eF6DONWt7j0ZVE6GASg/edit?usp=sharing"
                 target="_blank"
-                >detect multiple sounds within one audio signal</a
+                >distinguish between multiple sounds within one audio signal</a
               >.
             </li>
             <li>
-              Compared methods of <a
+              Compared methods for <a
                 href="https://github.com/vladinator1000/algorithmic-trading"
-                >short-term algorithmic trading</a
-              > of financial assets.
+                >algorithmic trading of financial assets</a
+              >.
             </li>
             <li>
               Solved <a
@@ -207,6 +180,9 @@ export const prerender = true
 
           <ul>
             <li>
+              Worked on the BAFTA nominated game <a href="https://www.redbull.com/gb-en/rebound-dodgeball-evolved-interview">Rebound: Dodgeball Evolved</a> - built audio systems in Unreal Engine.
+            </li>
+            <li>
               Created a multiplayer shooter where you <a
                 href="https://www.youtube.com/shorts/K5uPdCmERDc"
                 target="_blank">shoot by making noise</a
@@ -219,11 +195,7 @@ export const prerender = true
             <li>
               Created <a href="https://youtu.be/_yFwjlvYCY8" target="_blank"
                 >a synthesizer</a
-              > with a wireless motion controller that makes sound when you shake
-              and rotate it, using an inertial measurement chip.
-            </li>
-            <li>
-              Developed digital signal processing in C++ (audio VST plugins).
+              > with a wireless motion controller using an inertial measurement chip.
             </li>
           </ul>
         </section>
