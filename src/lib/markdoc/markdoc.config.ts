@@ -98,6 +98,18 @@ export const config: Config = {
       },
       selfClosing: true,
     },
+    video: {
+      render: "Video",
+      attributes: {
+        src: { type: String, required: true },
+        alt: { type: String },
+        autoplay: { type: Boolean },
+        loop: { type: Boolean },
+        muted: { type: Boolean },
+        controls: { type: Boolean },
+      },
+      selfClosing: true,
+    }
   },
   nodes: {
     heading: {
@@ -135,8 +147,7 @@ export const config: Config = {
         const children = node.transformChildren(config)
         if (children.some((child) => typeof child !== "string")) {
           throw new Error(
-            `unexpected non-string child of code block from ${
-              node.location?.file ?? "(unknown file)"
+            `unexpected non-string child of code block from ${node.location?.file ?? "(unknown file)"
             }:${node.location?.start.line ?? "(unknown line)"}`
           )
         }

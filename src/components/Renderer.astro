@@ -7,6 +7,7 @@ import CodePenEmbed from "./CodePenEmbed.astro"
 import GitHubGistEmbed from "./GitHubGistEmbed.astro"
 import CodeBlock from "./CodeBlock.astro"
 import Heading from "./Heading.astro"
+import Video from "./Video.astro"
 
 type Props = {
   content: Content
@@ -39,6 +40,7 @@ const components = {
     Component: GitHubGistEmbed,
     props: {},
   },
+  Video: { Component: Video, props: {} },
 }
 ---
 

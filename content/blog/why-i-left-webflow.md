@@ -1,6 +1,6 @@
 ---
 external: false
-title: "Why I left Webflow"
+title: "Leaving Webflow"
 description: "I left my job, what's next?"
 date: 2024-01-19
 ---

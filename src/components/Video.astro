@@ -1,0 +1,28 @@
+---
+export interface Props {
+  src: string
+  alt?: string
+  autoplay?: boolean
+  loop?: boolean
+  muted?: boolean
+  controls?: boolean
+}
+const {
+  src,
+  alt = '',
+  autoplay = true,
+  loop = true,
+  muted = true,
+  controls = true,
+} = Astro.props
+---
+
+<video
+  src={src}
+  aria-label={alt}
+  playsinline
+  {autoplay}
+  {loop}
+  {muted}
+  {controls}
+  class="w-full shadow" />
