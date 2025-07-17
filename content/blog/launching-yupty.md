@@ -11,7 +11,7 @@ Today marks the launch of [Yupty](https://yupty.live) - a ticketing platform whe
 
 ### Mission statement: “Find the live music you’re missing.”
 
-Doug and I built the company with our own funds, blood, sweat and tears. We avoidided venture capital in order to help emerging artists get paid, keep local venue doors open, and make it easy for fans to find the live music they’re missing.
+Doug and I built the company with our own funds, blood, sweat and tears. We avoided venture capital in order to help emerging artists get paid, keep local venue doors open, and make it easy for fans to find the live music they’re missing.
 
 ![doug-and-vlady](/images/launching-yupty/doug-and-vlady.jpg)
 
