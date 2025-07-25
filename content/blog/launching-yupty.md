@@ -5,21 +5,30 @@ description: "Yupty - find the live music you're missing."
 date: 2025-07-17
 ---
 
-Today marks the launch of [Yupty](https://yupty.live) - a ticketing platform where artists set their revenue split upfront, and get paid automatically after the show.
+Organizing live shows is hard.
 
-## What makes it different
+- Booking venues takes ages - dealing with availability conflicts, venue terms, and figuring out if they have the right equipment takes time.
+- Coordinating people is a pain - getting bands all in one place without someone bailing.
+- Selling tickets is a full time job - getting fans to buy tickets, tracking everything, it's hard to predict if enough people will show up to cover your costs.
+- Chasing payments - getting everyone's banking details, asking for invoices, not getting replies back for weeks, and finally getting paid months after a show - it's a real slog.
 
-### Mission statement: “Find the live music you’re missing.”
+This keeps artists from focusing on what matters most - the music.
 
-Doug and I built the company with our own funds, blood, sweat and tears. We avoided venture capital in order to help emerging artists get paid, keep local venue doors open, and make it easy for fans to find the live music they’re missing.
+Introducing [Yupty](https://yupty.live) - a ticketing platform where artists set their revenue split upfront, and get paid automatically after the show.
+
+Doug and I bootstrapped the company to help emerging artists get paid, keep local venue doors open, and make it easy for fans to find the live music they’re missing.
 
 ![doug-and-vlady](/images/launching-yupty/doug-and-vlady.jpg)
+
+Here's what it can do.
 
 ### Ticket splits
 
 Event organizers (artists, venues, promoters) pre-negotiate splits. After the event finishes, participants receive their share in their bank account. No more chasing payments.
 
 ![event-summary.png](/images/launching-yupty/event-summary.png)
+
+Introducing [Yupty](https://yupty.live) - a ticketing platform where artists set their revenue split upfront, and get paid automatically after the show.
 
 ### Scenes
 
