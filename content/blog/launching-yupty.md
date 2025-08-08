@@ -1,6 +1,6 @@
 ---
 external: false
-title: "Launching a live music service"
+title: "Launching a live music platform"
 description: "Yupty - find the live music you're missing."
 date: 2025-07-17
 ---
