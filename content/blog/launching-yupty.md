@@ -16,6 +16,10 @@ This keeps artists from focusing on what matters most - the music.
 
 Introducing [Yupty](https://yupty.live) - a ticketing platform where artists set their revenue split upfront, and get paid automatically after the show.
 
+Watch the [launch video on YouTube](https://youtube.com/watch?v=UYos8-cuVWU).
+
+### Founding principles
+
 Doug and I bootstrapped the company to help emerging artists get paid, keep local venue doors open, and make it easy for fans to find the live music they’re missing.
 
 ![doug-and-vlady](/images/launching-yupty/doug-and-vlady.jpg)
