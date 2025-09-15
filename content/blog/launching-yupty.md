@@ -56,7 +56,7 @@ The fee is included in the ticket purchase price already. If a fan sees a ticket
 
 ![checkout](/images/launching-yupty/checkout.webp)
 
-We also have a neat [pricing calculator that lets artists estimate their earnings.](https://preview.yupty.live/pricing/estimate?name-0=%22Ghostdial%22&split-0=40&name-1=%22Static+Bloom%22&split-1=30&name-2=%22August+house%22&split-2=5&name-3=%22Cinder+Presents%22&split-3=25&)
+We also have a neat [pricing calculator that lets artists estimate their earnings.](https://yupty.live/pricing/estimate?name-0=%22Ghostdial%22&split-0=40&name-1=%22Static+Bloom%22&split-1=30&name-2=%22August+house%22&split-2=5&name-3=%22Cinder+Presents%22&split-3=25&)
 
 ## Summary
 
