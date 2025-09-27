@@ -1,7 +1,7 @@
-// Generated on 2025-09-26T23:49:43.751Z
+// Generated on 2025-09-27T01:31:35.241Z
 import { useRef, useEffect } from 'react'
 
-export function DefaultShader(props) {
+export function SpiralShader(props) {
   const canvasRef = useRef(null)
   const runnerRef = useRef(null)
   const lastMousePos = useRef({ x: 0, y: 0 })
@@ -11,9 +11,22 @@ export function DefaultShader(props) {
     const canvas = canvasRef.current
     if (!canvas) return
 
-    runnerRef.current = new DefaultRunner({
+    runnerRef.current = new SpiralRunner({
       canvas,
-      getUniformValues: () => {},
+      getUniformValues: () => {
+        const selectedPresetName = (props && props.preset) ?? "Default"
+        const overrides = (props && props.overrides) ?? {"u_density":0}
+
+        let baseParams = {}
+        if (selectedPresetName) {
+          const preset = META.presets.find(p => p.name === selectedPresetName)
+          if (preset) {
+            baseParams = preset.values
+          }
+        }
+
+        return { ...baseParams, ...overrides }
+      },
     })
 
     const handleMouseMove = (e) => {
@@ -24,7 +37,6 @@ export function DefaultShader(props) {
 
       runnerRef.current.setMousePosition(x, y)
 
-      // Calculate delta movement
       const dx = x - lastMousePos.current.x
       const dy = y - lastMousePos.current.y
       runnerRef.current.setMouseDelta(dx, dy)
@@ -39,8 +51,6 @@ export function DefaultShader(props) {
       const y = e.clientY - rect.top
 
       runnerRef.current.setMouseDownPosition(x, y)
-      // Map button values to match shader specification:
-      // no click - 0, left button - 1, right button - 2
       let clickState = 0
       if (e.button === 0) {
         clickState = 1
@@ -57,7 +67,6 @@ export function DefaultShader(props) {
 
     const handleWheel = (e) => {
       if (!runnerRef.current) return
-      // Simple zoom implementation - could be enhanced
       const zoomDelta = e.deltaY > 0 ? -0.1 : 0.1
       currentZoom.current = Math.max(0.1, currentZoom.current + zoomDelta)
       runnerRef.current.setMouseZoom(currentZoom.current)
@@ -112,22 +121,125 @@ struct Mouse { pos: vec2i, zoom: f32, click: i32, start: vec2i, delta: vec2i };
 {
   "params": [
     {
-      "id": "u_one",
-      "label": "One",
+      "id": "u_colorBack",
+      "label": "Background",
+      "group": "Colors",
+    },
+    {
+      "id": "u_colorFront", 
+      "label": "Foreground",
+      "group": "Colors",
+    },
+    {
+      "id": "u_density",
+      "label": "Density",
+      "group": "Shape",
+      "hint": "How spiral the shape is",
       "range": { "min": 0, "max": 1, "step": 0.01 }
     },
     {
-      "id": "u_two",
-      "label": "Two",
+      "id": "u_distortion",
+      "label": "Distortion",
+      "group": "Shape", 
+      "hint": "Warps the pattern",
       "range": { "min": 0, "max": 1, "step": 0.01 }
-    }
+    },
+    {
+      "id": "u_softness",
+      "label": "Softness",
+      "group": "Shape",
+      "range": { "min": 0, "max": 0.01, "step": 0.0001 }
+    },
+    {
+      "id": "u_strokeWidth",
+      "label": "Width",
+      "group": "Stroke",
+      "range": { "min": 0.005, "max": 1, "step": 0.005 }
+    },
+    {
+      "id": "u_strokeCap",
+      "label": "Cap",
+      "group": "Stroke",
+      "range": { "min": 0, "max": 1, "step": 0.01 }
+    },
+    {
+      "id": "u_strokeTaper",
+      "label": "Taper", 
+      "group": "Stroke",
+      "range": { "min": 0, "max": 1, "step": 0.01 }
+    },
+    {
+      "id": "u_noise",
+      "label": "Amount",
+      "group": "Noise",
+      "range": { "min": 0, "max": 1, "step": 0.01 }
+    },
+    {
+      "id": "u_noiseFrequency",
+      "label": "Frequency",
+      "group": "Noise",
+      "range": { "min": 0, "max": 1, "step": 0.01 }
+    },
   ],
   "presets": [
     {
       "name": "Default",
       "values": {
-        "u_one": 0.5,
-        "u_two": 0.5
+        "u_colorBack": [0.04, 0.05, 0.08, 1.0],
+        "u_colorFront": [0.95, 0.80, 0.25, 1.0],
+        "u_density": 0.5,
+        "u_distortion": 0.1,
+        "u_strokeWidth": 0.8,
+        "u_strokeCap": 0.1,
+        "u_strokeTaper": 0.1,
+        "u_noise": 0.35,
+        "u_noiseFrequency": 0.4,
+        "u_softness": 0.0025
+      }
+    },
+    {
+      "name": "Hypnotic",
+      "values": {
+        "u_colorBack": [0.1, 0.0, 0.2, 1.0],
+        "u_colorFront": [0.0, 0.8, 0.9, 1.0],
+        "u_density": 0.7,
+        "u_distortion": 0.3,
+        "u_strokeWidth": 0.5,
+        "u_strokeCap": 0.0,
+        "u_strokeTaper": 0.3,
+        "u_noise": 0.5,
+        "u_noiseFrequency": 0.6,
+        "u_softness": 0.005
+      }
+    },
+    {
+      "name": "Sunset",
+      "values": {
+        "u_colorBack": [0.9, 0.4, 0.2, 1.0],
+        "u_colorFront": [1.0, 0.9, 0.6, 1.0],
+        "u_density": 0.3,
+        "u_distortion": 0.05,
+        "u_strokeWidth": 0.9,
+        "u_strokeCap": 0.2,
+        "u_strokeTaper": 0.0,
+        "u_noise": 0.1,
+        "u_noiseFrequency": 0.2,
+        "u_softness": 0.001
+      }
+    },
+    {
+      "name": "Organic",
+      "values": {
+        "u_colorBack": [0.05, 0.1, 0.05, 1.0],
+        "u_colorFront": [0.4, 0.9, 0.3, 1.0],
+        "u_density": 0.6,
+        "u_distortion": 0.4,
+        "u_strokeWidth": 0.6,
+        "u_strokeCap": 0.5,
+        "u_strokeTaper": 0.4,
+        "u_noise": 0.8,
+        "u_noiseFrequency": 0.7,
+        "u_softness": 0.008
       }
     }
   ]
@@ -135,54 +247,106 @@ struct Mouse { pos: vec2i, zoom: f32, click: i32, start: vec2i, delta: vec2i };
 */
 
 
-// Provided by host:
-// @group(0) @binding(0) var screen: texture_storage_2d<rgba8unorm, write>;
-// struct Time { elapsed: f32, delta: f32, frame: u32 };,
-// @group(0) @binding(1) var<uniform> time: Time;
+@group(0) @binding(9) var<uniform> u_colorBack: vec4f;
+@group(0) @binding(10) var<uniform> u_colorFront: vec4f;
+@group(0) @binding(11) var<uniform> u_density: f32;
+@group(0) @binding(12) var<uniform> u_distortion: f32;
+@group(0) @binding(13) var<uniform> u_strokeWidth: f32;
+@group(0) @binding(14) var<uniform> u_strokeCap: f32;
+@group(0) @binding(15) var<uniform> u_strokeTaper: f32;
+@group(0) @binding(16) var<uniform> u_noise: f32;
+@group(0) @binding(17) var<uniform> u_noiseFrequency: f32;
+@group(0) @binding(18) var<uniform> u_softness: f32;
 
-// struct Mouse { pos: vec2i, zoom: f32, click: i32, start: vec2i, delta: vec2i };,
-// @group(0) @binding(2) var<uniform> mouse: Mouse;
+const PI: f32 = 3.141592653589793;
+const TWO_PI: f32 = PI * 2.0;
 
-// Using the mouse:
-// mouse.pos - current mouse position (vec2i)
-// mouse.zoom - zoom level (f32, default = 1.0)
-// mouse.click - click state (i32, none = 0, left = 1, right = 3)
-// mouse.start - mouse down position (vec2i)
-// mouse.delta - movement since last mouse event (vec2i)
+fn fract(x: f32) -> f32 { return x - floor(x); }
+fn fract2(v: vec2f) -> vec2f { return v - floor(v); }
 
-// @group(0) @binding(3) var nearest: sampler;
-// @group(0) @binding(4) var bilinear: sampler;
-// @group(0) @binding(5) var trilinear: sampler;
-// @group(0) @binding(6) var nearest_repeat: sampler;
-// @group(0) @binding(7) var bilinear_repeat: sampler;
-// @group(0) @binding(8) var trilinear_repeat: sampler;
+fn hash21(p: vec2f) -> f32 {
+  let h = dot(p, vec2f(127.1, 311.7));
+  return fract(sin(h) * 43758.5453123);
+}
 
-// Your uniforms here
-// @group(0) @binding(9) var<uniform> u_one: f32;
-// @group(0) @binding(10) var<uniform> u_two: f32;
+fn valueNoise(p: vec2f) -> f32 {
+  let i = floor(p);
+  let f = fract2(p);
+  let a = hash21(i);
+  let b = hash21(i + vec2f(1.0, 0.0));
+  let c = hash21(i + vec2f(0.0, 1.0));
+  let d = hash21(i + vec2f(1.0, 1.0));
+  let u = f * f * (3.0 - 2.0 * f);
+  return mix(mix(a, b, u.x), mix(c, d, u.x), u.y);
+}
+
+fn mix(a: f32, b: f32, t: f32) -> f32 { return a * (1.0 - t) + b * t; }
+
 
 @compute @workgroup_size(16, 16)
 fn main_image(@builtin(global_invocation_id) id: vec3u) {
-    // Viewport resolution (in pixels)
-    let screen_size = textureDimensions(screen);
+  let screen_size = textureDimensions(screen);
+  if (id.x >= screen_size.x || id.y >= screen_size.y) { return; }
 
-    // Prevent overdraw for workgroups on the edge of the viewport
-    if (id.x >= screen_size.x || id.y >= screen_size.y) { return; }
+  // Pixel coords, origin bottom-left; normalize to 0..1
+  let fragCoord = vec2f(f32(id.x) + 0.5, f32(screen_size.y - id.y) - 0.5);
+  let res = vec2f(screen_size);
+  let uv01 = fragCoord / res;
 
-    // Pixel coordinates (centre of pixel, origin at bottom left)
-    let fragCoord = vec2f(f32(id.x) + .5, f32(screen_size.y - id.y) - .5);
+  // Map to -1..1 space
+  var uv = (uv01 * 2.0 - 1.0);
 
-    // Normalised pixel coordinates (from 0 to 1)
-    let uv = fragCoord / vec2f(screen_size);
+  // Time
+  let t = time.elapsed * 0.1;
 
-    // Time varying pixel colour
-    var col = .5 + .5 * cos(time.elapsed + uv.xyx + vec3f(0.,2.,4.));
+  // Density shaping
+  var l = length(uv);
+  let density = clamp(u_density, 0.0, 1.0);
+  l = pow(l, density);
 
-    // Convert from gamma-encoded to linear colour space
-    col = pow(col, vec3f(2.2));
+  // Angle and normalization
+  let angle = atan2(uv.y, uv.x) - t;
+  var angleNormalised = angle / TWO_PI;
 
-    // Output to screen (linear colour space)
-    textureStore(screen, id.xy, vec4f(col, 1.));
+  // Noise perturbation
+  angleNormalised = angleNormalised + 0.125 * u_noise * (
+    valueNoise(16.0 * pow(u_noiseFrequency, 3.0) * uv)
+  );
+
+  // Stripe logic
+  var off = l + angleNormalised;
+  off = off - u_distortion * (sin(4.0 * l - 0.5 * t) * cos(PI + l + 0.5 * t));
+  let stripe = fract(off);
+  let shape = 2.0 * abs(stripe - 0.5);
+  var width = 1.0 - clamp(u_strokeWidth, 0.005 * u_strokeTaper, 1.0);
+
+  // Caps and tapering
+  let wCap = mix(width, (1.0 - stripe) * (1.0 - step(0.5, stripe)), (1.0 - clamp(l, 0.0, 1.0)));
+  width = mix(width, wCap, u_strokeCap);
+  width = width * (1.0 - clamp(u_strokeTaper, 0.0, 1.0) * l);
+
+  // Approximate pixel size
+  let fw = 1.0 / max(res.x, res.y);
+  let fwMult = 4.0 - 3.0 * (smoothstep(0.05, 0.4, 2.0 * u_strokeWidth) * smoothstep(0.05, 0.4, 2.0 * (1.0 - u_strokeWidth)));
+  var pixelSize = mix(fwMult * fw, fw, clamp(fw, 0.0, 1.0));
+  pixelSize = mix(pixelSize, 0.002, u_strokeCap * (1.0 - clamp(l, 0.0, 1.0)));
+
+  let mask = smoothstep(width - pixelSize - u_softness, width + pixelSize + u_softness, shape);
+
+  // Foreground/background blending
+  let fgColor = u_colorFront.rgb * u_colorFront.a;
+  let fgOpacity = u_colorFront.a;
+  let bgColor = u_colorBack.rgb * u_colorBack.a;
+  let bgOpacity = u_colorBack.a;
+
+  var color = fgColor * mask;
+  var opacity = fgOpacity * mask;
+  color = color + bgColor * (1.0 - opacity);
+  opacity = opacity + bgOpacity * (1.0 - opacity);
+
+  // Output
+  let outCol = vec4f(clamp(color, vec3f(0.0), vec3f(1.0)), clamp(opacity, 0.0, 1.0));
+  textureStore(screen, id.xy, outCol);
 }
 
 `
@@ -211,37 +375,59 @@ struct VSOut {
 }`
 
 const META = {
-  "presets": {
-    "presets": [
-      {
-        "name": "Default",
-        "values": {
-          "u_one": 0.5,
-          "u_two": 0.5
-        }
-      }
-    ],
-    "parameterInfo": {
-      "u_one": {
-        "id": "u_one",
-        "label": "One",
-        "range": {
-          "min": 0,
-          "max": 1,
-          "step": 0.01
-        }
-      },
-      "u_two": {
-        "id": "u_two",
-        "label": "Two",
-        "range": {
-          "min": 0,
-          "max": 1,
-          "step": 0.01
-        }
-      }
+  "uniforms": [
+    {
+      "name": "u_colorBack",
+      "binding": 9,
+      "size": 16
+    },
+    {
+      "name": "u_colorFront",
+      "binding": 10,
+      "size": 16
+    },
+    {
+      "name": "u_density",
+      "binding": 11,
+      "size": 16
+    },
+    {
+      "name": "u_distortion",
+      "binding": 12,
+      "size": 16
+    },
+    {
+      "name": "u_strokeWidth",
+      "binding": 13,
+      "size": 16
+    },
+    {
+      "name": "u_strokeCap",
+      "binding": 14,
+      "size": 16
+    },
+    {
+      "name": "u_strokeTaper",
+      "binding": 15,
+      "size": 16
+    },
+    {
+      "name": "u_noise",
+      "binding": 16,
+      "size": 16
+    },
+    {
+      "name": "u_noiseFrequency",
+      "binding": 17,
+      "size": 16
+    },
+    {
+      "name": "u_softness",
+      "binding": 18,
+      "size": 16
     }
-  },
+  ],
+  "storage": [],
   "compute": [
     {
       "stage": "compute",
@@ -252,8 +438,8 @@ const META = {
             "name": "vec3u",
             "attributes": [
               {
-                "id": 25661,
-                "line": 66,
+                "id": 5814,
+                "line": 179,
                 "name": "builtin",
                 "value": "global_invocation_id"
               }
@@ -273,8 +459,8 @@ const META = {
             "name": "vec3u",
             "attributes": [
               {
-                "id": 25661,
-                "line": 66,
+                "id": 5814,
+                "line": 179,
                 "name": "builtin",
                 "value": "global_invocation_id"
               }
@@ -283,8 +469,8 @@ const META = {
           },
           "attributes": [
             {
-              "id": 25661,
-              "line": 66,
+              "id": 5814,
+              "line": 179,
               "name": "builtin",
               "value": "global_invocation_id"
             }
@@ -299,13 +485,13 @@ const META = {
             "name": "texture_storage_2d",
             "attributes": [
               {
-                "id": 25625,
+                "id": 5618,
                 "line": 3,
                 "name": "group",
                 "value": "0"
               },
               {
-                "id": 25626,
+                "id": 5619,
                 "line": 3,
                 "name": "binding",
                 "value": "0"
@@ -323,13 +509,13 @@ const META = {
           "binding": 0,
           "attributes": [
             {
-              "id": 25625,
+              "id": 5618,
               "line": 3,
               "name": "group",
               "value": "0"
             },
             {
-              "id": 25626,
+              "id": 5619,
               "line": 3,
               "name": "binding",
               "value": "0"
@@ -388,13 +574,13 @@ const META = {
           "binding": 1,
           "attributes": [
             {
-              "id": 25629,
+              "id": 5622,
               "line": 4,
               "name": "group",
               "value": "0"
             },
             {
-              "id": 25630,
+              "id": 5623,
               "line": 4,
               "name": "binding",
               "value": "1"
@@ -402,24 +588,414 @@ const META = {
           ],
           "resourceType": 0,
           "access": "read"
+        },
+        {
+          "name": "u_density",
+          "type": {
+            "name": "f32",
+            "attributes": [
+              {
+                "id": 5660,
+                "line": 144,
+                "name": "group",
+                "value": "0"
+              },
+              {
+                "id": 5661,
+                "line": 144,
+                "name": "binding",
+                "value": "11"
+              }
+            ],
+            "size": 4
+          },
+          "group": 0,
+          "binding": 11,
+          "attributes": [
+            {
+              "id": 5660,
+              "line": 144,
+              "name": "group",
+              "value": "0"
+            },
+            {
+              "id": 5661,
+              "line": 144,
+              "name": "binding",
+              "value": "11"
+            }
+          ],
+          "resourceType": 0,
+          "access": "read"
+        },
+        {
+          "name": "u_noise",
+          "type": {
+            "name": "f32",
+            "attributes": [
+              {
+                "id": 5680,
+                "line": 149,
+                "name": "group",
+                "value": "0"
+              },
+              {
+                "id": 5681,
+                "line": 149,
+                "name": "binding",
+                "value": "16"
+              }
+            ],
+            "size": 4
+          },
+          "group": 0,
+          "binding": 16,
+          "attributes": [
+            {
+              "id": 5680,
+              "line": 149,
+              "name": "group",
+              "value": "0"
+            },
+            {
+              "id": 5681,
+              "line": 149,
+              "name": "binding",
+              "value": "16"
+            }
+          ],
+          "resourceType": 0,
+          "access": "read"
+        },
+        {
+          "name": "u_noiseFrequency",
+          "type": {
+            "name": "f32",
+            "attributes": [
+              {
+                "id": 5684,
+                "line": 150,
+                "name": "group",
+                "value": "0"
+              },
+              {
+                "id": 5685,
+                "line": 150,
+                "name": "binding",
+                "value": "17"
+              }
+            ],
+            "size": 4
+          },
+          "group": 0,
+          "binding": 17,
+          "attributes": [
+            {
+              "id": 5684,
+              "line": 150,
+              "name": "group",
+              "value": "0"
+            },
+            {
+              "id": 5685,
+              "line": 150,
+              "name": "binding",
+              "value": "17"
+            }
+          ],
+          "resourceType": 0,
+          "access": "read"
+        },
+        {
+          "name": "u_distortion",
+          "type": {
+            "name": "f32",
+            "attributes": [
+              {
+                "id": 5664,
+                "line": 145,
+                "name": "group",
+                "value": "0"
+              },
+              {
+                "id": 5665,
+                "line": 145,
+                "name": "binding",
+                "value": "12"
+              }
+            ],
+            "size": 4
+          },
+          "group": 0,
+          "binding": 12,
+          "attributes": [
+            {
+              "id": 5664,
+              "line": 145,
+              "name": "group",
+              "value": "0"
+            },
+            {
+              "id": 5665,
+              "line": 145,
+              "name": "binding",
+              "value": "12"
+            }
+          ],
+          "resourceType": 0,
+          "access": "read"
+        },
+        {
+          "name": "u_strokeWidth",
+          "type": {
+            "name": "f32",
+            "attributes": [
+              {
+                "id": 5668,
+                "line": 146,
+                "name": "group",
+                "value": "0"
+              },
+              {
+                "id": 5669,
+                "line": 146,
+                "name": "binding",
+                "value": "13"
+              }
+            ],
+            "size": 4
+          },
+          "group": 0,
+          "binding": 13,
+          "attributes": [
+            {
+              "id": 5668,
+              "line": 146,
+              "name": "group",
+              "value": "0"
+            },
+            {
+              "id": 5669,
+              "line": 146,
+              "name": "binding",
+              "value": "13"
+            }
+          ],
+          "resourceType": 0,
+          "access": "read"
+        },
+        {
+          "name": "u_strokeTaper",
+          "type": {
+            "name": "f32",
+            "attributes": [
+              {
+                "id": 5676,
+                "line": 148,
+                "name": "group",
+                "value": "0"
+              },
+              {
+                "id": 5677,
+                "line": 148,
+                "name": "binding",
+                "value": "15"
+              }
+            ],
+            "size": 4
+          },
+          "group": 0,
+          "binding": 15,
+          "attributes": [
+            {
+              "id": 5676,
+              "line": 148,
+              "name": "group",
+              "value": "0"
+            },
+            {
+              "id": 5677,
+              "line": 148,
+              "name": "binding",
+              "value": "15"
+            }
+          ],
+          "resourceType": 0,
+          "access": "read"
+        },
+        {
+          "name": "u_strokeCap",
+          "type": {
+            "name": "f32",
+            "attributes": [
+              {
+                "id": 5672,
+                "line": 147,
+                "name": "group",
+                "value": "0"
+              },
+              {
+                "id": 5673,
+                "line": 147,
+                "name": "binding",
+                "value": "14"
+              }
+            ],
+            "size": 4
+          },
+          "group": 0,
+          "binding": 14,
+          "attributes": [
+            {
+              "id": 5672,
+              "line": 147,
+              "name": "group",
+              "value": "0"
+            },
+            {
+              "id": 5673,
+              "line": 147,
+              "name": "binding",
+              "value": "14"
+            }
+          ],
+          "resourceType": 0,
+          "access": "read"
+        },
+        {
+          "name": "u_softness",
+          "type": {
+            "name": "f32",
+            "attributes": [
+              {
+                "id": 5688,
+                "line": 151,
+                "name": "group",
+                "value": "0"
+              },
+              {
+                "id": 5689,
+                "line": 151,
+                "name": "binding",
+                "value": "18"
+              }
+            ],
+            "size": 4
+          },
+          "group": 0,
+          "binding": 18,
+          "attributes": [
+            {
+              "id": 5688,
+              "line": 151,
+              "name": "group",
+              "value": "0"
+            },
+            {
+              "id": 5689,
+              "line": 151,
+              "name": "binding",
+              "value": "18"
+            }
+          ],
+          "resourceType": 0,
+          "access": "read"
+        },
+        {
+          "name": "u_colorFront",
+          "type": {
+            "name": "vec4f",
+            "attributes": [
+              {
+                "id": 5656,
+                "line": 143,
+                "name": "group",
+                "value": "0"
+              },
+              {
+                "id": 5657,
+                "line": 143,
+                "name": "binding",
+                "value": "10"
+              }
+            ],
+            "size": 16
+          },
+          "group": 0,
+          "binding": 10,
+          "attributes": [
+            {
+              "id": 5656,
+              "line": 143,
+              "name": "group",
+              "value": "0"
+            },
+            {
+              "id": 5657,
+              "line": 143,
+              "name": "binding",
+              "value": "10"
+            }
+          ],
+          "resourceType": 0,
+          "access": "read"
+        },
+        {
+          "name": "u_colorBack",
+          "type": {
+            "name": "vec4f",
+            "attributes": [
+              {
+                "id": 5652,
+                "line": 142,
+                "name": "group",
+                "value": "0"
+              },
+              {
+                "id": 5653,
+                "line": 142,
+                "name": "binding",
+                "value": "9"
+              }
+            ],
+            "size": 16
+          },
+          "group": 0,
+          "binding": 9,
+          "attributes": [
+            {
+              "id": 5652,
+              "line": 142,
+              "name": "group",
+              "value": "0"
+            },
+            {
+              "id": 5653,
+              "line": 142,
+              "name": "binding",
+              "value": "9"
+            }
+          ],
+          "resourceType": 0,
+          "access": "read"
         }
       ],
       "overrides": [],
-      "startLine": 66,
-      "endLine": 87,
+      "startLine": 179,
+      "endLine": 242,
       "inUse": true,
       "calls": {},
       "name": "main_image",
       "attributes": [
         {
-          "id": 25659,
-          "line": 65,
+          "id": 5812,
+          "line": 178,
           "name": "compute",
           "value": null
         },
         {
-          "id": 25660,
-          "line": 65,
+          "id": 5813,
+          "line": 178,
           "name": "workgroup_size",
           "value": [
             "16",
@@ -429,52 +1005,131 @@ const META = {
       ]
     }
   ],
-  "uniforms": [],
-  "storages": []
+  "presets": [
+    {
+      "name": "Default",
+      "values": {
+        "u_colorBack": [
+          0.04,
+          0.05,
+          0.08,
+          1
+        ],
+        "u_colorFront": [
+          0.95,
+          0.8,
+          0.25,
+          1
+        ],
+        "u_density": 0.5,
+        "u_distortion": 0.1,
+        "u_strokeWidth": 0.8,
+        "u_strokeCap": 0.1,
+        "u_strokeTaper": 0.1,
+        "u_noise": 0.35,
+        "u_noiseFrequency": 0.4,
+        "u_softness": 0.0025
+      }
+    },
+    {
+      "name": "Hypnotic",
+      "values": {
+        "u_colorBack": [
+          0.1,
+          0,
+          0.2,
+          1
+        ],
+        "u_colorFront": [
+          0,
+          0.8,
+          0.9,
+          1
+        ],
+        "u_density": 0.7,
+        "u_distortion": 0.3,
+        "u_strokeWidth": 0.5,
+        "u_strokeCap": 0,
+        "u_strokeTaper": 0.3,
+        "u_noise": 0.5,
+        "u_noiseFrequency": 0.6,
+        "u_softness": 0.005
+      }
+    },
+    {
+      "name": "Sunset",
+      "values": {
+        "u_colorBack": [
+          0.9,
+          0.4,
+          0.2,
+          1
+        ],
+        "u_colorFront": [
+          1,
+          0.9,
+          0.6,
+          1
+        ],
+        "u_density": 0.3,
+        "u_distortion": 0.05,
+        "u_strokeWidth": 0.9,
+        "u_strokeCap": 0.2,
+        "u_strokeTaper": 0,
+        "u_noise": 0.1,
+        "u_noiseFrequency": 0.2,
+        "u_softness": 0.001
+      }
+    },
+    {
+      "name": "Organic",
+      "values": {
+        "u_colorBack": [
+          0.05,
+          0.1,
+          0.05,
+          1
+        ],
+        "u_colorFront": [
+          0.4,
+          0.9,
+          0.3,
+          1
+        ],
+        "u_density": 0.6,
+        "u_distortion": 0.4,
+        "u_strokeWidth": 0.6,
+        "u_strokeCap": 0.5,
+        "u_strokeTaper": 0.4,
+        "u_noise": 0.8,
+        "u_noiseFrequency": 0.7,
+        "u_softness": 0.008
+      }
+    }
+  ]
 }
 
-export class DefaultRunner {
-  canvas
-  alphaMode
-  getUniformValues
-  device
-  context
-  format
-  storageTex
-  sampleTex
-  timeBuffer
-  mouseBuffer
-  computePipelines = []
-  renderPipeline
-  uniformBuffers = new Map()
-  storageBuffers = new Map()
-
-  // Samplers
-  nearest
-  bilinear
-  trilinear
-  nearestRepeat
-  bilinearRepeat
-  trilinearRepeat
-
-  frameHandle
-  startTime = 0
-  prevTime = 0
-  frameCount = 0
-  size = { width: 0, height: 0 }
-
-  mouse = {
-    pos: { x: 0, y: 0 },
-    zoom: 1.0,
-    click: 0,
-    start: { x: 0, y: 0 },
-    delta: { x: 0, y: 0 },
-  }
-
+export class SpiralRunner {
   constructor(opts) {
     this.canvas = opts.canvas
     this.alphaMode = opts.alphaMode ?? 'premultiplied'
     this.getUniformValues = opts.getUniformValues
+
+    this.computePipelines = []
+    this.uniformBuffers = new Map()
+    this.storageBuffers = new Map()
+    this.startTime = 0
+    this.prevTime = 0
+    this.frameCount = 0
+    this.size = { width: 0, height: 0 }
+    this.mouse = {
+      pos: { x: 0, y: 0 },
+      zoom: 1.0,
+      click: 0,
+      start: { x: 0, y: 0 },
+      delta: { x: 0, y: 0 },
+    }
+
 
     if (!navigator.gpu) {
       throw new Error('WebGPU not supported')
@@ -513,15 +1168,102 @@ export class DefaultRunner {
       this.uniformBuffers.set(u.name, buf)
     }
 
-    for (const storage of META.storages) {
+    for (const storage of META.storage) {
       const buf = this.device.createBuffer({ size: storage.size, usage: storage.usage, mappedAtCreation: true })
       new Uint8Array(buf.getMappedRange()).fill(0)
       buf.unmap()
       this.storageBuffers.set(storage.name, buf)
     }
 
+    const numSystemBindings = 9
+
     const computeModule = this.device.createShaderModule({ code: USER_SHADER })
-    this.computePipelines = META.compute.map((entryPoint) => this.device.createComputePipeline({ layout: 'auto', compute: { module: computeModule, entryPoint } }))
+    const bindGroupLayout = this.device.createBindGroupLayout({
+      entries: [
+        {
+          binding: 0,
+          visibility: 4,
+          storageTexture: {
+            format: "rgba8unorm",
+            viewDimension: "2d",
+            access: "write-only",
+          },
+        },
+        {
+          binding: 1,
+          visibility: 4,
+          buffer: {
+            type: "uniform",
+          },
+        },
+        {
+          binding: 2,
+          visibility: 4,
+          buffer: {
+            type: "uniform",
+          },
+        },
+        {
+          binding: 3,
+          visibility: 4,
+          sampler: {
+            type: "non-filtering",
+          },
+        },
+        {
+          binding: 4,
+          visibility: 4,
+          sampler: { type: "filtering" },
+        },
+        {
+          binding: 5,
+          visibility: 4,
+          sampler: { type: "filtering" },
+        },
+        {
+          binding: 6,
+          visibility: 4,
+          sampler: { type: "non-filtering" },
+        },
+        {
+          binding: 7,
+          visibility: 4,
+          sampler: { type: "filtering" },
+        },
+        {
+          binding: 8,
+          visibility: 4,
+          sampler: { type: "filtering" },
+        },
+        // Generate entries for user resources
+        // TODO: find a better way to deal with system uniforms, this doesn't feel elegant.
+        ...META.uniforms
+          .filter((u) => u.binding >= numSystemBindings)
+          .map((uniform) => ({
+            binding: uniform.binding,
+            visibility: 4,
+            buffer: {
+              type: "uniform",
+            },
+          })),
+        ...META.storage
+          .filter((s) => s.binding >= numSystemBindings)
+          .map((storage) => ({
+            binding: storage.binding,
+            visibility: 4,
+            buffer: {
+              type: "storage",
+            },
+          })),
+      ],
+    })
+
+    this.computePipelines = META.compute.map((entryPoint) => this.device.createComputePipeline({
+      layout: this.device.createPipelineLayout({
+        bindGroupLayouts: [bindGroupLayout],
+      }),
+      compute: { module: computeModule, entryPoint: entryPoint.name }
+    }))
     
     const renderingModule = this.device.createShaderModule({ code: RENDER_SHADER })
     this.renderPipeline = this.device.createRenderPipeline({
@@ -626,7 +1368,7 @@ export class DefaultRunner {
             { binding: 7, resource: this.bilinearRepeat },
             { binding: 8, resource: this.trilinearRepeat },
             ...META.uniforms.map(uniform => ({ binding: uniform.binding, resource: { buffer: this.uniformBuffers.get(uniform.name) } })),
-            ...META.storages.map(storage => ({ binding: storage.binding, resource: { buffer: this.storageBuffers.get(storage.name) } })),
+            ...META.storage.map(storage => ({ binding: storage.binding, resource: { buffer: this.storageBuffers.get(storage.name) } })),
           ]
         })
 
