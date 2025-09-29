@@ -35,15 +35,28 @@ export default defineConfig({
     port: SERVER_PORT
   },
   site: BASE_URL,
-  integrations: [sitemap(), tailwind({
-    config: {
-      applyBaseStyles: false
-    }
-  }), react()],
+  integrations: [
+    sitemap(),
+    tailwind({
+      config: {
+        applyBaseStyles: false
+      }
+    }),
+    react()
+  ],
   output: "server",
   adapter: cloudflare(),
   redirects: {
     "0x": "https://confident-hopper-36c819.netlify.app/",
     zoo: "https://rad-salamander-8f971d.netlify.app/"
-  }
+  },
+  vite: {
+    resolve: {
+      // Use react-dom/server.edge instead of react-dom/server.browser for React 19.
+      // Without this, MessageChannel from node:worker_threads needs to be polyfilled.
+      alias: import.meta.env.PROD && {
+        "react-dom/server": "react-dom/server.edge",
+      },
+    },
+  },
 });
