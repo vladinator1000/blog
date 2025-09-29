@@ -1,33 +1,53 @@
-// Generated on 2025-09-27T01:31:35.241Z
-import { useRef, useEffect } from 'react'
+// Generated on 2025-09-29T22:51:59.345Z
+import { useRef, useEffect, useId } from 'react'
 
-export function SpiralShader(props) {
+export function SlimeShader(props) {
   const canvasRef = useRef(null)
   const runnerRef = useRef(null)
   const lastMousePos = useRef({ x: 0, y: 0 })
   const currentZoom = useRef(1.0)
+  const elementId = useId()
+  const shaderId = "Slime"
 
   useEffect(() => {
     const canvas = canvasRef.current
     if (!canvas) return
 
-    runnerRef.current = new SpiralRunner({
-      canvas,
-      getUniformValues: () => {
-        const selectedPresetName = (props && props.preset) ?? "Default"
-        const overrides = (props && props.overrides) ?? {"u_density":0}
+    const runnerExists = checkRunnerExists(shaderId, elementId)
 
-        let baseParams = {}
-        if (selectedPresetName) {
-          const preset = META.presets.find(p => p.name === selectedPresetName)
-          if (preset) {
-            baseParams = preset.values
+    if (!runnerExists) {
+      runnerRef.current = new SlimeRunner({
+        canvas,
+        id: getRunnerId(shaderId, elementId),
+        getUniformValues: () => {
+          const selectedPresetName = (props && props.preset) ?? "Fast growth"
+                  // Build overrides from direct props whose keys match META.uniforms
+          const overrides = (() => {
+            const out = {}
+            if (typeof props === 'object' && props) {
+              const uniformNames = new Set(META.uniforms.map(u => u.name))
+              for (const prop in props) {
+                if (uniformNames.has(prop)) out[prop] = props[prop]
+              }
+            }
+            // Fallback to any provided paramOverrides at generation time
+            return { ...{}, ...out }
+          })()
+
+          let baseParams = {}
+          if (selectedPresetName) {
+            const preset = META.presets.find(p => p.name === selectedPresetName)
+            if (preset) {
+              baseParams = preset.values
+            }
           }
-        }
 
-        return { ...baseParams, ...overrides }
-      },
-    })
+          return { ...baseParams, ...overrides }
+        },
+      })
+
+      registerRunner(shaderId, runnerRef.current, elementId)
+    }
 
     const handleMouseMove = (e) => {
       if (!runnerRef.current) return
@@ -89,6 +109,8 @@ export function SpiralShader(props) {
 
       runnerRef.current?.stop()
       runnerRef.current?.destroy()
+
+      unregisterRunner(shaderId, elementId)
       runnerRef.current = null
     }
 
@@ -121,234 +143,332 @@ struct Mouse { pos: vec2i, zoom: f32, click: i32, start: vec2i, delta: vec2i };
 {
   "params": [
     {
-      "id": "u_colorBack",
-      "label": "Background",
-      "group": "Colors",
+      "id": "u_agentColor",
+      "label": "Agent color"
     },
     {
-      "id": "u_colorFront", 
-      "label": "Foreground",
-      "group": "Colors",
+      "id": "u_trailColor", 
+      "label": "Trail color"
     },
     {
-      "id": "u_density",
-      "label": "Density",
-      "group": "Shape",
-      "hint": "How spiral the shape is",
-      "range": { "min": 0, "max": 1, "step": 0.01 }
+      "id": "u_backgroundColor",
+      "label": "Background color"
     },
     {
-      "id": "u_distortion",
-      "label": "Distortion",
-      "group": "Shape", 
-      "hint": "Warps the pattern",
-      "range": { "min": 0, "max": 1, "step": 0.01 }
+      "id": "u_agentSize",
+      "label": "Agent size",
+      "range": {min: 0.5, max: 2, step: 0.1}
     },
     {
-      "id": "u_softness",
-      "label": "Softness",
-      "group": "Shape",
-      "range": { "min": 0, "max": 0.01, "step": 0.0001 }
+      "id": "u_agentSpeed",
+      "label": "Agent speed"
     },
     {
-      "id": "u_strokeWidth",
-      "label": "Width",
-      "group": "Stroke",
-      "range": { "min": 0.005, "max": 1, "step": 0.005 }
+      "id": "u_sensorAngle",
+      "label": "Sensor angle",
+      "range": {min: 0.1, max: 3, step: 0.1}
     },
     {
-      "id": "u_strokeCap",
-      "label": "Cap",
-      "group": "Stroke",
-      "range": { "min": 0, "max": 1, "step": 0.01 }
+      "id": "u_sensorDistance",
+      "label": "Sensor distance",
+      "range": {min: 0.1, max: 12, step: 0.1}
     },
     {
-      "id": "u_strokeTaper",
-      "label": "Taper", 
-      "group": "Stroke",
-      "range": { "min": 0, "max": 1, "step": 0.01 }
+      "id": "u_turnSpeed",
+      "label": "Turn speed",
+      "range": {min: 0.1, max: 3, step: 0.1}
     },
     {
-      "id": "u_noise",
-      "label": "Amount",
-      "group": "Noise",
-      "range": { "min": 0, "max": 1, "step": 0.01 }
+      "id": "u_trailDecay",
+      "label": "Trail decay",
+      "range": {min: 0.1, max: 1, step: 0.01}
     },
     {
-      "id": "u_noiseFrequency",
-      "label": "Frequency",
-      "group": "Noise",
-      "range": { "min": 0, "max": 1, "step": 0.01 }
-    },
+      "id": "u_diffusionRate",
+      "label": "Diffusion rate"
+    }
   ],
   "presets": [
     {
       "name": "Default",
       "values": {
-        "u_colorBack": [0.04, 0.05, 0.08, 1.0],
-        "u_colorFront": [0.95, 0.80, 0.25, 1.0],
-        "u_density": 0.5,
-        "u_distortion": 0.1,
-        "u_strokeWidth": 0.8,
-        "u_strokeCap": 0.1,
-        "u_strokeTaper": 0.1,
-        "u_noise": 0.35,
-        "u_noiseFrequency": 0.4,
-        "u_softness": 0.0025
-      }
-    },
-    {
-      "name": "Hypnotic",
-      "values": {
-        "u_colorBack": [0.1, 0.0, 0.2, 1.0],
-        "u_colorFront": [0.0, 0.8, 0.9, 1.0],
-        "u_density": 0.7,
-        "u_distortion": 0.3,
-        "u_strokeWidth": 0.5,
-        "u_strokeCap": 0.0,
-        "u_strokeTaper": 0.3,
-        "u_noise": 0.5,
-        "u_noiseFrequency": 0.6,
-        "u_softness": 0.005
-      }
-    },
-    {
-      "name": "Sunset",
-      "values": {
-        "u_colorBack": [0.9, 0.4, 0.2, 1.0],
-        "u_colorFront": [1.0, 0.9, 0.6, 1.0],
-        "u_density": 0.3,
-        "u_distortion": 0.05,
-        "u_strokeWidth": 0.9,
-        "u_strokeCap": 0.2,
-        "u_strokeTaper": 0.0,
-        "u_noise": 0.1,
-        "u_noiseFrequency": 0.2,
-        "u_softness": 0.001
+        "u_agentColor": [1.0, 1.0, 1.0, 1.0],
+        "u_trailColor": [0.8, 0.8, 0.8, 1.0],
+        "u_backgroundColor": [0.1, 0.1, 0.1, 1.0],
+        "u_agentSize": 1.0,
+        "u_agentSpeed": 0.9,
+        "u_sensorAngle": 0.7,
+        "u_sensorDistance": 9.0,
+        "u_turnSpeed": 1.6,
+        "u_trailDecay": 0.985,
+        "u_diffusionRate": 0.2
       }
     },
     {
       "name": "Organic",
       "values": {
-        "u_colorBack": [0.05, 0.1, 0.05, 1.0],
-        "u_colorFront": [0.4, 0.9, 0.3, 1.0],
-        "u_density": 0.6,
-        "u_distortion": 0.4,
-        "u_strokeWidth": 0.6,
-        "u_strokeCap": 0.5,
-        "u_strokeTaper": 0.4,
-        "u_noise": 0.8,
-        "u_noiseFrequency": 0.7,
-        "u_softness": 0.008
+        "u_agentColor": [0.7, 1.0, 0.8, 1.0],
+        "u_trailColor": [0.5, 0.8, 0.6, 1.0],
+        "u_backgroundColor": [0.02, 0.05, 0.03, 1.0],
+        "u_agentSize": 1,
+        "u_agentSpeed": 0.9,
+        "u_sensorAngle": 2.1,
+        "u_sensorDistance": 7,
+        "u_turnSpeed": 2.9,
+        "u_trailDecay": 0.99,
+        "u_diffusionRate": 0.8
       }
-    }
+    },
+    {
+      "name": "Electric",
+      "values": {
+        "u_agentColor": [1.0, 0.9, 0.0, 1.0],
+        "u_trailColor": [0.2, 0.5, 0.9, 1.0],
+        "u_backgroundColor": [0.0, 0.02, 0.08, 1.0],
+        "u_agentSize": 1.3,
+        "u_agentSpeed": 2.0,
+        "u_sensorAngle": 0.8,
+        "u_sensorDistance": 11.0,
+        "u_turnSpeed": 1.8,
+        "u_trailDecay": 0.93,
+        "u_diffusionRate": 0.08
+      }
+    },
+    {
+      "name": "Fast growth",
+      "values": {
+        "u_agentColor": [1.0, 0.9, 0.7, 1.0],
+        "u_trailColor": [0.9, 0.7, 0.5, 1.0],
+        "u_backgroundColor": [0.05, 0.02, 0.1, 1.0],
+        "u_agentSize": 1.9,
+        "u_agentSpeed": 2.0,
+        "u_sensorAngle": 0.3,
+        "u_sensorDistance": 12.0,
+        "u_turnSpeed": 1,
+        "u_trailDecay": 0.99,
+        "u_diffusionRate": 0.2
+      }
+    },
   ]
 }
 */
 
+const GRID_WIDTH: u32 = 480;
+const GRID_HEIGHT: u32 = 270;
+const NUM_AGENTS: u32 = 600;
+const SEED_COUNT: u32 = 16; // number of starting colonies
+const PI: f32 = 3.14159265359;
 
-@group(0) @binding(9) var<uniform> u_colorBack: vec4f;
-@group(0) @binding(10) var<uniform> u_colorFront: vec4f;
-@group(0) @binding(11) var<uniform> u_density: f32;
-@group(0) @binding(12) var<uniform> u_distortion: f32;
-@group(0) @binding(13) var<uniform> u_strokeWidth: f32;
-@group(0) @binding(14) var<uniform> u_strokeCap: f32;
-@group(0) @binding(15) var<uniform> u_strokeTaper: f32;
-@group(0) @binding(16) var<uniform> u_noise: f32;
-@group(0) @binding(17) var<uniform> u_noiseFrequency: f32;
-@group(0) @binding(18) var<uniform> u_softness: f32;
-
-const PI: f32 = 3.141592653589793;
-const TWO_PI: f32 = PI * 2.0;
-
-fn fract(x: f32) -> f32 { return x - floor(x); }
-fn fract2(v: vec2f) -> vec2f { return v - floor(v); }
-
-fn hash21(p: vec2f) -> f32 {
-  let h = dot(p, vec2f(127.1, 311.7));
-  return fract(sin(h) * 43758.5453123);
+struct Agent {
+  position: vec2f,
+  angle: f32,
+  _padding: f32,
 }
 
-fn valueNoise(p: vec2f) -> f32 {
-  let i = floor(p);
-  let f = fract2(p);
-  let a = hash21(i);
-  let b = hash21(i + vec2f(1.0, 0.0));
-  let c = hash21(i + vec2f(0.0, 1.0));
-  let d = hash21(i + vec2f(1.0, 1.0));
-  let u = f * f * (3.0 - 2.0 * f);
-  return mix(mix(a, b, u.x), mix(c, d, u.x), u.y);
+@group(0) @binding(9) var<storage, read_write> agents: array<Agent, NUM_AGENTS>;
+@group(0) @binding(10) var<storage, read_write> trailMapA: array<f32, GRID_WIDTH * GRID_HEIGHT>;
+@group(0) @binding(11) var<storage, read_write> trailMapB: array<f32, GRID_WIDTH * GRID_HEIGHT>;
+
+@group(0) @binding(12) var<uniform> u_agentColor: vec4f;
+@group(0) @binding(13) var<uniform> u_trailColor: vec4f;
+@group(0) @binding(14) var<uniform> u_backgroundColor: vec4f;
+@group(0) @binding(21) var<uniform> u_agentSize: f32;
+@group(0) @binding(15) var<uniform> u_agentSpeed: f32;
+@group(0) @binding(16) var<uniform> u_sensorAngle: f32;
+@group(0) @binding(17) var<uniform> u_sensorDistance: f32;
+@group(0) @binding(18) var<uniform> u_turnSpeed: f32;
+@group(0) @binding(19) var<uniform> u_trailDecay: f32;
+@group(0) @binding(20) var<uniform> u_diffusionRate: f32;
+
+fn hash(seed: u32) -> f32 {
+  var x = seed;
+  x = ((x >> 16u) ^ x) * 0x45d9f3bu;
+  x = ((x >> 16u) ^ x) * 0x45d9f3bu;
+  x = (x >> 16u) ^ x;
+  return f32(x) / 4294967295.0;
 }
 
-fn mix(a: f32, b: f32, t: f32) -> f32 { return a * (1.0 - t) + b * t; }
+fn hash2(seed: vec2u) -> f32 {
+  return hash(seed.x + seed.y * 374761393u);
+}
 
+@compute @workgroup_size(64)
+fn init_agents(@builtin(global_invocation_id) id: vec3u) {
+  if (id.x >= NUM_AGENTS) { return; }
+  
+  if (time.elapsed > 0.01) { return; }
+  
+  let agent_id = id.x;
+  let seed = agent_id + u32(time.elapsed * 1000.0);
+  
+  // Initialize agents clustered around multiple random seed centers
+  let sid = agent_id % SEED_COUNT;
+  let sseed = sid * 1664525u + 1013904223u; // different stream per seed
+  let center = vec2f(
+    (hash(sseed + 11u) * 0.7 + 0.15) * f32(GRID_WIDTH),
+    (hash(sseed + 29u) * 0.7 + 0.15) * f32(GRID_HEIGHT)
+  );
+  let r = (hash(seed) * 1.0) * min(f32(GRID_WIDTH), f32(GRID_HEIGHT)) * 0.01; // compact blob
+  let ang = hash(seed + 2u) * 2.0 * PI;
+  let pos = center + vec2f(cos(ang), sin(ang)) * r;
+  agents[agent_id].position = pos;
+  agents[agent_id].angle = ang + (hash(seed + 5u) - 0.5) * 0.5;
+}
+
+@compute @workgroup_size(16, 16)
+fn init_trail(@builtin(global_invocation_id) id: vec3u) {
+  if (id.x >= GRID_WIDTH || id.y >= GRID_HEIGHT) { return; }
+  
+  if (time.elapsed > 0.01) { return; }
+  
+  let idx = id.x + id.y * GRID_WIDTH;
+  trailMapA[idx] = 0.0;
+  trailMapB[idx] = 0.0;
+}
+
+fn sampleTrail(pos: vec2f) -> f32 {
+  // Wrap sample coordinates to avoid clamp-to-edge bias
+  let gx = i32(GRID_WIDTH);
+  let gy = i32(GRID_HEIGHT);
+  let xi = ((i32(floor(pos.x)) % gx) + gx) % gx;
+  let yi = ((i32(floor(pos.y)) % gy) + gy) % gy;
+  let idx = u32(xi) + u32(yi) * GRID_WIDTH;
+  // Read from the CURRENT trail buffer (B)
+  return trailMapB[idx];
+}
+
+@compute @workgroup_size(64)
+fn update_agents(@builtin(global_invocation_id) id: vec3u) {
+  if (id.x >= NUM_AGENTS) { return; }
+  // Warm-up: wait a moment so init passes clear buffers
+  if (time.elapsed < 0.02) { return; }
+  
+  let agent_id = id.x;
+  var agent = agents[agent_id];
+  
+  // Sensor positions
+  let sensorDist = u_sensorDistance * u_agentSize;
+  let sensorAngle = u_sensorAngle;
+  
+  let frontDir = vec2f(cos(agent.angle), sin(agent.angle));
+  let leftDir = vec2f(cos(agent.angle - sensorAngle), sin(agent.angle - sensorAngle));
+  let rightDir = vec2f(cos(agent.angle + sensorAngle), sin(agent.angle + sensorAngle));
+  
+  let frontPos = agent.position + frontDir * sensorDist;
+  let leftPos = agent.position + leftDir * sensorDist;
+  let rightPos = agent.position + rightDir * sensorDist;
+  
+  // Sample trail concentrations
+  let frontTrail = sampleTrail(frontPos);
+  let leftTrail = sampleTrail(leftPos);
+  let rightTrail = sampleTrail(rightPos);
+  
+  // Steering behavior
+  let seed = agent_id + u32(time.elapsed * 1000.0);
+  let randomSteer = (hash(seed) - 0.5) * 0.05;
+  
+  if (frontTrail > leftTrail && frontTrail > rightTrail) {
+    // Continue forward
+    agent.angle += randomSteer;
+  } else if (leftTrail > rightTrail) {
+    // Turn left
+    agent.angle -= u_turnSpeed * time.delta * 60.0 * 0.02 + randomSteer;
+  } else if (rightTrail > leftTrail) {
+    // Turn right
+    agent.angle += u_turnSpeed * time.delta * 60.0 * 0.02 + randomSteer;
+  } else {
+    // Random turn
+    agent.angle += (hash(seed + 1u) - 0.5) * u_turnSpeed * time.delta * 60.0 * 0.02;
+  }
+  
+  // Move forward
+  let direction = vec2f(cos(agent.angle), sin(agent.angle));
+  agent.position += direction * u_agentSpeed * time.delta * 60.0;
+  
+  // Wrap around boundaries
+  agent.position.x = (agent.position.x + f32(GRID_WIDTH)) % f32(GRID_WIDTH);
+  agent.position.y = (agent.position.y + f32(GRID_HEIGHT)) % f32(GRID_HEIGHT);
+  
+  agents[agent_id] = agent;
+  
+  // Deposit trail
+  let x = clamp(i32(agent.position.x), 0, i32(GRID_WIDTH) - 1);
+  let y = clamp(i32(agent.position.y), 0, i32(GRID_HEIGHT) - 1);
+  let idx = u32(x) + u32(y) * GRID_WIDTH;
+  
+  // Deposit into CURRENT buffer (B)
+  trailMapB[idx] = min(trailMapB[idx] + 1.0 * u_agentSize, 10.0);
+}
+
+@compute @workgroup_size(16, 16)
+fn diffuse_trail(@builtin(global_invocation_id) id: vec3u) {
+  if (id.x >= GRID_WIDTH || id.y >= GRID_HEIGHT) { return; }
+  // Warm-up: avoid diffusing uninitialized buffers
+  if (time.elapsed < 0.02) { return; }
+  
+  let idx = id.x + id.y * GRID_WIDTH;
+  var sum = 0.0;
+  var count = 0.0;
+  
+  // 3x3 diffusion kernel
+  for (var dy = -1i; dy <= 1i; dy++) {
+    for (var dx = -1i; dx <= 1i; dx++) {
+      let nx = (i32(id.x) + dx + i32(GRID_WIDTH)) % i32(GRID_WIDTH);
+      let ny = (i32(id.y) + dy + i32(GRID_HEIGHT)) % i32(GRID_HEIGHT);
+      let nidx = u32(nx) + u32(ny) * GRID_WIDTH;
+      
+      // Diffuse from CURRENT buffer (B) into A
+      sum += trailMapB[nidx];
+      count += 1.0;
+    }
+  }
+  
+  let diffused = sum / count;
+  let current = trailMapB[idx];
+  
+  // Apply diffusion and decay
+  trailMapA[idx] = mix(current, diffused, u_diffusionRate) * u_trailDecay;
+}
+
+@compute @workgroup_size(16, 16)
+fn commit_trail(@builtin(global_invocation_id) id: vec3u) {
+  if (id.x >= GRID_WIDTH || id.y >= GRID_HEIGHT) { return; }
+  
+  let idx = id.x + id.y * GRID_WIDTH;
+  
+  if (time.elapsed > 0.01) {
+    // Make B the committed buffer for the next frame
+    trailMapB[idx] = trailMapA[idx];
+  }
+}
 
 @compute @workgroup_size(16, 16)
 fn main_image(@builtin(global_invocation_id) id: vec3u) {
   let screen_size = textureDimensions(screen);
+  
   if (id.x >= screen_size.x || id.y >= screen_size.y) { return; }
+  
+  // Map screen coordinates to simulation grid
+  let grid_x = id.x * GRID_WIDTH / screen_size.x;
+  let grid_y = id.y * GRID_HEIGHT / screen_size.y;
+  let idx = grid_x + grid_y * GRID_WIDTH;
+  
+  // Render from the committed/current buffer (B)
+  let trail = trailMapB[idx];
+  // Nonlinear tone mapping to emphasize thin filaments
+  let t = clamp(trail * (0.12 / max(u_agentSize, 0.0001)), 0.0, 1.0);
+  let normalizedTrail = pow(t, 0.6);
+  // Hide very faint deposits in the very first frames
+  let vis = smoothstep(0.06, 0.6, normalizedTrail);
 
-  // Pixel coords, origin bottom-left; normalize to 0..1
-  let fragCoord = vec2f(f32(id.x) + 0.5, f32(screen_size.y - id.y) - 0.5);
-  let res = vec2f(screen_size);
-  let uv01 = fragCoord / res;
-
-  // Map to -1..1 space
-  var uv = (uv01 * 2.0 - 1.0);
-
-  // Time
-  let t = time.elapsed * 0.1;
-
-  // Density shaping
-  var l = length(uv);
-  let density = clamp(u_density, 0.0, 1.0);
-  l = pow(l, density);
-
-  // Angle and normalization
-  let angle = atan2(uv.y, uv.x) - t;
-  var angleNormalised = angle / TWO_PI;
-
-  // Noise perturbation
-  angleNormalised = angleNormalised + 0.125 * u_noise * (
-    valueNoise(16.0 * pow(u_noiseFrequency, 3.0) * uv)
-  );
-
-  // Stripe logic
-  var off = l + angleNormalised;
-  off = off - u_distortion * (sin(4.0 * l - 0.5 * t) * cos(PI + l + 0.5 * t));
-  let stripe = fract(off);
-  let shape = 2.0 * abs(stripe - 0.5);
-  var width = 1.0 - clamp(u_strokeWidth, 0.005 * u_strokeTaper, 1.0);
-
-  // Caps and tapering
-  let wCap = mix(width, (1.0 - stripe) * (1.0 - step(0.5, stripe)), (1.0 - clamp(l, 0.0, 1.0)));
-  width = mix(width, wCap, u_strokeCap);
-  width = width * (1.0 - clamp(u_strokeTaper, 0.0, 1.0) * l);
-
-  // Approximate pixel size
-  let fw = 1.0 / max(res.x, res.y);
-  let fwMult = 4.0 - 3.0 * (smoothstep(0.05, 0.4, 2.0 * u_strokeWidth) * smoothstep(0.05, 0.4, 2.0 * (1.0 - u_strokeWidth)));
-  var pixelSize = mix(fwMult * fw, fw, clamp(fw, 0.0, 1.0));
-  pixelSize = mix(pixelSize, 0.002, u_strokeCap * (1.0 - clamp(l, 0.0, 1.0)));
-
-  let mask = smoothstep(width - pixelSize - u_softness, width + pixelSize + u_softness, shape);
-
-  // Foreground/background blending
-  let fgColor = u_colorFront.rgb * u_colorFront.a;
-  let fgOpacity = u_colorFront.a;
-  let bgColor = u_colorBack.rgb * u_colorBack.a;
-  let bgOpacity = u_colorBack.a;
-
-  var color = fgColor * mask;
-  var opacity = fgOpacity * mask;
-  color = color + bgColor * (1.0 - opacity);
-  opacity = opacity + bgOpacity * (1.0 - opacity);
-
-  // Output
-  let outCol = vec4f(clamp(color, vec3f(0.0), vec3f(1.0)), clamp(opacity, 0.0, 1.0));
-  textureStore(screen, id.xy, outCol);
+  // Color blend
+  // Use u_agentColor to tint higher-concentration areas, and u_trailColor for lower ones
+  let agentMix = smoothstep(0.3, 1.0, normalizedTrail);
+  let trailTint = mix(u_trailColor, u_agentColor, agentMix);
+  var color = mix(u_backgroundColor, trailTint, vis);
+  
+  textureStore(screen, id.xy, color);
 }
-
 `
 const RENDER_SHADER = `
 struct VSOut {
@@ -377,57 +497,76 @@ struct VSOut {
 const META = {
   "uniforms": [
     {
-      "name": "u_colorBack",
-      "binding": 9,
-      "size": 16
-    },
-    {
-      "name": "u_colorFront",
-      "binding": 10,
-      "size": 16
-    },
-    {
-      "name": "u_density",
-      "binding": 11,
-      "size": 16
-    },
-    {
-      "name": "u_distortion",
+      "name": "u_agentColor",
       "binding": 12,
       "size": 16
     },
     {
-      "name": "u_strokeWidth",
+      "name": "u_trailColor",
       "binding": 13,
       "size": 16
     },
     {
-      "name": "u_strokeCap",
+      "name": "u_backgroundColor",
       "binding": 14,
       "size": 16
     },
     {
-      "name": "u_strokeTaper",
+      "name": "u_agentSize",
+      "binding": 21,
+      "size": 16
+    },
+    {
+      "name": "u_agentSpeed",
       "binding": 15,
       "size": 16
     },
     {
-      "name": "u_noise",
+      "name": "u_sensorAngle",
       "binding": 16,
       "size": 16
     },
     {
-      "name": "u_noiseFrequency",
+      "name": "u_sensorDistance",
       "binding": 17,
       "size": 16
     },
     {
-      "name": "u_softness",
+      "name": "u_turnSpeed",
       "binding": 18,
+      "size": 16
+    },
+    {
+      "name": "u_trailDecay",
+      "binding": 19,
+      "size": 16
+    },
+    {
+      "name": "u_diffusionRate",
+      "binding": 20,
       "size": 16
     }
   ],
-  "storage": [],
+  "storage": [
+    {
+      "name": "agents",
+      "binding": 9,
+      "size": 9600,
+      "usage": 140
+    },
+    {
+      "name": "trailMapA",
+      "binding": 10,
+      "size": 518400,
+      "usage": 140
+    },
+    {
+      "name": "trailMapB",
+      "binding": 11,
+      "size": 518400,
+      "usage": 140
+    }
+  ],
   "compute": [
     {
       "stage": "compute",
@@ -438,8 +577,8 @@ const META = {
             "name": "vec3u",
             "attributes": [
               {
-                "id": 5814,
-                "line": 179,
+                "id": 52496,
+                "line": 166,
                 "name": "builtin",
                 "value": "global_invocation_id"
               }
@@ -459,8 +598,8 @@ const META = {
             "name": "vec3u",
             "attributes": [
               {
-                "id": 5814,
-                "line": 179,
+                "id": 52496,
+                "line": 166,
                 "name": "builtin",
                 "value": "global_invocation_id"
               }
@@ -469,8 +608,8 @@ const META = {
           },
           "attributes": [
             {
-              "id": 5814,
-              "line": 179,
+              "id": 52496,
+              "line": 166,
               "name": "builtin",
               "value": "global_invocation_id"
             }
@@ -479,51 +618,6 @@ const META = {
       ],
       "returnType": null,
       "resources": [
-        {
-          "name": "screen",
-          "type": {
-            "name": "texture_storage_2d",
-            "attributes": [
-              {
-                "id": 5618,
-                "line": 3,
-                "name": "group",
-                "value": "0"
-              },
-              {
-                "id": 5619,
-                "line": 3,
-                "name": "binding",
-                "value": "0"
-              }
-            ],
-            "size": 0,
-            "format": {
-              "name": "rgba8unorm",
-              "attributes": null,
-              "size": 0
-            },
-            "access": "write"
-          },
-          "group": 0,
-          "binding": 0,
-          "attributes": [
-            {
-              "id": 5618,
-              "line": 3,
-              "name": "group",
-              "value": "0"
-            },
-            {
-              "id": 5619,
-              "line": 3,
-              "name": "binding",
-              "value": "0"
-            }
-          ],
-          "resourceType": 4,
-          "access": "read"
-        },
         {
           "name": "time",
           "type": {
@@ -574,13 +668,13 @@ const META = {
           "binding": 1,
           "attributes": [
             {
-              "id": 5622,
+              "id": 52322,
               "line": 4,
               "name": "group",
               "value": "0"
             },
             {
-              "id": 5623,
+              "id": 52323,
               "line": 4,
               "name": "binding",
               "value": "1"
@@ -590,97 +684,558 @@ const META = {
           "access": "read"
         },
         {
-          "name": "u_density",
+          "name": "agents",
           "type": {
-            "name": "f32",
+            "name": "array",
             "attributes": [
               {
-                "id": 5660,
-                "line": 144,
+                "id": 52379,
+                "line": 138,
                 "name": "group",
                 "value": "0"
               },
               {
-                "id": 5661,
-                "line": 144,
+                "id": 52380,
+                "line": 138,
+                "name": "binding",
+                "value": "9"
+              }
+            ],
+            "size": 9600,
+            "count": 600,
+            "stride": 16,
+            "format": {
+              "name": "Agent",
+              "attributes": null,
+              "size": 16,
+              "members": [
+                {
+                  "name": "position",
+                  "type": {
+                    "name": "vec2f",
+                    "attributes": null,
+                    "size": 8
+                  },
+                  "attributes": null,
+                  "offset": 0,
+                  "size": 8
+                },
+                {
+                  "name": "angle",
+                  "type": {
+                    "name": "f32",
+                    "attributes": null,
+                    "size": 4
+                  },
+                  "attributes": null,
+                  "offset": 8,
+                  "size": 4
+                },
+                {
+                  "name": "_padding",
+                  "type": {
+                    "name": "f32",
+                    "attributes": null,
+                    "size": 4
+                  },
+                  "attributes": null,
+                  "offset": 12,
+                  "size": 4
+                }
+              ],
+              "align": 8,
+              "startLine": 132,
+              "endLine": 136,
+              "inUse": true
+            }
+          },
+          "group": 0,
+          "binding": 9,
+          "attributes": [
+            {
+              "id": 52379,
+              "line": 138,
+              "name": "group",
+              "value": "0"
+            },
+            {
+              "id": 52380,
+              "line": 138,
+              "name": "binding",
+              "value": "9"
+            }
+          ],
+          "resourceType": 1,
+          "access": "read_write"
+        }
+      ],
+      "overrides": [],
+      "startLine": 166,
+      "endLine": 186,
+      "inUse": true,
+      "calls": {},
+      "name": "init_agents",
+      "attributes": [
+        {
+          "id": 52494,
+          "line": 165,
+          "name": "compute",
+          "value": null
+        },
+        {
+          "id": 52495,
+          "line": 165,
+          "name": "workgroup_size",
+          "value": "64"
+        }
+      ]
+    },
+    {
+      "stage": "compute",
+      "inputs": [
+        {
+          "name": "id",
+          "type": {
+            "name": "vec3u",
+            "attributes": [
+              {
+                "id": 52627,
+                "line": 189,
+                "name": "builtin",
+                "value": "global_invocation_id"
+              }
+            ],
+            "size": 12
+          },
+          "locationType": "builtin",
+          "location": "global_invocation_id",
+          "interpolation": null
+        }
+      ],
+      "outputs": [],
+      "arguments": [
+        {
+          "name": "id",
+          "type": {
+            "name": "vec3u",
+            "attributes": [
+              {
+                "id": 52627,
+                "line": 189,
+                "name": "builtin",
+                "value": "global_invocation_id"
+              }
+            ],
+            "size": 12
+          },
+          "attributes": [
+            {
+              "id": 52627,
+              "line": 189,
+              "name": "builtin",
+              "value": "global_invocation_id"
+            }
+          ]
+        }
+      ],
+      "returnType": null,
+      "resources": [
+        {
+          "name": "time",
+          "type": {
+            "name": "Time",
+            "attributes": null,
+            "size": 12,
+            "members": [
+              {
+                "name": "elapsed",
+                "type": {
+                  "name": "f32",
+                  "attributes": null,
+                  "size": 4
+                },
+                "attributes": null,
+                "offset": 0,
+                "size": 4
+              },
+              {
+                "name": "delta",
+                "type": {
+                  "name": "f32",
+                  "attributes": null,
+                  "size": 4
+                },
+                "attributes": null,
+                "offset": 4,
+                "size": 4
+              },
+              {
+                "name": "frame",
+                "type": {
+                  "name": "u32",
+                  "attributes": null,
+                  "size": 4
+                },
+                "attributes": null,
+                "offset": 8,
+                "size": 4
+              }
+            ],
+            "align": 4,
+            "startLine": 1,
+            "endLine": 1,
+            "inUse": true
+          },
+          "group": 0,
+          "binding": 1,
+          "attributes": [
+            {
+              "id": 52322,
+              "line": 4,
+              "name": "group",
+              "value": "0"
+            },
+            {
+              "id": 52323,
+              "line": 4,
+              "name": "binding",
+              "value": "1"
+            }
+          ],
+          "resourceType": 0,
+          "access": "read"
+        },
+        {
+          "name": "trailMapA",
+          "type": {
+            "name": "array",
+            "attributes": [
+              {
+                "id": 52384,
+                "line": 139,
+                "name": "group",
+                "value": "0"
+              },
+              {
+                "id": 52385,
+                "line": 139,
+                "name": "binding",
+                "value": "10"
+              }
+            ],
+            "size": 518400,
+            "count": 129600,
+            "stride": 4,
+            "format": {
+              "name": "f32",
+              "attributes": null,
+              "size": 4
+            }
+          },
+          "group": 0,
+          "binding": 10,
+          "attributes": [
+            {
+              "id": 52384,
+              "line": 139,
+              "name": "group",
+              "value": "0"
+            },
+            {
+              "id": 52385,
+              "line": 139,
+              "name": "binding",
+              "value": "10"
+            }
+          ],
+          "resourceType": 1,
+          "access": "read_write"
+        },
+        {
+          "name": "trailMapB",
+          "type": {
+            "name": "array",
+            "attributes": [
+              {
+                "id": 52392,
+                "line": 140,
+                "name": "group",
+                "value": "0"
+              },
+              {
+                "id": 52393,
+                "line": 140,
                 "name": "binding",
                 "value": "11"
               }
             ],
-            "size": 4
+            "size": 518400,
+            "count": 129600,
+            "stride": 4,
+            "format": {
+              "name": "f32",
+              "attributes": null,
+              "size": 4
+            }
           },
           "group": 0,
           "binding": 11,
           "attributes": [
             {
-              "id": 5660,
-              "line": 144,
+              "id": 52392,
+              "line": 140,
               "name": "group",
               "value": "0"
             },
             {
-              "id": 5661,
-              "line": 144,
+              "id": 52393,
+              "line": 140,
               "name": "binding",
               "value": "11"
             }
           ],
-          "resourceType": 0,
-          "access": "read"
+          "resourceType": 1,
+          "access": "read_write"
+        }
+      ],
+      "overrides": [],
+      "startLine": 189,
+      "endLine": 197,
+      "inUse": true,
+      "calls": {},
+      "name": "init_trail",
+      "attributes": [
+        {
+          "id": 52625,
+          "line": 188,
+          "name": "compute",
+          "value": null
         },
         {
-          "name": "u_noise",
+          "id": 52626,
+          "line": 188,
+          "name": "workgroup_size",
+          "value": [
+            "16",
+            "16"
+          ]
+        }
+      ]
+    },
+    {
+      "stage": "compute",
+      "inputs": [
+        {
+          "name": "id",
           "type": {
-            "name": "f32",
+            "name": "vec3u",
             "attributes": [
               {
-                "id": 5680,
-                "line": 149,
-                "name": "group",
-                "value": "0"
-              },
-              {
-                "id": 5681,
-                "line": 149,
-                "name": "binding",
-                "value": "16"
+                "id": 52726,
+                "line": 211,
+                "name": "builtin",
+                "value": "global_invocation_id"
               }
             ],
-            "size": 4
+            "size": 12
           },
-          "group": 0,
-          "binding": 16,
+          "locationType": "builtin",
+          "location": "global_invocation_id",
+          "interpolation": null
+        }
+      ],
+      "outputs": [],
+      "arguments": [
+        {
+          "name": "id",
+          "type": {
+            "name": "vec3u",
+            "attributes": [
+              {
+                "id": 52726,
+                "line": 211,
+                "name": "builtin",
+                "value": "global_invocation_id"
+              }
+            ],
+            "size": 12
+          },
           "attributes": [
             {
-              "id": 5680,
-              "line": 149,
+              "id": 52726,
+              "line": 211,
+              "name": "builtin",
+              "value": "global_invocation_id"
+            }
+          ]
+        }
+      ],
+      "returnType": null,
+      "resources": [
+        {
+          "name": "time",
+          "type": {
+            "name": "Time",
+            "attributes": null,
+            "size": 12,
+            "members": [
+              {
+                "name": "elapsed",
+                "type": {
+                  "name": "f32",
+                  "attributes": null,
+                  "size": 4
+                },
+                "attributes": null,
+                "offset": 0,
+                "size": 4
+              },
+              {
+                "name": "delta",
+                "type": {
+                  "name": "f32",
+                  "attributes": null,
+                  "size": 4
+                },
+                "attributes": null,
+                "offset": 4,
+                "size": 4
+              },
+              {
+                "name": "frame",
+                "type": {
+                  "name": "u32",
+                  "attributes": null,
+                  "size": 4
+                },
+                "attributes": null,
+                "offset": 8,
+                "size": 4
+              }
+            ],
+            "align": 4,
+            "startLine": 1,
+            "endLine": 1,
+            "inUse": true
+          },
+          "group": 0,
+          "binding": 1,
+          "attributes": [
+            {
+              "id": 52322,
+              "line": 4,
               "name": "group",
               "value": "0"
             },
             {
-              "id": 5681,
-              "line": 149,
+              "id": 52323,
+              "line": 4,
               "name": "binding",
-              "value": "16"
+              "value": "1"
             }
           ],
           "resourceType": 0,
           "access": "read"
         },
         {
-          "name": "u_noiseFrequency",
+          "name": "agents",
           "type": {
-            "name": "f32",
+            "name": "array",
             "attributes": [
               {
-                "id": 5684,
-                "line": 150,
+                "id": 52379,
+                "line": 138,
                 "name": "group",
                 "value": "0"
               },
               {
-                "id": 5685,
-                "line": 150,
+                "id": 52380,
+                "line": 138,
+                "name": "binding",
+                "value": "9"
+              }
+            ],
+            "size": 9600,
+            "count": 600,
+            "stride": 16,
+            "format": {
+              "name": "Agent",
+              "attributes": null,
+              "size": 16,
+              "members": [
+                {
+                  "name": "position",
+                  "type": {
+                    "name": "vec2f",
+                    "attributes": null,
+                    "size": 8
+                  },
+                  "attributes": null,
+                  "offset": 0,
+                  "size": 8
+                },
+                {
+                  "name": "angle",
+                  "type": {
+                    "name": "f32",
+                    "attributes": null,
+                    "size": 4
+                  },
+                  "attributes": null,
+                  "offset": 8,
+                  "size": 4
+                },
+                {
+                  "name": "_padding",
+                  "type": {
+                    "name": "f32",
+                    "attributes": null,
+                    "size": 4
+                  },
+                  "attributes": null,
+                  "offset": 12,
+                  "size": 4
+                }
+              ],
+              "align": 8,
+              "startLine": 132,
+              "endLine": 136,
+              "inUse": true
+            }
+          },
+          "group": 0,
+          "binding": 9,
+          "attributes": [
+            {
+              "id": 52379,
+              "line": 138,
+              "name": "group",
+              "value": "0"
+            },
+            {
+              "id": 52380,
+              "line": 138,
+              "name": "binding",
+              "value": "9"
+            }
+          ],
+          "resourceType": 1,
+          "access": "read_write"
+        },
+        {
+          "name": "u_sensorDistance",
+          "type": {
+            "name": "f32",
+            "attributes": [
+              {
+                "id": 52424,
+                "line": 148,
+                "name": "group",
+                "value": "0"
+              },
+              {
+                "id": 52425,
+                "line": 148,
                 "name": "binding",
                 "value": "17"
               }
@@ -691,14 +1246,14 @@ const META = {
           "binding": 17,
           "attributes": [
             {
-              "id": 5684,
-              "line": 150,
+              "id": 52424,
+              "line": 148,
               "name": "group",
               "value": "0"
             },
             {
-              "id": 5685,
-              "line": 150,
+              "id": 52425,
+              "line": 148,
               "name": "binding",
               "value": "17"
             }
@@ -707,175 +1262,143 @@ const META = {
           "access": "read"
         },
         {
-          "name": "u_distortion",
+          "name": "u_agentSize",
           "type": {
             "name": "f32",
             "attributes": [
               {
-                "id": 5664,
+                "id": 52412,
                 "line": 145,
                 "name": "group",
                 "value": "0"
               },
               {
-                "id": 5665,
+                "id": 52413,
                 "line": 145,
                 "name": "binding",
-                "value": "12"
+                "value": "21"
               }
             ],
             "size": 4
           },
           "group": 0,
-          "binding": 12,
+          "binding": 21,
           "attributes": [
             {
-              "id": 5664,
+              "id": 52412,
               "line": 145,
               "name": "group",
               "value": "0"
             },
             {
-              "id": 5665,
+              "id": 52413,
               "line": 145,
               "name": "binding",
-              "value": "12"
+              "value": "21"
             }
           ],
           "resourceType": 0,
           "access": "read"
         },
         {
-          "name": "u_strokeWidth",
+          "name": "u_sensorAngle",
           "type": {
             "name": "f32",
             "attributes": [
               {
-                "id": 5668,
-                "line": 146,
-                "name": "group",
-                "value": "0"
-              },
-              {
-                "id": 5669,
-                "line": 146,
-                "name": "binding",
-                "value": "13"
-              }
-            ],
-            "size": 4
-          },
-          "group": 0,
-          "binding": 13,
-          "attributes": [
-            {
-              "id": 5668,
-              "line": 146,
-              "name": "group",
-              "value": "0"
-            },
-            {
-              "id": 5669,
-              "line": 146,
-              "name": "binding",
-              "value": "13"
-            }
-          ],
-          "resourceType": 0,
-          "access": "read"
-        },
-        {
-          "name": "u_strokeTaper",
-          "type": {
-            "name": "f32",
-            "attributes": [
-              {
-                "id": 5676,
-                "line": 148,
-                "name": "group",
-                "value": "0"
-              },
-              {
-                "id": 5677,
-                "line": 148,
-                "name": "binding",
-                "value": "15"
-              }
-            ],
-            "size": 4
-          },
-          "group": 0,
-          "binding": 15,
-          "attributes": [
-            {
-              "id": 5676,
-              "line": 148,
-              "name": "group",
-              "value": "0"
-            },
-            {
-              "id": 5677,
-              "line": 148,
-              "name": "binding",
-              "value": "15"
-            }
-          ],
-          "resourceType": 0,
-          "access": "read"
-        },
-        {
-          "name": "u_strokeCap",
-          "type": {
-            "name": "f32",
-            "attributes": [
-              {
-                "id": 5672,
+                "id": 52420,
                 "line": 147,
                 "name": "group",
                 "value": "0"
               },
               {
-                "id": 5673,
+                "id": 52421,
                 "line": 147,
                 "name": "binding",
-                "value": "14"
+                "value": "16"
               }
             ],
             "size": 4
           },
           "group": 0,
-          "binding": 14,
+          "binding": 16,
           "attributes": [
             {
-              "id": 5672,
+              "id": 52420,
               "line": 147,
               "name": "group",
               "value": "0"
             },
             {
-              "id": 5673,
+              "id": 52421,
               "line": 147,
               "name": "binding",
-              "value": "14"
+              "value": "16"
             }
           ],
           "resourceType": 0,
           "access": "read"
         },
         {
-          "name": "u_softness",
+          "name": "trailMapB",
           "type": {
-            "name": "f32",
+            "name": "array",
             "attributes": [
               {
-                "id": 5688,
-                "line": 151,
+                "id": 52392,
+                "line": 140,
                 "name": "group",
                 "value": "0"
               },
               {
-                "id": 5689,
-                "line": 151,
+                "id": 52393,
+                "line": 140,
+                "name": "binding",
+                "value": "11"
+              }
+            ],
+            "size": 518400,
+            "count": 129600,
+            "stride": 4,
+            "format": {
+              "name": "f32",
+              "attributes": null,
+              "size": 4
+            }
+          },
+          "group": 0,
+          "binding": 11,
+          "attributes": [
+            {
+              "id": 52392,
+              "line": 140,
+              "name": "group",
+              "value": "0"
+            },
+            {
+              "id": 52393,
+              "line": 140,
+              "name": "binding",
+              "value": "11"
+            }
+          ],
+          "resourceType": 1,
+          "access": "read_write"
+        },
+        {
+          "name": "u_turnSpeed",
+          "type": {
+            "name": "f32",
+            "attributes": [
+              {
+                "id": 52428,
+                "line": 149,
+                "name": "group",
+                "value": "0"
+              },
+              {
+                "id": 52429,
+                "line": 149,
                 "name": "binding",
                 "value": "18"
               }
@@ -886,14 +1409,14 @@ const META = {
           "binding": 18,
           "attributes": [
             {
-              "id": 5688,
-              "line": 151,
+              "id": 52428,
+              "line": 149,
               "name": "group",
               "value": "0"
             },
             {
-              "id": 5689,
-              "line": 151,
+              "id": 52429,
+              "line": 149,
               "name": "binding",
               "value": "18"
             }
@@ -902,78 +1425,39 @@ const META = {
           "access": "read"
         },
         {
-          "name": "u_colorFront",
+          "name": "u_agentSpeed",
           "type": {
-            "name": "vec4f",
+            "name": "f32",
             "attributes": [
               {
-                "id": 5656,
-                "line": 143,
+                "id": 52416,
+                "line": 146,
                 "name": "group",
                 "value": "0"
               },
               {
-                "id": 5657,
-                "line": 143,
+                "id": 52417,
+                "line": 146,
                 "name": "binding",
-                "value": "10"
+                "value": "15"
               }
             ],
-            "size": 16
+            "size": 4
           },
           "group": 0,
-          "binding": 10,
+          "binding": 15,
           "attributes": [
             {
-              "id": 5656,
-              "line": 143,
+              "id": 52416,
+              "line": 146,
               "name": "group",
               "value": "0"
             },
             {
-              "id": 5657,
-              "line": 143,
+              "id": 52417,
+              "line": 146,
               "name": "binding",
-              "value": "10"
-            }
-          ],
-          "resourceType": 0,
-          "access": "read"
-        },
-        {
-          "name": "u_colorBack",
-          "type": {
-            "name": "vec4f",
-            "attributes": [
-              {
-                "id": 5652,
-                "line": 142,
-                "name": "group",
-                "value": "0"
-              },
-              {
-                "id": 5653,
-                "line": 142,
-                "name": "binding",
-                "value": "9"
-              }
-            ],
-            "size": 16
-          },
-          "group": 0,
-          "binding": 9,
-          "attributes": [
-            {
-              "id": 5652,
-              "line": 142,
-              "name": "group",
-              "value": "0"
-            },
-            {
-              "id": 5653,
-              "line": 142,
-              "name": "binding",
-              "value": "9"
+              "value": "15"
             }
           ],
           "resourceType": 0,
@@ -981,21 +1465,882 @@ const META = {
         }
       ],
       "overrides": [],
-      "startLine": 179,
-      "endLine": 242,
+      "startLine": 211,
+      "endLine": 271,
+      "inUse": true,
+      "calls": {},
+      "name": "update_agents",
+      "attributes": [
+        {
+          "id": 52724,
+          "line": 210,
+          "name": "compute",
+          "value": null
+        },
+        {
+          "id": 52725,
+          "line": 210,
+          "name": "workgroup_size",
+          "value": "64"
+        }
+      ]
+    },
+    {
+      "stage": "compute",
+      "inputs": [
+        {
+          "name": "id",
+          "type": {
+            "name": "vec3u",
+            "attributes": [
+              {
+                "id": 53027,
+                "line": 274,
+                "name": "builtin",
+                "value": "global_invocation_id"
+              }
+            ],
+            "size": 12
+          },
+          "locationType": "builtin",
+          "location": "global_invocation_id",
+          "interpolation": null
+        }
+      ],
+      "outputs": [],
+      "arguments": [
+        {
+          "name": "id",
+          "type": {
+            "name": "vec3u",
+            "attributes": [
+              {
+                "id": 53027,
+                "line": 274,
+                "name": "builtin",
+                "value": "global_invocation_id"
+              }
+            ],
+            "size": 12
+          },
+          "attributes": [
+            {
+              "id": 53027,
+              "line": 274,
+              "name": "builtin",
+              "value": "global_invocation_id"
+            }
+          ]
+        }
+      ],
+      "returnType": null,
+      "resources": [
+        {
+          "name": "time",
+          "type": {
+            "name": "Time",
+            "attributes": null,
+            "size": 12,
+            "members": [
+              {
+                "name": "elapsed",
+                "type": {
+                  "name": "f32",
+                  "attributes": null,
+                  "size": 4
+                },
+                "attributes": null,
+                "offset": 0,
+                "size": 4
+              },
+              {
+                "name": "delta",
+                "type": {
+                  "name": "f32",
+                  "attributes": null,
+                  "size": 4
+                },
+                "attributes": null,
+                "offset": 4,
+                "size": 4
+              },
+              {
+                "name": "frame",
+                "type": {
+                  "name": "u32",
+                  "attributes": null,
+                  "size": 4
+                },
+                "attributes": null,
+                "offset": 8,
+                "size": 4
+              }
+            ],
+            "align": 4,
+            "startLine": 1,
+            "endLine": 1,
+            "inUse": true
+          },
+          "group": 0,
+          "binding": 1,
+          "attributes": [
+            {
+              "id": 52322,
+              "line": 4,
+              "name": "group",
+              "value": "0"
+            },
+            {
+              "id": 52323,
+              "line": 4,
+              "name": "binding",
+              "value": "1"
+            }
+          ],
+          "resourceType": 0,
+          "access": "read"
+        },
+        {
+          "name": "trailMapB",
+          "type": {
+            "name": "array",
+            "attributes": [
+              {
+                "id": 52392,
+                "line": 140,
+                "name": "group",
+                "value": "0"
+              },
+              {
+                "id": 52393,
+                "line": 140,
+                "name": "binding",
+                "value": "11"
+              }
+            ],
+            "size": 518400,
+            "count": 129600,
+            "stride": 4,
+            "format": {
+              "name": "f32",
+              "attributes": null,
+              "size": 4
+            }
+          },
+          "group": 0,
+          "binding": 11,
+          "attributes": [
+            {
+              "id": 52392,
+              "line": 140,
+              "name": "group",
+              "value": "0"
+            },
+            {
+              "id": 52393,
+              "line": 140,
+              "name": "binding",
+              "value": "11"
+            }
+          ],
+          "resourceType": 1,
+          "access": "read_write"
+        },
+        {
+          "name": "trailMapA",
+          "type": {
+            "name": "array",
+            "attributes": [
+              {
+                "id": 52384,
+                "line": 139,
+                "name": "group",
+                "value": "0"
+              },
+              {
+                "id": 52385,
+                "line": 139,
+                "name": "binding",
+                "value": "10"
+              }
+            ],
+            "size": 518400,
+            "count": 129600,
+            "stride": 4,
+            "format": {
+              "name": "f32",
+              "attributes": null,
+              "size": 4
+            }
+          },
+          "group": 0,
+          "binding": 10,
+          "attributes": [
+            {
+              "id": 52384,
+              "line": 139,
+              "name": "group",
+              "value": "0"
+            },
+            {
+              "id": 52385,
+              "line": 139,
+              "name": "binding",
+              "value": "10"
+            }
+          ],
+          "resourceType": 1,
+          "access": "read_write"
+        },
+        {
+          "name": "u_diffusionRate",
+          "type": {
+            "name": "f32",
+            "attributes": [
+              {
+                "id": 52436,
+                "line": 151,
+                "name": "group",
+                "value": "0"
+              },
+              {
+                "id": 52437,
+                "line": 151,
+                "name": "binding",
+                "value": "20"
+              }
+            ],
+            "size": 4
+          },
+          "group": 0,
+          "binding": 20,
+          "attributes": [
+            {
+              "id": 52436,
+              "line": 151,
+              "name": "group",
+              "value": "0"
+            },
+            {
+              "id": 52437,
+              "line": 151,
+              "name": "binding",
+              "value": "20"
+            }
+          ],
+          "resourceType": 0,
+          "access": "read"
+        },
+        {
+          "name": "u_trailDecay",
+          "type": {
+            "name": "f32",
+            "attributes": [
+              {
+                "id": 52432,
+                "line": 150,
+                "name": "group",
+                "value": "0"
+              },
+              {
+                "id": 52433,
+                "line": 150,
+                "name": "binding",
+                "value": "19"
+              }
+            ],
+            "size": 4
+          },
+          "group": 0,
+          "binding": 19,
+          "attributes": [
+            {
+              "id": 52432,
+              "line": 150,
+              "name": "group",
+              "value": "0"
+            },
+            {
+              "id": 52433,
+              "line": 150,
+              "name": "binding",
+              "value": "19"
+            }
+          ],
+          "resourceType": 0,
+          "access": "read"
+        }
+      ],
+      "overrides": [],
+      "startLine": 274,
+      "endLine": 301,
+      "inUse": true,
+      "calls": {},
+      "name": "diffuse_trail",
+      "attributes": [
+        {
+          "id": 53025,
+          "line": 273,
+          "name": "compute",
+          "value": null
+        },
+        {
+          "id": 53026,
+          "line": 273,
+          "name": "workgroup_size",
+          "value": [
+            "16",
+            "16"
+          ]
+        }
+      ]
+    },
+    {
+      "stage": "compute",
+      "inputs": [
+        {
+          "name": "id",
+          "type": {
+            "name": "vec3u",
+            "attributes": [
+              {
+                "id": 53155,
+                "line": 304,
+                "name": "builtin",
+                "value": "global_invocation_id"
+              }
+            ],
+            "size": 12
+          },
+          "locationType": "builtin",
+          "location": "global_invocation_id",
+          "interpolation": null
+        }
+      ],
+      "outputs": [],
+      "arguments": [
+        {
+          "name": "id",
+          "type": {
+            "name": "vec3u",
+            "attributes": [
+              {
+                "id": 53155,
+                "line": 304,
+                "name": "builtin",
+                "value": "global_invocation_id"
+              }
+            ],
+            "size": 12
+          },
+          "attributes": [
+            {
+              "id": 53155,
+              "line": 304,
+              "name": "builtin",
+              "value": "global_invocation_id"
+            }
+          ]
+        }
+      ],
+      "returnType": null,
+      "resources": [
+        {
+          "name": "time",
+          "type": {
+            "name": "Time",
+            "attributes": null,
+            "size": 12,
+            "members": [
+              {
+                "name": "elapsed",
+                "type": {
+                  "name": "f32",
+                  "attributes": null,
+                  "size": 4
+                },
+                "attributes": null,
+                "offset": 0,
+                "size": 4
+              },
+              {
+                "name": "delta",
+                "type": {
+                  "name": "f32",
+                  "attributes": null,
+                  "size": 4
+                },
+                "attributes": null,
+                "offset": 4,
+                "size": 4
+              },
+              {
+                "name": "frame",
+                "type": {
+                  "name": "u32",
+                  "attributes": null,
+                  "size": 4
+                },
+                "attributes": null,
+                "offset": 8,
+                "size": 4
+              }
+            ],
+            "align": 4,
+            "startLine": 1,
+            "endLine": 1,
+            "inUse": true
+          },
+          "group": 0,
+          "binding": 1,
+          "attributes": [
+            {
+              "id": 52322,
+              "line": 4,
+              "name": "group",
+              "value": "0"
+            },
+            {
+              "id": 52323,
+              "line": 4,
+              "name": "binding",
+              "value": "1"
+            }
+          ],
+          "resourceType": 0,
+          "access": "read"
+        },
+        {
+          "name": "trailMapB",
+          "type": {
+            "name": "array",
+            "attributes": [
+              {
+                "id": 52392,
+                "line": 140,
+                "name": "group",
+                "value": "0"
+              },
+              {
+                "id": 52393,
+                "line": 140,
+                "name": "binding",
+                "value": "11"
+              }
+            ],
+            "size": 518400,
+            "count": 129600,
+            "stride": 4,
+            "format": {
+              "name": "f32",
+              "attributes": null,
+              "size": 4
+            }
+          },
+          "group": 0,
+          "binding": 11,
+          "attributes": [
+            {
+              "id": 52392,
+              "line": 140,
+              "name": "group",
+              "value": "0"
+            },
+            {
+              "id": 52393,
+              "line": 140,
+              "name": "binding",
+              "value": "11"
+            }
+          ],
+          "resourceType": 1,
+          "access": "read_write"
+        },
+        {
+          "name": "trailMapA",
+          "type": {
+            "name": "array",
+            "attributes": [
+              {
+                "id": 52384,
+                "line": 139,
+                "name": "group",
+                "value": "0"
+              },
+              {
+                "id": 52385,
+                "line": 139,
+                "name": "binding",
+                "value": "10"
+              }
+            ],
+            "size": 518400,
+            "count": 129600,
+            "stride": 4,
+            "format": {
+              "name": "f32",
+              "attributes": null,
+              "size": 4
+            }
+          },
+          "group": 0,
+          "binding": 10,
+          "attributes": [
+            {
+              "id": 52384,
+              "line": 139,
+              "name": "group",
+              "value": "0"
+            },
+            {
+              "id": 52385,
+              "line": 139,
+              "name": "binding",
+              "value": "10"
+            }
+          ],
+          "resourceType": 1,
+          "access": "read_write"
+        }
+      ],
+      "overrides": [],
+      "startLine": 304,
+      "endLine": 313,
+      "inUse": true,
+      "calls": {},
+      "name": "commit_trail",
+      "attributes": [
+        {
+          "id": 53153,
+          "line": 303,
+          "name": "compute",
+          "value": null
+        },
+        {
+          "id": 53154,
+          "line": 303,
+          "name": "workgroup_size",
+          "value": [
+            "16",
+            "16"
+          ]
+        }
+      ]
+    },
+    {
+      "stage": "compute",
+      "inputs": [
+        {
+          "name": "id",
+          "type": {
+            "name": "vec3u",
+            "attributes": [
+              {
+                "id": 53196,
+                "line": 316,
+                "name": "builtin",
+                "value": "global_invocation_id"
+              }
+            ],
+            "size": 12
+          },
+          "locationType": "builtin",
+          "location": "global_invocation_id",
+          "interpolation": null
+        }
+      ],
+      "outputs": [],
+      "arguments": [
+        {
+          "name": "id",
+          "type": {
+            "name": "vec3u",
+            "attributes": [
+              {
+                "id": 53196,
+                "line": 316,
+                "name": "builtin",
+                "value": "global_invocation_id"
+              }
+            ],
+            "size": 12
+          },
+          "attributes": [
+            {
+              "id": 53196,
+              "line": 316,
+              "name": "builtin",
+              "value": "global_invocation_id"
+            }
+          ]
+        }
+      ],
+      "returnType": null,
+      "resources": [
+        {
+          "name": "screen",
+          "type": {
+            "name": "texture_storage_2d",
+            "attributes": [
+              {
+                "id": 52318,
+                "line": 3,
+                "name": "group",
+                "value": "0"
+              },
+              {
+                "id": 52319,
+                "line": 3,
+                "name": "binding",
+                "value": "0"
+              }
+            ],
+            "size": 0,
+            "format": {
+              "name": "rgba8unorm",
+              "attributes": null,
+              "size": 0
+            },
+            "access": "write"
+          },
+          "group": 0,
+          "binding": 0,
+          "attributes": [
+            {
+              "id": 52318,
+              "line": 3,
+              "name": "group",
+              "value": "0"
+            },
+            {
+              "id": 52319,
+              "line": 3,
+              "name": "binding",
+              "value": "0"
+            }
+          ],
+          "resourceType": 4,
+          "access": "read"
+        },
+        {
+          "name": "trailMapB",
+          "type": {
+            "name": "array",
+            "attributes": [
+              {
+                "id": 52392,
+                "line": 140,
+                "name": "group",
+                "value": "0"
+              },
+              {
+                "id": 52393,
+                "line": 140,
+                "name": "binding",
+                "value": "11"
+              }
+            ],
+            "size": 518400,
+            "count": 129600,
+            "stride": 4,
+            "format": {
+              "name": "f32",
+              "attributes": null,
+              "size": 4
+            }
+          },
+          "group": 0,
+          "binding": 11,
+          "attributes": [
+            {
+              "id": 52392,
+              "line": 140,
+              "name": "group",
+              "value": "0"
+            },
+            {
+              "id": 52393,
+              "line": 140,
+              "name": "binding",
+              "value": "11"
+            }
+          ],
+          "resourceType": 1,
+          "access": "read_write"
+        },
+        {
+          "name": "u_agentSize",
+          "type": {
+            "name": "f32",
+            "attributes": [
+              {
+                "id": 52412,
+                "line": 145,
+                "name": "group",
+                "value": "0"
+              },
+              {
+                "id": 52413,
+                "line": 145,
+                "name": "binding",
+                "value": "21"
+              }
+            ],
+            "size": 4
+          },
+          "group": 0,
+          "binding": 21,
+          "attributes": [
+            {
+              "id": 52412,
+              "line": 145,
+              "name": "group",
+              "value": "0"
+            },
+            {
+              "id": 52413,
+              "line": 145,
+              "name": "binding",
+              "value": "21"
+            }
+          ],
+          "resourceType": 0,
+          "access": "read"
+        },
+        {
+          "name": "u_trailColor",
+          "type": {
+            "name": "vec4f",
+            "attributes": [
+              {
+                "id": 52404,
+                "line": 143,
+                "name": "group",
+                "value": "0"
+              },
+              {
+                "id": 52405,
+                "line": 143,
+                "name": "binding",
+                "value": "13"
+              }
+            ],
+            "size": 16
+          },
+          "group": 0,
+          "binding": 13,
+          "attributes": [
+            {
+              "id": 52404,
+              "line": 143,
+              "name": "group",
+              "value": "0"
+            },
+            {
+              "id": 52405,
+              "line": 143,
+              "name": "binding",
+              "value": "13"
+            }
+          ],
+          "resourceType": 0,
+          "access": "read"
+        },
+        {
+          "name": "u_agentColor",
+          "type": {
+            "name": "vec4f",
+            "attributes": [
+              {
+                "id": 52400,
+                "line": 142,
+                "name": "group",
+                "value": "0"
+              },
+              {
+                "id": 52401,
+                "line": 142,
+                "name": "binding",
+                "value": "12"
+              }
+            ],
+            "size": 16
+          },
+          "group": 0,
+          "binding": 12,
+          "attributes": [
+            {
+              "id": 52400,
+              "line": 142,
+              "name": "group",
+              "value": "0"
+            },
+            {
+              "id": 52401,
+              "line": 142,
+              "name": "binding",
+              "value": "12"
+            }
+          ],
+          "resourceType": 0,
+          "access": "read"
+        },
+        {
+          "name": "u_backgroundColor",
+          "type": {
+            "name": "vec4f",
+            "attributes": [
+              {
+                "id": 52408,
+                "line": 144,
+                "name": "group",
+                "value": "0"
+              },
+              {
+                "id": 52409,
+                "line": 144,
+                "name": "binding",
+                "value": "14"
+              }
+            ],
+            "size": 16
+          },
+          "group": 0,
+          "binding": 14,
+          "attributes": [
+            {
+              "id": 52408,
+              "line": 144,
+              "name": "group",
+              "value": "0"
+            },
+            {
+              "id": 52409,
+              "line": 144,
+              "name": "binding",
+              "value": "14"
+            }
+          ],
+          "resourceType": 0,
+          "access": "read"
+        }
+      ],
+      "overrides": [],
+      "startLine": 316,
+      "endLine": 341,
       "inUse": true,
       "calls": {},
       "name": "main_image",
       "attributes": [
         {
-          "id": 5812,
-          "line": 178,
+          "id": 53194,
+          "line": 315,
           "name": "compute",
           "value": null
         },
         {
-          "id": 5813,
-          "line": 178,
+          "id": 53195,
+          "line": 315,
           "name": "workgroup_size",
           "value": [
             "16",
@@ -1009,111 +2354,133 @@ const META = {
     {
       "name": "Default",
       "values": {
-        "u_colorBack": [
-          0.04,
-          0.05,
-          0.08,
-          1
-        ],
-        "u_colorFront": [
-          0.95,
-          0.8,
-          0.25,
-          1
-        ],
-        "u_density": 0.5,
-        "u_distortion": 0.1,
-        "u_strokeWidth": 0.8,
-        "u_strokeCap": 0.1,
-        "u_strokeTaper": 0.1,
-        "u_noise": 0.35,
-        "u_noiseFrequency": 0.4,
-        "u_softness": 0.0025
-      }
-    },
-    {
-      "name": "Hypnotic",
-      "values": {
-        "u_colorBack": [
-          0.1,
-          0,
-          0.2,
-          1
-        ],
-        "u_colorFront": [
-          0,
-          0.8,
-          0.9,
-          1
-        ],
-        "u_density": 0.7,
-        "u_distortion": 0.3,
-        "u_strokeWidth": 0.5,
-        "u_strokeCap": 0,
-        "u_strokeTaper": 0.3,
-        "u_noise": 0.5,
-        "u_noiseFrequency": 0.6,
-        "u_softness": 0.005
-      }
-    },
-    {
-      "name": "Sunset",
-      "values": {
-        "u_colorBack": [
-          0.9,
-          0.4,
-          0.2,
-          1
-        ],
-        "u_colorFront": [
+        "u_agentColor": [
           1,
-          0.9,
-          0.6,
+          1,
+          1,
           1
         ],
-        "u_density": 0.3,
-        "u_distortion": 0.05,
-        "u_strokeWidth": 0.9,
-        "u_strokeCap": 0.2,
-        "u_strokeTaper": 0,
-        "u_noise": 0.1,
-        "u_noiseFrequency": 0.2,
-        "u_softness": 0.001
+        "u_trailColor": [
+          0.8,
+          0.8,
+          0.8,
+          1
+        ],
+        "u_backgroundColor": [
+          0.1,
+          0.1,
+          0.1,
+          1
+        ],
+        "u_agentSize": 1,
+        "u_agentSpeed": 0.9,
+        "u_sensorAngle": 0.7,
+        "u_sensorDistance": 9,
+        "u_turnSpeed": 1.6,
+        "u_trailDecay": 0.985,
+        "u_diffusionRate": 0.2
       }
     },
     {
       "name": "Organic",
       "values": {
-        "u_colorBack": [
-          0.05,
-          0.1,
-          0.05,
+        "u_agentColor": [
+          0.7,
+          1,
+          0.8,
           1
         ],
-        "u_colorFront": [
-          0.4,
+        "u_trailColor": [
+          0.5,
+          0.8,
+          0.6,
+          1
+        ],
+        "u_backgroundColor": [
+          0.02,
+          0.05,
+          0.03,
+          1
+        ],
+        "u_agentSize": 1,
+        "u_agentSpeed": 0.9,
+        "u_sensorAngle": 2.1,
+        "u_sensorDistance": 7,
+        "u_turnSpeed": 2.9,
+        "u_trailDecay": 0.99,
+        "u_diffusionRate": 0.8
+      }
+    },
+    {
+      "name": "Electric",
+      "values": {
+        "u_agentColor": [
+          1,
           0.9,
-          0.3,
+          0,
           1
         ],
-        "u_density": 0.6,
-        "u_distortion": 0.4,
-        "u_strokeWidth": 0.6,
-        "u_strokeCap": 0.5,
-        "u_strokeTaper": 0.4,
-        "u_noise": 0.8,
-        "u_noiseFrequency": 0.7,
-        "u_softness": 0.008
+        "u_trailColor": [
+          0.2,
+          0.5,
+          0.9,
+          1
+        ],
+        "u_backgroundColor": [
+          0,
+          0.02,
+          0.08,
+          1
+        ],
+        "u_agentSize": 1.3,
+        "u_agentSpeed": 2,
+        "u_sensorAngle": 0.8,
+        "u_sensorDistance": 11,
+        "u_turnSpeed": 1.8,
+        "u_trailDecay": 0.93,
+        "u_diffusionRate": 0.08
+      }
+    },
+    {
+      "name": "Fast growth",
+      "values": {
+        "u_agentColor": [
+          1,
+          0.9,
+          0.7,
+          1
+        ],
+        "u_trailColor": [
+          0.9,
+          0.7,
+          0.5,
+          1
+        ],
+        "u_backgroundColor": [
+          0.05,
+          0.02,
+          0.1,
+          1
+        ],
+        "u_agentSize": 1.9,
+        "u_agentSpeed": 2,
+        "u_sensorAngle": 0.3,
+        "u_sensorDistance": 12,
+        "u_turnSpeed": 1,
+        "u_trailDecay": 0.99,
+        "u_diffusionRate": 0.2
       }
     }
   ]
 }
 
-export class SpiralRunner {
-  constructor(opts) {
-    this.canvas = opts.canvas
-    this.alphaMode = opts.alphaMode ?? 'premultiplied'
-    this.getUniformValues = opts.getUniformValues
+// https://developer.chrome.com/docs/web-platform/webgpu/from-webgl-to-webgpu
+export class SlimeRunner {
+  constructor(options) {
+    this.canvas = options.canvas
+    this.alphaMode = options.alphaMode ?? 'premultiplied'
+    this.getUniformValues = options.getUniformValues
+    this.id = options.id ?? "runner:" + Math.random().toString(36).slice(2, 8)
 
     this.computePipelines = []
     this.uniformBuffers = new Map()
@@ -1130,15 +2497,17 @@ export class SpiralRunner {
       delta: { x: 0, y: 0 },
     }
 
-
     if (!navigator.gpu) {
       throw new Error('WebGPU not supported')
     }
+
     this.resize()
     this.init()
   }
 
   async init() {
+    if (this.disposed) return
+
     const adapter = await navigator.gpu.requestAdapter()
     if (!adapter) throw new Error('No GPU adapter')
     
@@ -1178,7 +2547,7 @@ export class SpiralRunner {
     const numSystemBindings = 9
 
     const computeModule = this.device.createShaderModule({ code: USER_SHADER })
-    const bindGroupLayout = this.device.createBindGroupLayout({
+    const computeBindGroupLayout = this.device.createBindGroupLayout({
       entries: [
         {
           binding: 0,
@@ -1260,10 +2629,27 @@ export class SpiralRunner {
 
     this.computePipelines = META.compute.map((entryPoint) => this.device.createComputePipeline({
       layout: this.device.createPipelineLayout({
-        bindGroupLayouts: [bindGroupLayout],
+        bindGroupLayouts: [computeBindGroupLayout],
       }),
       compute: { module: computeModule, entryPoint: entryPoint.name }
     }))
+
+    this.computeBindGroup = this.device.createBindGroup({
+      layout: computeBindGroupLayout,
+      entries: [
+        { binding: 0, resource: this.storageTexture.createView() },
+        { binding: 1, resource: { buffer: this.timeBuffer } },
+        { binding: 2, resource: { buffer: this.mouseBuffer } },
+        { binding: 3, resource: this.nearest },
+        { binding: 4, resource: this.bilinear },
+        { binding: 5, resource: this.trilinear },
+        { binding: 6, resource: this.nearestRepeat },
+        { binding: 7, resource: this.bilinearRepeat },
+        { binding: 8, resource: this.trilinearRepeat },
+        ...META.uniforms.map(uniform => ({ binding: uniform.binding, resource: { buffer: this.uniformBuffers.get(uniform.name) } })),
+        ...META.storage.map(storage => ({ binding: storage.binding, resource: { buffer: this.storageBuffers.get(storage.name) } })),
+      ]
+    })
     
     const renderingModule = this.device.createShaderModule({ code: RENDER_SHADER })
     this.renderPipeline = this.device.createRenderPipeline({
@@ -1273,22 +2659,39 @@ export class SpiralRunner {
       targets: [{ format: this.format }] },
       primitive: { topology: 'triangle-list' }
     })
+
+    this.renderingBindGroup = this.device.createBindGroup({
+      layout: this.renderPipeline.getBindGroupLayout(0),
+      entries: [
+        { binding: 0, resource: this.sampleTexture.createView() },
+        { binding: 1, resource: this.bilinear },
+      ],
+    })
   }
 
   recreateTextures() {
     if (!this.device) return
-    this.storageTex?.destroy()
-    this.sampleTex?.destroy()
+    this.storageTexture?.destroy()
+    this.sampleTexture?.destroy()
 
     const { width, height } = this.size
-    if (width <= 0 || height <= 0) return
 
-    this.storageTex = this.device.createTexture({
+    if (width <= 0 || height <= 0) {
+      console.warn("Invalid canvas dimensions for texture creation:", this.size)
+      return
+    }
+
+    this.storageTexture = this.device.createTexture({
       size: { width, height },
       format: 'rgba8unorm',
       usage: 11
     })
-    this.sampleTex = this.device.createTexture({ size: { width, height }, format: 'rgba8unorm', usage: 6 })
+
+    this.sampleTexture = this.device.createTexture({
+      size: { width, height },
+      format: 'rgba8unorm',
+      usage: 6
+    })
   }
 
   resize() {
@@ -1317,6 +2720,7 @@ export class SpiralRunner {
       if (!this.startTime) {
         this.startTime = ts
       }
+
       const elapsed = (ts - this.startTime) / 1000
       const delta = this.prevTime ? (ts - this.prevTime) / 1000 : 1 / 60
       this.prevTime = ts
@@ -1355,73 +2759,113 @@ export class SpiralRunner {
 
       const enc = this.device.createCommandEncoder()
       for (const pipe of this.computePipelines) {
-        const bind = this.device.createBindGroup({
-          layout: pipe.getBindGroupLayout(0),
-          entries: [
-            { binding: 0, resource: this.storageTex.createView() },
-            { binding: 1, resource: { buffer: this.timeBuffer } },
-            { binding: 2, resource: { buffer: this.mouseBuffer } },
-            { binding: 3, resource: this.nearest },
-            { binding: 4, resource: this.bilinear },
-            { binding: 5, resource: this.trilinear },
-            { binding: 6, resource: this.nearestRepeat },
-            { binding: 7, resource: this.bilinearRepeat },
-            { binding: 8, resource: this.trilinearRepeat },
-            ...META.uniforms.map(uniform => ({ binding: uniform.binding, resource: { buffer: this.uniformBuffers.get(uniform.name) } })),
-            ...META.storage.map(storage => ({ binding: storage.binding, resource: { buffer: this.storageBuffers.get(storage.name) } })),
-          ]
-        })
-
         const pass = enc.beginComputePass()
         pass.setPipeline(pipe)
-        pass.setBindGroup(0, bind)
+        pass.setBindGroup(0, this.computeBindGroup)
         pass.dispatchWorkgroups(Math.ceil(this.size.width/16), Math.ceil(this.size.height/16))
         pass.end()
       }
 
-      if (this.storageTex && this.sampleTex) {
+      if (this.storageTexture && this.sampleTexture) {
         enc.copyTextureToTexture(
-          { texture: this.storageTex },
-          { texture: this.sampleTex },
+          { texture: this.storageTexture },
+          { texture: this.sampleTexture },
           { width: this.size.width, height: this.size.height, depthOrArrayLayers: 1 }
         )
       }
 
-      if (this.renderPipeline && this.sampleTex) {
+      if (this.renderPipeline && this.sampleTexture) {
         const view = this.context.getCurrentTexture().createView()
         const pass = enc.beginRenderPass({ colorAttachments: [{ view, loadOp: 'clear', storeOp: 'store' }] })
-        const bindGroup = this.device.createBindGroup({ layout: this.renderPipeline.getBindGroupLayout(0), entries: [
-          { binding: 0, resource: this.sampleTex.createView() },
-          { binding: 1, resource: this.nearest },
-        ]})
+
         pass.setPipeline(this.renderPipeline)
-        pass.setBindGroup(0, bindGroup)
+        pass.setBindGroup(0, this.renderingBindGroup)
         pass.draw(3, 1, 0, 0)
         pass.end()
       }
       this.device.queue.submit([enc.finish()])
-      this.frameHandle = requestAnimationFrame(frame)
+
+      if (!this.disposed) {
+        this.frameHandle = requestAnimationFrame(frame)
+      }
     }
 
-    this.frameHandle = requestAnimationFrame(frame)
+    if (!this.disposed) {
+      this.frameHandle = requestAnimationFrame(frame)
+    }
+  }
+
+  destroy() {
+    this.stop()
+    this.disposed = true
+    this.destroyTextures()
+    this.timeBuffer?.destroy()
+    this.mouseBuffer?.destroy()
+    for (const buf of this.uniformBuffers.values()) {
+      buf.destroy()
+    }
+    for (const buf of this.storageBuffers.values()) {
+      buf.destroy()
+    }
+    // Note: GPUComputePipeline objects don't have a destroy method in WebGPU
+    this.computePipelines.clear()
+    this.uniformBuffers.clear()
+    this.storageBuffers.clear()
+    this.device?.destroy()
+    this.device = null
+    this.context = null
   }
 
   setMousePosition(x, y) {
     this.mouse.pos.x = x
     this.mouse.pos.y = y
   }
+
   setMouseZoom(zoom) {
     this.mouse.zoom = zoom
   }
+
   setMouseClickState(click) {
     this.mouse.click = click
   }
+
   setMouseDownPosition(x, y) {
     this.mouse.start.x = x
     this.mouse.start.y = y
   }
+
   setMouseDelta(dx, dy) {
     this.mouse.delta.x = dx
     this.mouse.delta.y = dy
   }
 }
+
+const gpuRunnerRegistry = new Map()
+
+export function checkRunnerExists(shaderId, elementId) {
+  return gpuRunnerRegistry.has(getRunnerId(shaderId, elementId))
+}
+
+export function registerRunner(
+  shaderId,
+  runner,
+  elementId,
+) {
+  let id = getRunnerId(shaderId, elementId)
+  gpuRunnerRegistry.set(id, runner)
+}
+
+export function unregisterRunner(shaderId, elementId) {
+  let id = getRunnerId(shaderId, elementId)
+  let runner = gpuRunnerRegistry.get(id)
+  if (runner) {
+    runner.destroy()
+  }
+  gpuRunnerRegistry.delete(id)
+}
+
+function getRunnerId(shaderId, elementId) {
+  return `${shaderId}:${elementId}`
+}
+
+
