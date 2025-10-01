@@ -1,4 +1,4 @@
-// Generated on 2025-10-01T19:53:59.999Z
+// Generated on 2025-10-01T19:58:17.778Z
 import { useRef, useEffect, useId } from 'react'
 
 export function CheckerboardShader(props) {
@@ -103,6 +103,11 @@ export function CheckerboardShader(props) {
       runnerRef.current.setMouseZoom(currentZoom.current)
     }
 
+    function disableContextMenu(e: PointerEvent) {
+      e.preventDefault()
+    }
+
+    canvas.addEventListener("contextmenu", disableContextMenu)
     canvas.addEventListener("mousemove", handleMouseMove)
     canvas.addEventListener("mousedown", handleMouseDown)
     canvas.addEventListener("mouseup", handleMouseUp)
@@ -116,6 +121,7 @@ export function CheckerboardShader(props) {
         canvas.removeEventListener("mousedown", handleMouseDown)
         canvas.removeEventListener("mouseup", handleMouseUp)
         canvas.removeEventListener("wheel", handleWheel)
+        canvas.removeEventListener("contextmenu", disableContextMenu)
       }
 
       runnerRef.current?.stop()
@@ -305,7 +311,7 @@ const META = {
             "name": "vec3u",
             "attributes": [
               {
-                "id": 6061,
+                "id": 8301,
                 "line": 69,
                 "name": "builtin",
                 "value": "global_invocation_id"
@@ -326,7 +332,7 @@ const META = {
             "name": "vec3u",
             "attributes": [
               {
-                "id": 6061,
+                "id": 8301,
                 "line": 69,
                 "name": "builtin",
                 "value": "global_invocation_id"
@@ -336,7 +342,7 @@ const META = {
           },
           "attributes": [
             {
-              "id": 6061,
+              "id": 8301,
               "line": 69,
               "name": "builtin",
               "value": "global_invocation_id"
@@ -352,13 +358,13 @@ const META = {
             "name": "texture_storage_2d",
             "attributes": [
               {
-                "id": 6004,
+                "id": 8244,
                 "line": 3,
                 "name": "group",
                 "value": "0"
               },
               {
-                "id": 6005,
+                "id": 8245,
                 "line": 3,
                 "name": "binding",
                 "value": "0"
@@ -376,13 +382,13 @@ const META = {
           "binding": 0,
           "attributes": [
             {
-              "id": 6004,
+              "id": 8244,
               "line": 3,
               "name": "group",
               "value": "0"
             },
             {
-              "id": 6005,
+              "id": 8245,
               "line": 3,
               "name": "binding",
               "value": "0"
@@ -463,13 +469,13 @@ const META = {
           "binding": 2,
           "attributes": [
             {
-              "id": 6011,
+              "id": 8251,
               "line": 5,
               "name": "group",
               "value": "0"
             },
             {
-              "id": 6012,
+              "id": 8252,
               "line": 5,
               "name": "binding",
               "value": "2"
@@ -484,13 +490,13 @@ const META = {
             "name": "array",
             "attributes": [
               {
-                "id": 6053,
+                "id": 8293,
                 "line": 66,
                 "name": "group",
                 "value": "0"
               },
               {
-                "id": 6054,
+                "id": 8294,
                 "line": 66,
                 "name": "binding",
                 "value": "9"
@@ -509,13 +515,13 @@ const META = {
           "binding": 9,
           "attributes": [
             {
-              "id": 6053,
+              "id": 8293,
               "line": 66,
               "name": "group",
               "value": "0"
             },
             {
-              "id": 6054,
+              "id": 8294,
               "line": 66,
               "name": "binding",
               "value": "9"
@@ -533,13 +539,13 @@ const META = {
       "name": "main_image",
       "attributes": [
         {
-          "id": 6059,
+          "id": 8299,
           "line": 68,
           "name": "compute",
           "value": null
         },
         {
-          "id": 6060,
+          "id": 8300,
           "line": 68,
           "name": "workgroup_size",
           "value": [

@@ -1,4 +1,4 @@
-// Generated on 2025-10-01T19:53:36.591Z
+// Generated on 2025-10-01T19:58:31.986Z
 import { useRef, useEffect, useId } from 'react'
 
 export function DiffusionShader(props) {
@@ -103,6 +103,11 @@ export function DiffusionShader(props) {
       runnerRef.current.setMouseZoom(currentZoom.current)
     }
 
+    function disableContextMenu(e: PointerEvent) {
+      e.preventDefault()
+    }
+
+    canvas.addEventListener("contextmenu", disableContextMenu)
     canvas.addEventListener("mousemove", handleMouseMove)
     canvas.addEventListener("mousedown", handleMouseDown)
     canvas.addEventListener("mouseup", handleMouseUp)
@@ -116,6 +121,7 @@ export function DiffusionShader(props) {
         canvas.removeEventListener("mousedown", handleMouseDown)
         canvas.removeEventListener("mouseup", handleMouseUp)
         canvas.removeEventListener("wheel", handleWheel)
+        canvas.removeEventListener("contextmenu", disableContextMenu)
       }
 
       runnerRef.current?.stop()
@@ -299,7 +305,7 @@ const META = {
             "name": "vec3u",
             "attributes": [
               {
-                "id": 4300,
+                "id": 10483,
                 "line": 28,
                 "name": "builtin",
                 "value": "global_invocation_id"
@@ -320,7 +326,7 @@ const META = {
             "name": "vec3u",
             "attributes": [
               {
-                "id": 4300,
+                "id": 10483,
                 "line": 28,
                 "name": "builtin",
                 "value": "global_invocation_id"
@@ -330,7 +336,7 @@ const META = {
           },
           "attributes": [
             {
-              "id": 4300,
+              "id": 10483,
               "line": 28,
               "name": "builtin",
               "value": "global_invocation_id"
@@ -346,13 +352,13 @@ const META = {
             "name": "array",
             "attributes": [
               {
-                "id": 4250,
+                "id": 10433,
                 "line": 18,
                 "name": "group",
                 "value": "0"
               },
               {
-                "id": 4251,
+                "id": 10434,
                 "line": 18,
                 "name": "binding",
                 "value": "9"
@@ -371,13 +377,13 @@ const META = {
           "binding": 9,
           "attributes": [
             {
-              "id": 4250,
+              "id": 10433,
               "line": 18,
               "name": "group",
               "value": "0"
             },
             {
-              "id": 4251,
+              "id": 10434,
               "line": 18,
               "name": "binding",
               "value": "9"
@@ -392,13 +398,13 @@ const META = {
             "name": "array",
             "attributes": [
               {
-                "id": 4256,
+                "id": 10439,
                 "line": 19,
                 "name": "group",
                 "value": "0"
               },
               {
-                "id": 4257,
+                "id": 10440,
                 "line": 19,
                 "name": "binding",
                 "value": "10"
@@ -417,13 +423,13 @@ const META = {
           "binding": 10,
           "attributes": [
             {
-              "id": 4256,
+              "id": 10439,
               "line": 19,
               "name": "group",
               "value": "0"
             },
             {
-              "id": 4257,
+              "id": 10440,
               "line": 19,
               "name": "binding",
               "value": "10"
@@ -482,13 +488,13 @@ const META = {
           "binding": 1,
           "attributes": [
             {
-              "id": 4197,
+              "id": 10380,
               "line": 4,
               "name": "group",
               "value": "0"
             },
             {
-              "id": 4198,
+              "id": 10381,
               "line": 4,
               "name": "binding",
               "value": "1"
@@ -569,13 +575,13 @@ const META = {
           "binding": 2,
           "attributes": [
             {
-              "id": 4200,
+              "id": 10383,
               "line": 5,
               "name": "group",
               "value": "0"
             },
             {
-              "id": 4201,
+              "id": 10384,
               "line": 5,
               "name": "binding",
               "value": "2"
@@ -593,13 +599,13 @@ const META = {
       "name": "diffuse",
       "attributes": [
         {
-          "id": 4298,
+          "id": 10481,
           "line": 27,
           "name": "compute",
           "value": null
         },
         {
-          "id": 4299,
+          "id": 10482,
           "line": 27,
           "name": "workgroup_size",
           "value": [
@@ -618,7 +624,7 @@ const META = {
             "name": "vec3u",
             "attributes": [
               {
-                "id": 4441,
+                "id": 10624,
                 "line": 59,
                 "name": "builtin",
                 "value": "global_invocation_id"
@@ -639,7 +645,7 @@ const META = {
             "name": "vec3u",
             "attributes": [
               {
-                "id": 4441,
+                "id": 10624,
                 "line": 59,
                 "name": "builtin",
                 "value": "global_invocation_id"
@@ -649,7 +655,7 @@ const META = {
           },
           "attributes": [
             {
-              "id": 4441,
+              "id": 10624,
               "line": 59,
               "name": "builtin",
               "value": "global_invocation_id"
@@ -665,13 +671,13 @@ const META = {
             "name": "array",
             "attributes": [
               {
-                "id": 4250,
+                "id": 10433,
                 "line": 18,
                 "name": "group",
                 "value": "0"
               },
               {
-                "id": 4251,
+                "id": 10434,
                 "line": 18,
                 "name": "binding",
                 "value": "9"
@@ -690,13 +696,13 @@ const META = {
           "binding": 9,
           "attributes": [
             {
-              "id": 4250,
+              "id": 10433,
               "line": 18,
               "name": "group",
               "value": "0"
             },
             {
-              "id": 4251,
+              "id": 10434,
               "line": 18,
               "name": "binding",
               "value": "9"
@@ -711,13 +717,13 @@ const META = {
             "name": "array",
             "attributes": [
               {
-                "id": 4256,
+                "id": 10439,
                 "line": 19,
                 "name": "group",
                 "value": "0"
               },
               {
-                "id": 4257,
+                "id": 10440,
                 "line": 19,
                 "name": "binding",
                 "value": "10"
@@ -736,13 +742,13 @@ const META = {
           "binding": 10,
           "attributes": [
             {
-              "id": 4256,
+              "id": 10439,
               "line": 19,
               "name": "group",
               "value": "0"
             },
             {
-              "id": 4257,
+              "id": 10440,
               "line": 19,
               "name": "binding",
               "value": "10"
@@ -760,13 +766,13 @@ const META = {
       "name": "commit",
       "attributes": [
         {
-          "id": 4439,
+          "id": 10622,
           "line": 58,
           "name": "compute",
           "value": null
         },
         {
-          "id": 4440,
+          "id": 10623,
           "line": 58,
           "name": "workgroup_size",
           "value": [
@@ -785,7 +791,7 @@ const META = {
             "name": "vec3u",
             "attributes": [
               {
-                "id": 4477,
+                "id": 10660,
                 "line": 66,
                 "name": "builtin",
                 "value": "global_invocation_id"
@@ -806,7 +812,7 @@ const META = {
             "name": "vec3u",
             "attributes": [
               {
-                "id": 4477,
+                "id": 10660,
                 "line": 66,
                 "name": "builtin",
                 "value": "global_invocation_id"
@@ -816,7 +822,7 @@ const META = {
           },
           "attributes": [
             {
-              "id": 4477,
+              "id": 10660,
               "line": 66,
               "name": "builtin",
               "value": "global_invocation_id"
@@ -832,13 +838,13 @@ const META = {
             "name": "texture_storage_2d",
             "attributes": [
               {
-                "id": 4193,
+                "id": 10376,
                 "line": 3,
                 "name": "group",
                 "value": "0"
               },
               {
-                "id": 4194,
+                "id": 10377,
                 "line": 3,
                 "name": "binding",
                 "value": "0"
@@ -856,13 +862,13 @@ const META = {
           "binding": 0,
           "attributes": [
             {
-              "id": 4193,
+              "id": 10376,
               "line": 3,
               "name": "group",
               "value": "0"
             },
             {
-              "id": 4194,
+              "id": 10377,
               "line": 3,
               "name": "binding",
               "value": "0"
@@ -943,13 +949,13 @@ const META = {
           "binding": 2,
           "attributes": [
             {
-              "id": 4200,
+              "id": 10383,
               "line": 5,
               "name": "group",
               "value": "0"
             },
             {
-              "id": 4201,
+              "id": 10384,
               "line": 5,
               "name": "binding",
               "value": "2"
@@ -964,13 +970,13 @@ const META = {
             "name": "array",
             "attributes": [
               {
-                "id": 4256,
+                "id": 10439,
                 "line": 19,
                 "name": "group",
                 "value": "0"
               },
               {
-                "id": 4257,
+                "id": 10440,
                 "line": 19,
                 "name": "binding",
                 "value": "10"
@@ -989,13 +995,13 @@ const META = {
           "binding": 10,
           "attributes": [
             {
-              "id": 4256,
+              "id": 10439,
               "line": 19,
               "name": "group",
               "value": "0"
             },
             {
-              "id": 4257,
+              "id": 10440,
               "line": 19,
               "name": "binding",
               "value": "10"
@@ -1013,13 +1019,13 @@ const META = {
       "name": "main_image",
       "attributes": [
         {
-          "id": 4475,
+          "id": 10658,
           "line": 65,
           "name": "compute",
           "value": null
         },
         {
-          "id": 4476,
+          "id": 10659,
           "line": 65,
           "name": "workgroup_size",
           "value": [
