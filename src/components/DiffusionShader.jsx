@@ -103,7 +103,7 @@ export function DiffusionShader(props) {
       runnerRef.current.setMouseZoom(currentZoom.current)
     }
 
-    function disableContextMenu(e: PointerEvent) {
+    function disableContextMenu(e) {
       e.preventDefault()
     }
 
