@@ -1,4 +1,4 @@
-// Generated on 2025-10-01T19:58:31.986Z
+// Generated on 2025-10-08T23:30:13.084Z
 import { useRef, useEffect, useId } from 'react'
 
 export function DiffusionShader(props) {
@@ -135,7 +135,7 @@ export function DiffusionShader(props) {
   }, [])
 
   return (
-    <div className="w-full h-full">
+    <div className={props.className}>
       <canvas
         ref={canvasRef}
         className="w-full h-full"
@@ -295,7 +295,8 @@ const META = {
       "usage": 140
     }
   ],
-  "compute": [
+  "presets": [],
+  "computeEntries": [
     {
       "stage": "compute",
       "inputs": [
@@ -305,7 +306,7 @@ const META = {
             "name": "vec3u",
             "attributes": [
               {
-                "id": 10483,
+                "id": 27332,
                 "line": 28,
                 "name": "builtin",
                 "value": "global_invocation_id"
@@ -326,7 +327,7 @@ const META = {
             "name": "vec3u",
             "attributes": [
               {
-                "id": 10483,
+                "id": 27332,
                 "line": 28,
                 "name": "builtin",
                 "value": "global_invocation_id"
@@ -336,7 +337,7 @@ const META = {
           },
           "attributes": [
             {
-              "id": 10483,
+              "id": 27332,
               "line": 28,
               "name": "builtin",
               "value": "global_invocation_id"
@@ -352,13 +353,13 @@ const META = {
             "name": "array",
             "attributes": [
               {
-                "id": 10433,
+                "id": 27282,
                 "line": 18,
                 "name": "group",
                 "value": "0"
               },
               {
-                "id": 10434,
+                "id": 27283,
                 "line": 18,
                 "name": "binding",
                 "value": "9"
@@ -377,13 +378,13 @@ const META = {
           "binding": 9,
           "attributes": [
             {
-              "id": 10433,
+              "id": 27282,
               "line": 18,
               "name": "group",
               "value": "0"
             },
             {
-              "id": 10434,
+              "id": 27283,
               "line": 18,
               "name": "binding",
               "value": "9"
@@ -398,13 +399,13 @@ const META = {
             "name": "array",
             "attributes": [
               {
-                "id": 10439,
+                "id": 27288,
                 "line": 19,
                 "name": "group",
                 "value": "0"
               },
               {
-                "id": 10440,
+                "id": 27289,
                 "line": 19,
                 "name": "binding",
                 "value": "10"
@@ -423,13 +424,13 @@ const META = {
           "binding": 10,
           "attributes": [
             {
-              "id": 10439,
+              "id": 27288,
               "line": 19,
               "name": "group",
               "value": "0"
             },
             {
-              "id": 10440,
+              "id": 27289,
               "line": 19,
               "name": "binding",
               "value": "10"
@@ -488,13 +489,13 @@ const META = {
           "binding": 1,
           "attributes": [
             {
-              "id": 10380,
+              "id": 27229,
               "line": 4,
               "name": "group",
               "value": "0"
             },
             {
-              "id": 10381,
+              "id": 27230,
               "line": 4,
               "name": "binding",
               "value": "1"
@@ -575,13 +576,13 @@ const META = {
           "binding": 2,
           "attributes": [
             {
-              "id": 10383,
+              "id": 27232,
               "line": 5,
               "name": "group",
               "value": "0"
             },
             {
-              "id": 10384,
+              "id": 27233,
               "line": 5,
               "name": "binding",
               "value": "2"
@@ -599,13 +600,13 @@ const META = {
       "name": "diffuse",
       "attributes": [
         {
-          "id": 10481,
+          "id": 27330,
           "line": 27,
           "name": "compute",
           "value": null
         },
         {
-          "id": 10482,
+          "id": 27331,
           "line": 27,
           "name": "workgroup_size",
           "value": [
@@ -624,7 +625,7 @@ const META = {
             "name": "vec3u",
             "attributes": [
               {
-                "id": 10624,
+                "id": 27473,
                 "line": 59,
                 "name": "builtin",
                 "value": "global_invocation_id"
@@ -645,7 +646,7 @@ const META = {
             "name": "vec3u",
             "attributes": [
               {
-                "id": 10624,
+                "id": 27473,
                 "line": 59,
                 "name": "builtin",
                 "value": "global_invocation_id"
@@ -655,7 +656,7 @@ const META = {
           },
           "attributes": [
             {
-              "id": 10624,
+              "id": 27473,
               "line": 59,
               "name": "builtin",
               "value": "global_invocation_id"
@@ -671,13 +672,13 @@ const META = {
             "name": "array",
             "attributes": [
               {
-                "id": 10433,
+                "id": 27282,
                 "line": 18,
                 "name": "group",
                 "value": "0"
               },
               {
-                "id": 10434,
+                "id": 27283,
                 "line": 18,
                 "name": "binding",
                 "value": "9"
@@ -696,13 +697,13 @@ const META = {
           "binding": 9,
           "attributes": [
             {
-              "id": 10433,
+              "id": 27282,
               "line": 18,
               "name": "group",
               "value": "0"
             },
             {
-              "id": 10434,
+              "id": 27283,
               "line": 18,
               "name": "binding",
               "value": "9"
@@ -717,13 +718,13 @@ const META = {
             "name": "array",
             "attributes": [
               {
-                "id": 10439,
+                "id": 27288,
                 "line": 19,
                 "name": "group",
                 "value": "0"
               },
               {
-                "id": 10440,
+                "id": 27289,
                 "line": 19,
                 "name": "binding",
                 "value": "10"
@@ -742,13 +743,13 @@ const META = {
           "binding": 10,
           "attributes": [
             {
-              "id": 10439,
+              "id": 27288,
               "line": 19,
               "name": "group",
               "value": "0"
             },
             {
-              "id": 10440,
+              "id": 27289,
               "line": 19,
               "name": "binding",
               "value": "10"
@@ -766,13 +767,13 @@ const META = {
       "name": "commit",
       "attributes": [
         {
-          "id": 10622,
+          "id": 27471,
           "line": 58,
           "name": "compute",
           "value": null
         },
         {
-          "id": 10623,
+          "id": 27472,
           "line": 58,
           "name": "workgroup_size",
           "value": [
@@ -791,7 +792,7 @@ const META = {
             "name": "vec3u",
             "attributes": [
               {
-                "id": 10660,
+                "id": 27509,
                 "line": 66,
                 "name": "builtin",
                 "value": "global_invocation_id"
@@ -812,7 +813,7 @@ const META = {
             "name": "vec3u",
             "attributes": [
               {
-                "id": 10660,
+                "id": 27509,
                 "line": 66,
                 "name": "builtin",
                 "value": "global_invocation_id"
@@ -822,7 +823,7 @@ const META = {
           },
           "attributes": [
             {
-              "id": 10660,
+              "id": 27509,
               "line": 66,
               "name": "builtin",
               "value": "global_invocation_id"
@@ -838,13 +839,13 @@ const META = {
             "name": "texture_storage_2d",
             "attributes": [
               {
-                "id": 10376,
+                "id": 27225,
                 "line": 3,
                 "name": "group",
                 "value": "0"
               },
               {
-                "id": 10377,
+                "id": 27226,
                 "line": 3,
                 "name": "binding",
                 "value": "0"
@@ -862,13 +863,13 @@ const META = {
           "binding": 0,
           "attributes": [
             {
-              "id": 10376,
+              "id": 27225,
               "line": 3,
               "name": "group",
               "value": "0"
             },
             {
-              "id": 10377,
+              "id": 27226,
               "line": 3,
               "name": "binding",
               "value": "0"
@@ -949,13 +950,13 @@ const META = {
           "binding": 2,
           "attributes": [
             {
-              "id": 10383,
+              "id": 27232,
               "line": 5,
               "name": "group",
               "value": "0"
             },
             {
-              "id": 10384,
+              "id": 27233,
               "line": 5,
               "name": "binding",
               "value": "2"
@@ -970,13 +971,13 @@ const META = {
             "name": "array",
             "attributes": [
               {
-                "id": 10439,
+                "id": 27288,
                 "line": 19,
                 "name": "group",
                 "value": "0"
               },
               {
-                "id": 10440,
+                "id": 27289,
                 "line": 19,
                 "name": "binding",
                 "value": "10"
@@ -995,13 +996,13 @@ const META = {
           "binding": 10,
           "attributes": [
             {
-              "id": 10439,
+              "id": 27288,
               "line": 19,
               "name": "group",
               "value": "0"
             },
             {
-              "id": 10440,
+              "id": 27289,
               "line": 19,
               "name": "binding",
               "value": "10"
@@ -1019,13 +1020,13 @@ const META = {
       "name": "main_image",
       "attributes": [
         {
-          "id": 10658,
+          "id": 27507,
           "line": 65,
           "name": "compute",
           "value": null
         },
         {
-          "id": 10659,
+          "id": 27508,
           "line": 65,
           "name": "workgroup_size",
           "value": [
@@ -1036,7 +1037,21 @@ const META = {
       ]
     }
   ],
-  "presets": []
+  "computeMeta": {},
+  "workgroupSizes": {
+    "diffuse": [
+      16,
+      16
+    ],
+    "commit": [
+      16,
+      16
+    ],
+    "main_image": [
+      16,
+      16
+    ]
+  }
 }
 
 // https://developer.chrome.com/docs/web-platform/webgpu/from-webgl-to-webgpu
@@ -1047,7 +1062,7 @@ export class DiffusionRunner {
     this.getUniformValues = options.getUniformValues
     this.id = options.id ?? "runner:" + Math.random().toString(36).slice(2, 8)
 
-    this.computePipelines = []
+    this.computePipelines = new Map()
     this.uniformBuffers = new Map()
     this.storageBuffers = new Map()
     this.startTime = 0
@@ -1192,12 +1207,16 @@ export class DiffusionRunner {
       ],
     })
 
-    this.computePipelines = META.compute.map((entryPoint) => this.device.createComputePipeline({
-      layout: this.device.createPipelineLayout({
-        bindGroupLayouts: [computeBindGroupLayout],
-      }),
-      compute: { module: computeModule, entryPoint: entryPoint.name }
-    }))
+    for (const entry of META.computeEntries) {
+      const pipeline = this.device.createComputePipeline({
+        layout: this.device.createPipelineLayout({
+          bindGroupLayouts: [computeBindGroupLayout],
+        }),
+        compute: { module: computeModule, entryPoint: entry.name }
+      })
+
+      this.computePipelines.set(entry.name, pipeline)
+    }
 
     this.computeBindGroup = this.device.createBindGroup({
       layout: computeBindGroupLayout,
@@ -1348,17 +1367,35 @@ export class DiffusionRunner {
         this.device.queue.writeBuffer(buffer, 0, floats)
       }
 
-      const enc = this.device.createCommandEncoder()
-      for (const pipe of this.computePipelines) {
-        const pass = enc.beginComputePass()
-        pass.setPipeline(pipe)
-        pass.setBindGroup(0, this.computeBindGroup)
-        pass.dispatchWorkgroups(Math.ceil(this.size.width/16), Math.ceil(this.size.height/16))
-        pass.end()
+      const { width, height } = this.size
+      const encoder = this.device.createCommandEncoder()
+
+      for (const [entryName, pipeline] of this.computePipelines) {
+        const entryComputeMeta = META.computeMeta[entryName]
+        const workgroupSize = META.workgroupSizes[entryName]
+        const workgroupCount = entryComputeMeta?.workgroupCount
+        const repeatTimes = entryComputeMeta?.dispatchCount ?? 1
+
+        for (let i = 0; i < repeatTimes; i++) {
+          const pass = encoder.beginComputePass({
+            label: `${this.id}::pass::compute::${entryName}#${i}`,
+          })
+
+          pass.setPipeline(pipeline)
+          pass.setBindGroup(0, this.computeBindGroup)
+
+          pass.dispatchWorkgroups(
+            workgroupCount?.[0] ?? Math.ceil(width / workgroupSize[0]),
+            workgroupCount?.[1] ?? Math.ceil(height / workgroupSize[1]),
+            workgroupCount?.[2] ?? workgroupSize[2] ?? undefined,
+          )
+
+          pass.end()
+        }
       }
 
       if (this.storageTexture && this.sampleTexture) {
-        enc.copyTextureToTexture(
+        encoder.copyTextureToTexture(
           { texture: this.storageTexture },
           { texture: this.sampleTexture },
           { width: this.size.width, height: this.size.height, depthOrArrayLayers: 1 }
@@ -1367,14 +1404,14 @@ export class DiffusionRunner {
 
       if (this.renderPipeline && this.sampleTexture) {
         const view = this.context.getCurrentTexture().createView()
-        const pass = enc.beginRenderPass({ colorAttachments: [{ view, loadOp: 'clear', storeOp: 'store' }] })
+        const pass = encoder.beginRenderPass({ colorAttachments: [{ view, loadOp: 'clear', storeOp: 'store' }] })
 
         pass.setPipeline(this.renderPipeline)
         pass.setBindGroup(0, this.renderingBindGroup)
         pass.draw(3, 1, 0, 0)
         pass.end()
       }
-      this.device.queue.submit([enc.finish()])
+      this.device.queue.submit([encoder.finish()])
 
       if (!this.disposed) {
         this.frameHandle = requestAnimationFrame(frame)

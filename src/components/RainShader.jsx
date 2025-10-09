@@ -1,13 +1,13 @@
-// Generated on 2025-10-01T19:58:17.778Z
+// Generated on 2025-10-08T20:13:20.815Z
 import { useRef, useEffect, useId } from 'react'
 
-export function CheckerboardShader(props) {
+export function RainShader(props) {
   const canvasRef = useRef(null)
   const runnerRef = useRef(null)
   const lastMousePos = useRef({ x: 0, y: 0 })
   const currentZoom = useRef(1.0)
   const elementId = useId()
-  const shaderId = "Checkerboard"
+  const shaderId = "Rain"
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -16,11 +16,11 @@ export function CheckerboardShader(props) {
     const runnerExists = checkRunnerExists(shaderId, elementId)
 
     if (!runnerExists) {
-      runnerRef.current = new CheckerboardRunner({
+      runnerRef.current = new RainRunner({
         canvas,
         id: getRunnerId(shaderId, elementId),
         getUniformValues: () => {
-          const selectedPresetName = (props && props.preset) ?? "Default"
+          const selectedPresetName = (props && props.preset) ?? "Stoplight"
                   // Build overrides from direct props whose keys match META.uniforms
           const overrides = (() => {
             const out = {}
@@ -135,7 +135,7 @@ export function CheckerboardShader(props) {
   }, [])
 
   return (
-    <div className="w-full h-full">
+    <div className={props.className}>
       <canvas
         ref={canvasRef}
         className="w-full h-full"
@@ -156,116 +156,178 @@ struct Mouse { pos: vec2f, start: vec2f, delta: vec2f, zoom: f32, click: i32 };
 @group(0) @binding(6) var nearest_repeat: sampler;
 @group(0) @binding(7) var bilinear_repeat: sampler;
 @group(0) @binding(8) var trilinear_repeat: sampler;
+// Shader by baxin1919 https://www.shadertoy.com/view/WfsBRS
 /*
 {
   "params": [
     {
-      "id": "u_one",
-      "label": "One",
-      "range": { "min": 0, "max": 1, "step": 0.01 }
+      "id": "u_speed",
+      "label": "Speed",
+      "range": {
+        "min": 0,
+        "max": 3,
+        "step": 0.01
+      }
     },
     {
-      "id": "u_two",
-      "label": "Two",
-      "range": { "min": 0, "max": 1, "step": 0.01 }
-    }
+      "id": "u_cycleLen",
+      "label": "Cycle length",
+      "range": {
+        "min": 1,
+        "max": 60,
+        "step": 0.1
+      }
+    },
+    {
+      "id": "u_trailLen",
+      "label": "Trail length",
+      "range": {
+        "min": 1,
+        "max": 30,
+        "step": 0.1
+      }
+    },
+    {
+      "id": "u_scale",
+      "label": "Scale",
+      "range": {
+        "min": 8,
+        "max": 128,
+        "step": 2
+      }
+    },
+    {
+      "id": "u_hue",
+      "label": "Hue",
+      "range": {
+        "min": 0,
+        "max": 1,
+        "step": 0.001
+      }
+    },
   ],
   "presets": [
     {
       "name": "Default",
       "values": {
-        "u_one": 0.5,
-        "u_two": 0.5
+        "u_speed": 0.7,
+        "u_hue": 0.57,
+        "u_cycleLen": 20.0,
+        "u_trailLen": 4.0,
+        "u_scale": 30.0
+      }
+    },
+    {
+      "name": "The spoon",
+      "values": {
+        "u_speed": 0.7,
+        "u_hue": 0.333,
+        "u_cycleLen": 20.0,
+        "u_trailLen": 4.0,
+        "u_scale": 30.0
+      }
+    },
+    {
+      "name": "Stoplight",
+      "values": {
+        "u_speed": 0.666,
+        "u_hue": 0,
+        "u_cycleLen": 37.0,
+        "u_trailLen": 5.9,
+        "u_scale": 24
+      }
+    },
+    {
+      "name": "Dense",
+      "values": {
+        "u_speed": 0.69,
+        "u_hue": 0.57,
+        "u_cycleLen": 12.0,
+        "u_trailLen": 8.0,
+        "u_scale": 40.0
       }
     }
   ]
 }
 */
 
+@group(0) @binding(9)  var<uniform> u_speed: f32;
+@group(0) @binding(10) var<uniform> u_cycleLen: f32;
+@group(0) @binding(11) var<uniform> u_trailLen: f32;
+@group(0) @binding(12) var<uniform> u_scale: f32;
+@group(0) @binding(13) var<uniform> u_hue: f32;
 
-// Provided by host:
-// @group(0) @binding(0) var screen: texture_storage_2d<rgba8unorm, write>;
-// struct Time { elapsed: f32, delta: f32, frame: u32 };,
-// @group(0) @binding(1) var<uniform> time: Time;
+// Less critical controls as shader constants (reduces uniform buffers count)
+const OFFSET_SCALE: f32 = 100.0;
+const CYCLE_LEN_RANGE: f32 = 3.0;
+const TRAIL_LEN_RANGE: f32 = 6.0;
+const BRIGHTNESS_POW: f32 = 3.0;
+const HEAD_GLOW_EDGE: f32 = 6.0;
+const SPEED_BASE: f32 = 1.0;
 
-// struct Mouse { pos: vec2f, start: vec2f, delta: vec2f, zoom: f32, click: i32 }
-// @group(0) @binding(2) var<uniform> mouse: Mouse;
+fn fract1(x: f32) -> f32 { return x - floor(x); }
+fn fract3(v: vec3f) -> vec3f { return v - floor(v); }
 
-// Using the mouse:
-// mouse.pos - current mouse position (vec2f)
-// mouse.start - mouse down position (vec2f)
-// mouse.delta - movement since last mouse event (vec2f)
-// mouse.zoom - zoom level (f32, default = 1.0)
-// mouse.click - click state (i32, none = 0, left = 1, right = 2)
+fn hash3(p_in: vec3f) -> f32 {
+  var p = fract3(p_in * 0.3183099 + 0.1);
+  p = p * 17.0;
+  return fract1(p.x * p.y * p.z * (p.x + p.y + p.z));
+}
 
-// @group(0) @binding(3) var nearest: sampler;
-// @group(0) @binding(4) var bilinear: sampler;
-// @group(0) @binding(5) var trilinear: sampler;
-// @group(0) @binding(6) var nearest_repeat: sampler;
-// @group(0) @binding(7) var bilinear_repeat: sampler;
-// @group(0) @binding(8) var trilinear_repeat: sampler;
+fn hsv2rgb(c: vec3f) -> vec3f {
+  let K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
+  let p = abs(fract3(vec3f(c.x) + K.xyz) * 6.0 - K.www);
+  return c.z * mix(K.xxx, clamp(p - K.xxx, vec3f(0.0), vec3f(1.0)), c.y);
+}
 
-// Grid config
-const GRID_X: u32 = 32u;
-const GRID_Y: u32 = 18u;
-const GRID_SIZE = u32(GRID_X * GRID_Y);
+fn color_rain(ipos: vec2f, t: f32) -> vec3f {
+  let col_hash = hash3(vec3f(ipos.x, 0.0, 0.0));
+  let speed = SPEED_BASE + col_hash * 8.0;
+  let offset = col_hash * OFFSET_SCALE;
+  let hue = u_hue;
 
-@group(0) @binding(9) var<storage, read_write> clicks: array<f32, GRID_SIZE>;
+  let cycle_length = u_cycleLen + hash3(vec3f(ipos.x, 1.0, 0.0)) * CYCLE_LEN_RANGE;
+  let trail_length = u_trailLen + hash3(vec3f(ipos.x, 2.0, 0.0)) * TRAIL_LEN_RANGE;
+
+  let y_flow = t * speed + offset;
+  let cycle_pos = (ipos.y + y_flow) - cycle_length * floor((ipos.y + y_flow) / cycle_length);
+
+  var rain_col = vec3f(0.0);
+
+  if (cycle_pos < trail_length) {
+    let pos_in_trail = cycle_pos / max(trail_length, 1e-5);
+
+    let cycle_id = floor((ipos.y + y_flow) / max(cycle_length, 1e-5));
+    let char_hash = hash3(vec3f(ipos.x, cycle_id + ipos.y, 0.0));
+    let char_val = fract1(char_hash * 314.15);
+
+    let brightness = pow(pos_in_trail, BRIGHTNESS_POW);
+    let head_glow = smoothstep(1.0, HEAD_GLOW_EDGE, pos_in_trail);
+
+    let base_color = hsv2rgb(vec3f(hue, 1.0, 1.0));
+    rain_col = base_color * (char_val * brightness);
+    rain_col = rain_col + vec3f(1.0) * head_glow * char_val;
+  }
+
+  return rain_col;
+}
 
 @compute @workgroup_size(16, 16)
 fn main_image(@builtin(global_invocation_id) id: vec3u) {
-  
-  // Viewport resolution (in pixels)
   let screen_size = textureDimensions(screen);
-
-  // Prevent overdraw for workgroups on the edge of the viewport
   if (id.x >= screen_size.x || id.y >= screen_size.y) { return; }
 
-  // Pixel coordinates (centre of pixel, origin at bottom left)
-  let fragCoord = vec2f(f32(id.x) + .5, f32(screen_size.y - id.y) - .5);
+  let fragCoord = vec2f(f32(id.x) + 0.5, f32(screen_size.y - id.y) - 0.5);
+  let res = vec2f(screen_size);
+  let uv = (2.0 * fragCoord - res) / res.y;
 
-  // Normalised pixel coordinates (from 0 to 1)
-  let uv = fragCoord / vec2f(screen_size);
+  let t = time.elapsed * u_speed;
 
-  let sizeX = f32(GRID_X);
-  let sizeY = f32(GRID_Y);
+  let ipos = floor(uv * u_scale);
+  let col = color_rain(ipos, t);
 
-  let total = floor(uv.x * sizeX) + floor(uv.y * sizeY);
-  let isEven = (total % 2.0) == 0.0;
-  
-  let color1 = vec3f(0.4);
-  let color2 = vec3f(0.6);
-  
-  var col = mix(color1, color2, f32(isEven));
-
-  let cell = vec2u(u32(floor(uv.x * sizeX)), u32(floor(uv.y * sizeY)));
-  let mouseCell = vec2u(u32(floor(mouse.pos.x * sizeX)), u32(floor(mouse.pos.y * sizeY)));
-  let mouseIndex = mouseCell.x + mouseCell.y * GRID_X;
-
-  if (mouse.click == 1) {
-    clicks[mouseIndex] = 1.0;
-  } else if (mouse.click == 2) {
-    clicks[mouseIndex] = 0.0;
-  }
-
-  let isHover = all(cell == mouseCell);
-  
-  let cellIndex = cell.x + cell.y * GRID_X;  
-  let isClicked = clicks[cellIndex] == 1.0;
-
-  if (isClicked) {
-    col = vec3f(1.0);
-  } else if (isHover) {
-    col = vec3f(0.7);
-  }
-
-  // Convert from gamma-encoded to linear colour space
-  col = pow(col, vec3f(2.2));
-
-  // Output to screen (linear colour space)
-  textureStore(screen, id.xy, vec4f(col, 1.));
+  textureStore(screen, id.xy, vec4f(clamp(col, vec3f(0.0), vec3f(1.0)), 1.0));
 }
-
 `
 const RENDER_SHADER = `
 struct VSOut {
@@ -292,16 +354,77 @@ struct VSOut {
 }`
 
 const META = {
-  "uniforms": [],
-  "storage": [
+  "uniforms": [
     {
-      "name": "clicks",
+      "name": "u_speed",
       "binding": 9,
-      "size": 2304,
-      "usage": 140
+      "size": 16
+    },
+    {
+      "name": "u_cycleLen",
+      "binding": 10,
+      "size": 16
+    },
+    {
+      "name": "u_trailLen",
+      "binding": 11,
+      "size": 16
+    },
+    {
+      "name": "u_scale",
+      "binding": 12,
+      "size": 16
+    },
+    {
+      "name": "u_hue",
+      "binding": 13,
+      "size": 16
     }
   ],
-  "compute": [
+  "storage": [],
+  "presets": [
+    {
+      "name": "Default",
+      "values": {
+        "u_speed": 0.7,
+        "u_hue": 0.57,
+        "u_cycleLen": 20,
+        "u_trailLen": 4,
+        "u_scale": 30
+      }
+    },
+    {
+      "name": "The spoon",
+      "values": {
+        "u_speed": 0.7,
+        "u_hue": 0.333,
+        "u_cycleLen": 20,
+        "u_trailLen": 4,
+        "u_scale": 30
+      }
+    },
+    {
+      "name": "Stoplight",
+      "values": {
+        "u_speed": 0.666,
+        "u_hue": 0,
+        "u_cycleLen": 37,
+        "u_trailLen": 5.9,
+        "u_scale": 24
+      }
+    },
+    {
+      "name": "Dense",
+      "values": {
+        "u_speed": 0.69,
+        "u_hue": 0.57,
+        "u_cycleLen": 12,
+        "u_trailLen": 8,
+        "u_scale": 40
+      }
+    }
+  ],
+  "computeEntries": [
     {
       "stage": "compute",
       "inputs": [
@@ -311,8 +434,8 @@ const META = {
             "name": "vec3u",
             "attributes": [
               {
-                "id": 8301,
-                "line": 69,
+                "id": 156883,
+                "line": 169,
                 "name": "builtin",
                 "value": "global_invocation_id"
               }
@@ -332,8 +455,8 @@ const META = {
             "name": "vec3u",
             "attributes": [
               {
-                "id": 8301,
-                "line": 69,
+                "id": 156883,
+                "line": 169,
                 "name": "builtin",
                 "value": "global_invocation_id"
               }
@@ -342,8 +465,8 @@ const META = {
           },
           "attributes": [
             {
-              "id": 8301,
-              "line": 69,
+              "id": 156883,
+              "line": 169,
               "name": "builtin",
               "value": "global_invocation_id"
             }
@@ -358,13 +481,13 @@ const META = {
             "name": "texture_storage_2d",
             "attributes": [
               {
-                "id": 8244,
+                "id": 156558,
                 "line": 3,
                 "name": "group",
                 "value": "0"
               },
               {
-                "id": 8245,
+                "id": 156559,
                 "line": 3,
                 "name": "binding",
                 "value": "0"
@@ -382,13 +505,13 @@ const META = {
           "binding": 0,
           "attributes": [
             {
-              "id": 8244,
+              "id": 156558,
               "line": 3,
               "name": "group",
               "value": "0"
             },
             {
-              "id": 8245,
+              "id": 156559,
               "line": 3,
               "name": "binding",
               "value": "0"
@@ -398,155 +521,282 @@ const META = {
           "access": "read"
         },
         {
-          "name": "mouse",
+          "name": "time",
           "type": {
-            "name": "Mouse",
+            "name": "Time",
             "attributes": null,
-            "size": 32,
+            "size": 12,
             "members": [
               {
-                "name": "pos",
-                "type": {
-                  "name": "vec2f",
-                  "attributes": null,
-                  "size": 8
-                },
-                "attributes": null,
-                "offset": 0,
-                "size": 8
-              },
-              {
-                "name": "start",
-                "type": {
-                  "name": "vec2f",
-                  "attributes": null,
-                  "size": 8
-                },
-                "attributes": null,
-                "offset": 8,
-                "size": 8
-              },
-              {
-                "name": "delta",
-                "type": {
-                  "name": "vec2f",
-                  "attributes": null,
-                  "size": 8
-                },
-                "attributes": null,
-                "offset": 16,
-                "size": 8
-              },
-              {
-                "name": "zoom",
+                "name": "elapsed",
                 "type": {
                   "name": "f32",
                   "attributes": null,
                   "size": 4
                 },
                 "attributes": null,
-                "offset": 24,
+                "offset": 0,
                 "size": 4
               },
               {
-                "name": "click",
+                "name": "delta",
                 "type": {
-                  "name": "i32",
+                  "name": "f32",
                   "attributes": null,
                   "size": 4
                 },
                 "attributes": null,
-                "offset": 28,
+                "offset": 4,
+                "size": 4
+              },
+              {
+                "name": "frame",
+                "type": {
+                  "name": "u32",
+                  "attributes": null,
+                  "size": 4
+                },
+                "attributes": null,
+                "offset": 8,
                 "size": 4
               }
             ],
-            "align": 8,
-            "startLine": 2,
-            "endLine": 2,
+            "align": 4,
+            "startLine": 1,
+            "endLine": 1,
             "inUse": true
           },
           "group": 0,
-          "binding": 2,
+          "binding": 1,
           "attributes": [
             {
-              "id": 8251,
-              "line": 5,
+              "id": 156562,
+              "line": 4,
               "name": "group",
               "value": "0"
             },
             {
-              "id": 8252,
-              "line": 5,
+              "id": 156563,
+              "line": 4,
               "name": "binding",
-              "value": "2"
+              "value": "1"
             }
           ],
           "resourceType": 0,
           "access": "read"
         },
         {
-          "name": "clicks",
+          "name": "u_speed",
           "type": {
-            "name": "array",
+            "name": "f32",
             "attributes": [
               {
-                "id": 8293,
-                "line": 66,
+                "id": 156592,
+                "line": 107,
                 "name": "group",
                 "value": "0"
               },
               {
-                "id": 8294,
-                "line": 66,
+                "id": 156593,
+                "line": 107,
                 "name": "binding",
                 "value": "9"
               }
             ],
-            "size": 2304,
-            "count": 576,
-            "stride": 4,
-            "format": {
-              "name": "f32",
-              "attributes": null,
-              "size": 4
-            }
+            "size": 4
           },
           "group": 0,
           "binding": 9,
           "attributes": [
             {
-              "id": 8293,
-              "line": 66,
+              "id": 156592,
+              "line": 107,
               "name": "group",
               "value": "0"
             },
             {
-              "id": 8294,
-              "line": 66,
+              "id": 156593,
+              "line": 107,
               "name": "binding",
               "value": "9"
             }
           ],
-          "resourceType": 1,
-          "access": "read_write"
+          "resourceType": 0,
+          "access": "read"
+        },
+        {
+          "name": "u_scale",
+          "type": {
+            "name": "f32",
+            "attributes": [
+              {
+                "id": 156604,
+                "line": 110,
+                "name": "group",
+                "value": "0"
+              },
+              {
+                "id": 156605,
+                "line": 110,
+                "name": "binding",
+                "value": "12"
+              }
+            ],
+            "size": 4
+          },
+          "group": 0,
+          "binding": 12,
+          "attributes": [
+            {
+              "id": 156604,
+              "line": 110,
+              "name": "group",
+              "value": "0"
+            },
+            {
+              "id": 156605,
+              "line": 110,
+              "name": "binding",
+              "value": "12"
+            }
+          ],
+          "resourceType": 0,
+          "access": "read"
+        },
+        {
+          "name": "u_hue",
+          "type": {
+            "name": "f32",
+            "attributes": [
+              {
+                "id": 156608,
+                "line": 111,
+                "name": "group",
+                "value": "0"
+              },
+              {
+                "id": 156609,
+                "line": 111,
+                "name": "binding",
+                "value": "13"
+              }
+            ],
+            "size": 4
+          },
+          "group": 0,
+          "binding": 13,
+          "attributes": [
+            {
+              "id": 156608,
+              "line": 111,
+              "name": "group",
+              "value": "0"
+            },
+            {
+              "id": 156609,
+              "line": 111,
+              "name": "binding",
+              "value": "13"
+            }
+          ],
+          "resourceType": 0,
+          "access": "read"
+        },
+        {
+          "name": "u_cycleLen",
+          "type": {
+            "name": "f32",
+            "attributes": [
+              {
+                "id": 156596,
+                "line": 108,
+                "name": "group",
+                "value": "0"
+              },
+              {
+                "id": 156597,
+                "line": 108,
+                "name": "binding",
+                "value": "10"
+              }
+            ],
+            "size": 4
+          },
+          "group": 0,
+          "binding": 10,
+          "attributes": [
+            {
+              "id": 156596,
+              "line": 108,
+              "name": "group",
+              "value": "0"
+            },
+            {
+              "id": 156597,
+              "line": 108,
+              "name": "binding",
+              "value": "10"
+            }
+          ],
+          "resourceType": 0,
+          "access": "read"
+        },
+        {
+          "name": "u_trailLen",
+          "type": {
+            "name": "f32",
+            "attributes": [
+              {
+                "id": 156600,
+                "line": 109,
+                "name": "group",
+                "value": "0"
+              },
+              {
+                "id": 156601,
+                "line": 109,
+                "name": "binding",
+                "value": "11"
+              }
+            ],
+            "size": 4
+          },
+          "group": 0,
+          "binding": 11,
+          "attributes": [
+            {
+              "id": 156600,
+              "line": 109,
+              "name": "group",
+              "value": "0"
+            },
+            {
+              "id": 156601,
+              "line": 109,
+              "name": "binding",
+              "value": "11"
+            }
+          ],
+          "resourceType": 0,
+          "access": "read"
         }
       ],
       "overrides": [],
-      "startLine": 69,
-      "endLine": 120,
+      "startLine": 169,
+      "endLine": 183,
       "inUse": true,
       "calls": {},
       "name": "main_image",
       "attributes": [
         {
-          "id": 8299,
-          "line": 68,
+          "id": 156881,
+          "line": 168,
           "name": "compute",
           "value": null
         },
         {
-          "id": 8300,
-          "line": 68,
+          "id": 156882,
+          "line": 168,
           "name": "workgroup_size",
           "value": [
             "16",
@@ -556,26 +806,24 @@ const META = {
       ]
     }
   ],
-  "presets": [
-    {
-      "name": "Default",
-      "values": {
-        "u_one": 0.5,
-        "u_two": 0.5
-      }
-    }
-  ]
+  "computeMeta": {},
+  "workgroupSizes": {
+    "main_image": [
+      16,
+      16
+    ]
+  }
 }
 
 // https://developer.chrome.com/docs/web-platform/webgpu/from-webgl-to-webgpu
-export class CheckerboardRunner {
+export class RainRunner {
   constructor(options) {
     this.canvas = options.canvas
     this.alphaMode = options.alphaMode ?? 'premultiplied'
     this.getUniformValues = options.getUniformValues
     this.id = options.id ?? "runner:" + Math.random().toString(36).slice(2, 8)
 
-    this.computePipelines = []
+    this.computePipelines = new Map()
     this.uniformBuffers = new Map()
     this.storageBuffers = new Map()
     this.startTime = 0
@@ -720,12 +968,16 @@ export class CheckerboardRunner {
       ],
     })
 
-    this.computePipelines = META.compute.map((entryPoint) => this.device.createComputePipeline({
-      layout: this.device.createPipelineLayout({
-        bindGroupLayouts: [computeBindGroupLayout],
-      }),
-      compute: { module: computeModule, entryPoint: entryPoint.name }
-    }))
+    for (const entry of META.computeEntries) {
+      const pipeline = this.device.createComputePipeline({
+        layout: this.device.createPipelineLayout({
+          bindGroupLayouts: [computeBindGroupLayout],
+        }),
+        compute: { module: computeModule, entryPoint: entry.name }
+      })
+
+      this.computePipelines.set(entry.name, pipeline)
+    }
 
     this.computeBindGroup = this.device.createBindGroup({
       layout: computeBindGroupLayout,
@@ -876,17 +1128,35 @@ export class CheckerboardRunner {
         this.device.queue.writeBuffer(buffer, 0, floats)
       }
 
-      const enc = this.device.createCommandEncoder()
-      for (const pipe of this.computePipelines) {
-        const pass = enc.beginComputePass()
-        pass.setPipeline(pipe)
-        pass.setBindGroup(0, this.computeBindGroup)
-        pass.dispatchWorkgroups(Math.ceil(this.size.width/16), Math.ceil(this.size.height/16))
-        pass.end()
+      const { width, height } = this.size
+      const encoder = this.device.createCommandEncoder()
+
+      for (const [entryName, pipeline] of this.computePipelines) {
+        const entryComputeMeta = META.computeMeta[entryName]
+        const workgroupSize = META.workgroupSizes[entryName]
+        const workgroupCount = entryComputeMeta?.workgroupCount
+        const repeatTimes = entryComputeMeta?.dispatchCount ?? 1
+
+        for (let i = 0; i < repeatTimes; i++) {
+          const pass = encoder.beginComputePass({
+            label: `${this.id}::pass::compute::${entryName}#${i}`,
+          })
+
+          pass.setPipeline(pipeline)
+          pass.setBindGroup(0, this.computeBindGroup)
+
+          pass.dispatchWorkgroups(
+            workgroupCount?.[0] ?? Math.ceil(width / workgroupSize[0]),
+            workgroupCount?.[1] ?? Math.ceil(height / workgroupSize[1]),
+            workgroupCount?.[2] ?? workgroupSize[2] ?? undefined,
+          )
+
+          pass.end()
+        }
       }
 
       if (this.storageTexture && this.sampleTexture) {
-        enc.copyTextureToTexture(
+        encoder.copyTextureToTexture(
           { texture: this.storageTexture },
           { texture: this.sampleTexture },
           { width: this.size.width, height: this.size.height, depthOrArrayLayers: 1 }
@@ -895,14 +1165,14 @@ export class CheckerboardRunner {
 
       if (this.renderPipeline && this.sampleTexture) {
         const view = this.context.getCurrentTexture().createView()
-        const pass = enc.beginRenderPass({ colorAttachments: [{ view, loadOp: 'clear', storeOp: 'store' }] })
+        const pass = encoder.beginRenderPass({ colorAttachments: [{ view, loadOp: 'clear', storeOp: 'store' }] })
 
         pass.setPipeline(this.renderPipeline)
         pass.setBindGroup(0, this.renderingBindGroup)
         pass.draw(3, 1, 0, 0)
         pass.end()
       }
-      this.device.queue.submit([enc.finish()])
+      this.device.queue.submit([encoder.finish()])
 
       if (!this.disposed) {
         this.frameHandle = requestAnimationFrame(frame)

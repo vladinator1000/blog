@@ -4,9 +4,8 @@ import { blog } from "../lib/markdoc/frontmatter.schema"
 import PageLayout from "../layouts/PageLayout.astro"
 import PageMeta from "../components/PageMeta.astro"
 import { SITE_TITLE } from "../config"
-import { SlimeShader } from "src/components/SlimeShader"
-import { CheckerboardShader } from "src/components/CheckerBoardShader"
 import { DiffusionShader } from "src/components/DiffusionShader"
+import { RainShader } from "src/components/RainShader"
 
 export const prerender = true
 
@@ -72,9 +71,7 @@ const sortedPosts = posts
     </ul>
     <div class="mt-5 w-full grid gap-2">
       <h2 class="text-sm text-gray-300">Shader(s) of the day</h2>
-      <SlimeShader client:load />
       <DiffusionShader client:load />
-      <CheckerboardShader client:load />
     </div>
   </section>
 </PageLayout>
