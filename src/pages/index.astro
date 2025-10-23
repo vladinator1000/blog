@@ -4,10 +4,10 @@ import { blog } from "../lib/markdoc/frontmatter.schema"
 import PageLayout from "../layouts/PageLayout.astro"
 import PageMeta from "../components/PageMeta.astro"
 import { SITE_TITLE } from "../config"
-import { DiffusionShader } from "src/components/DiffusionShader"
-import { RainShader } from "src/components/RainShader"
-import { LifeShader, PongShader } from "src/components/PongShader"
-import { StructShader, StructTestShader } from "src/components/StructTest"
+// import { DiffusionShader } from "src/components/DiffusionShader"
+// import { RainShader } from "src/components/RainShader"
+// import { LifeShader, PongShader } from "src/components/PongShader"
+// import { StructShader, StructTestShader } from "src/components/StructTest"
 
 export const prerender = true
 
@@ -71,11 +71,11 @@ const sortedPosts = posts
         })
       }
     </ul>
-    <div class="mt-5 w-full grid gap-2">
+    <!-- <div class="mt-5 w-full grid gap-2">
       <h2 class="text-sm text-gray-300">Shader(s) of the day</h2>
-      <!-- <DiffusionShader client:load /> -->
-      <!-- <PongShader client:load /> -->
+      <DiffusionShader client:load />
+      <PongShader client:load />
       <StructShader client:load shape={{radius: 0.3, color: [1,1,1,1], thickness: 0.01 }} speed={1.0} />
-    </div>
+    </div> -->
   </section>
 </PageLayout>
