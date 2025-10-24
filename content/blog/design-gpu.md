@@ -1,7 +1,7 @@
 ---
 external: false
-title: "Product design using the GPU"
-description: "Building a WebGPU shader editor"
+title: "Shaders as components"
+description: "Building a composable WebGPU shader editor for product design."
 date: 2025-10-23
 ---
 
