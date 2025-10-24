@@ -59,5 +59,8 @@ export default defineConfig({
         "react-dom/server": "react-dom/server.edge",
       },
     },
+    ssr: {
+      external: ['prismjs']
+    }
   },
 });
