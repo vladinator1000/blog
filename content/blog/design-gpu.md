@@ -5,6 +5,8 @@ description: "Building a WebGPU shader editor"
 date: 2025-10-23
 ---
 
+This article is for product designers who want a glimpse of a new product design paradigm and engineers who are curious about live GPU programming for the web.
+
 Wouldn't it be cool if you could create this kind of design in the browser?
 {% video src="/images/design-gpu/slime-mold.mp4" alt="Slime mold simulation blending with text" /%}
 
@@ -24,6 +26,10 @@ This article explores the technical aspects of building such a tool.
 ## Code as a storage format
 Inspired by [Paper](https://paper.design/), with a twist. Treating code as a first class citizen. Anything you see on the canvas, you can edit the source of.
 
+todo: add diagram here
+
+Here's how it feels to edit a shader and see it update in real time:
+
 {% video src="/images/design-gpu/inline-editor.mp4" alt="" /%}
 
 Even though we're persisting the designs as code, we can still have a nice editor experience with parameters and presets. 
@@ -32,6 +38,7 @@ This little interaction here makes me so happy:
 - Flip through presets for the current shader using the mouse wheel.
 
 {% video src="/images/design-gpu/preset-tweaking.mp4" alt="Exploring variations of presets and parameters" /%}
+
 
 
 ## Betting on WebGPU
@@ -139,11 +146,6 @@ Then, in the fragment shader we'll fill the triangle with the texture from the c
   return textureSample(screen, defaultSampler, in.uv);
 }
 ```
-
-
-
-
-
 
 ## The shader element
 
@@ -702,29 +704,8 @@ It doesn't translate to English cleanly, but the literal translation is somethin
 --------- DRAFT CONTENT BELOW -------------------
 todo finish writing
 
-## Sheets of paper on the drafting table
 
-### Incremental parsing with tree-sitter
-- **Text as source of truth**: Pages are React components
-- **tree-sitter**: Add elements, update styles, reparent nodes
-- **Future vision**: CRDT-based collaborative editing (see CRDT_TSX_VISION.md)
-
-### The visual toolbelt
-- **Move tool**: Drag elements, multi-select, alignment
-- **Frame tool**: Draw containers, nest elements
-- **Text tool**: Typography with shader backgrounds
-- **Rectangle tool**: Mask and clip shaders
-- **Pan/zoom**: Infinite canvas navigation
-
-
-### Layering and Compositing
-- CSS blend modes: multiply, screen, overlay, difference
-- Clip paths for complex masking
-- Z-index for depth
-- Opacity for transparency
-- Result: Shader elements compose like Photoshop layers
-
-## VII. The Export Compiler: Optimized for Production
+## Exporting optimized code
 Generate optimized code per shader.
 - No wasted resources
 - Zero unused features in production
@@ -749,163 +730,35 @@ export class BloomGPURunner {
 }
 ```
 
-### Memory Efficiency Display
-- Chrome WebGPU Inspector integration
-- Shows buffer memory, texture memory, pipeline count
-- Example: Rain shader = 124 bytes buffer + 1 compute pipeline
-- Diffusion shader = 10x memory + 3 pipelines (simulation complexity)
-- Users can see exactly what their shader costs
-
-## VIII. Development Experience: Iteration Speed
-
-
-### Monaco Integration
-- Syntax highlighting for WGSL
-- Error markers from GPU compilation info
-- Prelude lines invisible (injected at runtime)
-- Save to localStorage for persistence
-
-### Developer Tools
-- Compilation errors with line numbers
+## Developer tools
+- Monaco integration - syntax highlighting and error markers from GPU compilation info
 - GPU stats: Buffer memory, texture memory, pipelines
 - Frame rate counter
 - Storage buffer inspection controls
 
-## IX. Challenges and Solutions
 
-### Challenge 1: Uniform Struct Layout
-**Problem**: WGSL struct alignment rules (16-byte boundaries)
-**Solution**: Reflection-based padding calculation + flat array serialization
+## The intersection of design and parallel computing
+To explore:
+- Applying compute shaders to more primitives like points
+- Using the points to create other visuals a-la Unreal PCG [https://nebukam.github.io/PCGExtendedToolkit/](https://nebukam.github.io/PCGExtendedToolkit/), [Houdini operators](https://caveacademy.com/wiki/software/introduction-to-houdini-course/04-networks-and-operators-ops/)
+- What if you could simulate and nudge points physically (blending simulation and user input)
+- Multiplayer
+- Asset management, treat pages and components as modules that can be imported
+- Language model integration
+- Shader browser and community
 
-### Challenge 2: Storage Buffer Persistence
-**Problem**: Buffers reset on pipeline rebuild
-**Solution**: Cache buffer contents before destroy, restore after recreation
+In the end, there's one question at the centre of this experiment:
+> What if compute shaders were as easy to write, compose and share as React components?
 
-### Challenge 3: Mouse Coordinate Systems
-**Problem**: CSS pixels vs device pixels, top-left vs bottom-left origin
-**Solution**: Coordinate transformation layer in mouse event handlers
+Answering that question fully will require more than one article, and it will involve:
+- Incremental and error-tolerant parsing of TypeScript code
+- Transactions and conflict-free replicated data types
+- Efficient re-rendering elements when the code changes 
+- Bi-directional editing - from code to GUI and back
+- Stable user selections that survive refactors and formatting
 
-### Challenge 4: Concurrent Pipeline Updates
-**Problem**: Multiple elements sharing same shader, different parameters
-**Solution**: Runner registry with element-scoped IDs
+A sneak peek:
 
-### Challenge 5: Export Code Size
-**Problem**: Including entire editor runtime
-**Solution**: Tree-shaking + custom minimal runner per shader
+{% video src="/images/design-gpu/tree-explorer.mp4" alt="" /%}
 
-### Challenge 6: Preset Management
-**Problem**: Keeping presets in sync with code edits
-**Solution**: Metadata comments parsed at runtime, not build time
-
-### Challenge 7: Parameter Namespacing
-**Problem**: Nested structs like `shape.rotation.speed`
-**Solution**: Flatten with dot notation, support both flat and nested access
-
-## X. What's Next: The CRDT Vision
-
-### Current Limitations
-- Single-user experience
-- Local storage only
-- No version history beyond browser undo
-
-### Future: Collaborative Editing
-- CRDT-based text layer (Yjs already in package.json)
-- Tree-sitter TSX incremental parsing
-- Intent-based AST edits compiled to minimal text changes
-- Real-time collaboration: Multiple cursors, presence
-- Worker-based projection service for performance
-
-### The Architecture Shift
-```
-Current: Jotai atoms ↔ Canvas
-Future: CRDT text ↔ Tree-sitter ↔ Projection ↔ Canvas
-```
-
-### Why This Matters
-- **Multiplayer editing**: Build shaders with friends
-- **Agent collaboration**: AI pair programming for shaders
-- **Stable selections**: Survive refactors and formatting
-- **Transactional intents**: Undo/redo across modalities
-- **Convergence**: Edits from code and GUI merge correctly
-
-## XI. Lessons Learned
-
-### What Worked Well
-1. **WebGPU abstraction**: `GPURunner` hides complexity effectively
-2. **Metadata-driven UI**: Parameters self-describe their controls
-3. **Export compiler**: Bespoke pipelines enable real-world use
-4. **Included shader library**: Provides templates and inspiration
-5. **Test-driven approach**: Browser tests caught GPU edge cases
-
-### What I'd Do Differently
-1. **Earlier CRDT integration**: Single source of truth from day one
-2. **Shader module system**: Import/export functions between shaders
-3. **Better performance profiling**: GPU timeline visualization
-4. **Asset pipeline**: Texture uploads, audio reactive shaders
-5. **Mobile support**: Touch gestures, performance constraints
-
-### Technical Debts
-- Some atoms could be derived instead of stored
-- AST manipulation is brittle without CRDT
-- Export templates have duplication (needs refactor)
-- Storage buffer API could be more ergonomic
-- Test coverage for complex multi-element scenarios
-
-## XII. For the Paper.js Team: An Open Question
-
-### Common Ground
-- Visual design tools for creative coding
-- Real-time manipulation with immediate feedback
-- Export to production-ready code
-- Community of artists and developers
-
-### This Project Adds
-- GPU compute for simulations and effects
-- Shader source editing alongside visual tweaking
-- WebGPU rendering instead of Canvas 2D
-- Preset system for shareability
-
-### Potential Collaboration
-- Integrate Paper.js vector tools with shader effects
-- SVG masks and clip paths for shaders
-- Shared export pipeline (Paper + shaders)
-- Unified design canvas with multiple rendering backends
-
-**The question**: Would you be interested in working on this together?
-
-## XIII. Try It Yourself
-
-### Getting Started
-```bash
-npm install
-npm run dev
-```
-
-### First Shader
-1. Pick "Spiral" from the shader browser
-2. Adjust parameters with sliders
-3. Open code editor (Edit button)
-4. Change `angle * 8.0` to `angle * 16.0`
-5. Watch it update live
-6. Add new parameter, update presets
-7. Export as React component
-8. Use in your blog/portfolio
-
-### Deployment
-```bash
-npm run deploy  # → Cloudflare Workers
-```
-Global edge deployment with SSR and instant cold starts
-
-## XIV. Conclusion: The Intersection of Design and Compute
-
-This project sits at the intersection of:
-- **Design tools** (Paper.js, Figma)
-- **Shader art** (Shadertoy, ISF)
-- **Component libraries** (Storybook, React ecosystem)
-- **Creative coding** (Processing, p5.js, Three.js)
-
-It's not trying to replace any of these—it's exploring a gap:
-> What if GPU compute shaders were as composable and shareable as React components?
-
-The result: A tool for creating emergent visual complexity through layering, with the ability to dive into code when inspiration strikes, and the power to export production-ready components that run anywhere.
+Thank you for reading.
