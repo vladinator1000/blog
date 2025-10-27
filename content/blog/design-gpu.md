@@ -1,11 +1,11 @@
 ---
 external: false
-title: "Building a shader editor"
-description: "Composable shader editor for product design."
+title: "Building a shader editor for designers"
+description: "Composable shader editor for product design using WebGPU."
 date: 2025-10-23
 ---
 
-This article is for product designers who want a sneak peek of a new product design tool and people who are curious about graphics programming for the web.
+This article is for product designers who want a sneak peek of a new product design tool, and people who are interested in graphics programming for the web.
 
 Imagine if you could quickly create these kind of designs in the browser:
 {% video src="/images/design-gpu/slime-mold.mp4" alt="Slime mold simulation blending with text" /%}
@@ -14,9 +14,9 @@ What if you could also stack simulations to create emergent visuals?
 
 {% video src="/images/design-gpu/game-of-life-pong.mp4" alt="Game of life simulation blending with pong" /%}
 
-This paradigm lets us gain variety, fidelity and performance, at the expense of learning how to write compute shaders. 
+This paradigm behind the tool in the videos above lets us gain variety, fidelity and performance, at the expense of learning how to write compute shaders.
 
-Let's call it **technical design**. The idea is to create experiences by combining GPU programs and HTML. This combination allows us to innovate in visuals and interaction, without having to re-invent technology that works well.
+Let's call this paradigm **technical design**. The idea is to create experiences by combining GPU programs and HTML. This combination allows us to innovate in visuals and interaction, without having to re-invent technology that works well. We're trying to pick constraints in good taste (if there is such a thing), so the important part is we're aiming to make GPUs accessible to designers without sacrificing performance.
 
 The flow we're targeting:
 1. Create your own shaders using the WebGPU shading language.
@@ -31,7 +31,7 @@ Benefits of each step:
 This article explores the technical aspects of building a tool that enables that.
 
 ## Code as a storage format
-Inspired by [Paper](https://paper.design/), with a twist. Treating code as a first class citizen. Anything you see on the canvas, you can edit the source of.
+The demo you're seeing is inspired by [Paper](https://paper.design/), with a twist. Treating code as a first class citizen. Anything you see on the canvas, you can edit the source of.
 
 todo: add diagram here
 
