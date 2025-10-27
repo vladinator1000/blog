@@ -1,27 +1,34 @@
 ---
 external: false
-title: "Shaders as components"
-description: "Building a composable WebGPU shader editor for product design."
+title: "Building a shader editor"
+description: "Composable shader editor for product design."
 date: 2025-10-23
 ---
 
-This article is for product designers who want a glimpse of a new product design paradigm and engineers who are curious about live GPU programming for the web.
+This article is for product designers who want a sneak peek of a new product design tool and people who are curious about graphics programming for the web.
 
-Wouldn't it be cool if you could create this kind of design in the browser?
+Imagine if you could quickly create these kind of designs in the browser:
 {% video src="/images/design-gpu/slime-mold.mp4" alt="Slime mold simulation blending with text" /%}
 
-What if you could stack multiple simulations like this?
+What if you could also stack simulations to create emergent visuals?
 
 {% video src="/images/design-gpu/game-of-life-pong.mp4" alt="Game of life simulation blending with pong" /%}
 
-This is a new kind of product design tool. One that puts the power of the GPU into the hands of the designer.
+This paradigm lets us gain variety, fidelity and performance, at the expense of learning how to write compute shaders. 
 
-Here's the idea:
-1. Treat shaders as HTML elements, customize with parameters and presets.
-2. Combine them with mix blend modes to get novel designs.
-3. Create your own shaders using the WebGPU shading language.
+Let's call it **technical design**. The idea is to create experiences by combining GPU programs and HTML. This combination allows us to innovate in visuals and interaction, without having to re-invent technology that works well.
 
-This article explores the technical aspects of building such a tool.
+The flow we're targeting:
+1. Create your own shaders using the WebGPU shading language.
+1. Treat shaders as React components with props and presets.
+1. Layer them as HTML elements using CSS blend modes.
+
+Benefits of each step:
+1. Distinctive visuals with high performance and fidelity.
+1. Building blocks that are easy to tweak, reuse, and share.
+1. Visual variety and interoperability with the web platform.
+
+This article explores the technical aspects of building a tool that enables that.
 
 ## Code as a storage format
 Inspired by [Paper](https://paper.design/), with a twist. Treating code as a first class citizen. Anything you see on the canvas, you can edit the source of.
@@ -42,17 +49,17 @@ This little interaction here makes me so happy:
 
 
 ## Betting on WebGPU
-The most used graphics API on the web is WebGL. It's great, widely supported accross browsers. Has a vibrant community, a plethora of tooling and content built around it. But it comes with limitations:
+GPUs are good at graphics because they excel in parallel computation, but they have been infamously hard to program in a performant way, until now.  The most used graphics API on the web currently is WebGL. It's great, widely supported accross browsers. Has a vibrant community, a plethora of tooling and content built around it. But it comes with limitations:
 - Based on OpenGL ES, which is [deprecated on Apple platforms](https://developer.apple.com/documentation/glkit/opengl_deprecated/).
 - Has [global state](https://webglfundamentals.org/webgl/lessons/resources/webgl-state-diagram.html), making it [hard to debug](https://kangz.net/posts/2016/07/11/lets-do-opengl-archeology/).
 - Doesn't support arbitrary computation with compute shaders.
 
-WebGPU on the other hand:
-- Is more [performant](https://www.youtube.com/watch?v=PPmkMe4dDl0).
+There is a new API standard that aims to succeed it. It's called WebGPU.
+- It's more [performant](https://www.youtube.com/watch?v=PPmkMe4dDl0).
 - Supports compute shaders.
 - Gives you fine-grained control over resources.
 - Is easier to debug.
-- Comes with a steeper learning curve.
+- But comes with a steeper learning curve.
 
 To [quote François Beaufort](https://developer.chrome.com/docs/web-platform/webgpu/from-webgl-to-webgpu) from Google:
 > As WebGL’s global state model made creating robust, composable libraries and applications difficult and fragile, WebGPU significantly reduced the amount of state that developers needed to keep track of while sending commands to the GPU.
@@ -701,15 +708,127 @@ There's a Bulgarian saying I reflexively told myself when I realized the possibi
 It doesn't translate to English cleanly, but the literal translation is something akin to "Talk about a poverty of imagination." It feels like I had such a narrow vision of what's possible, I was blown away when I saw how quickly you can create these experiences.
 
 
---------- DRAFT CONTENT BELOW -------------------
+## Building the compiler
 
-todo finish writing
+We now have the tools to create gorgeous designs. They have the potential to run in any browser, because they're using WebGPU.
+To enable that, we need a compiler that can generate the JavaScript that will instruct browsers how to render our designs.
+
+A couple of guiding principles for the programs that we will be exporting:
+- Don't waste memory.
+- Don't waste compute cycles.
+
+With those in mind, it turns out wgsl_reflect gives us a lot of information that can be used to generate an efficient program. We know:
+- How many compute entrypoints are there.
+- What kind of variables our shader uses.
+- How big they are.
+
+Given a shader like this:
+
+```wgsl
+struct ViewUniforms {
+    viewProjection: mat4x4<f32>
+}
+
+struct ModelUniforms {
+    model: mat4x4<f32>,
+    color: vec4<f32>,
+    intensity: f32
+}
+
+@binding(0) @group(0) var<uniform> viewUniforms: ViewUniforms;
+@binding(1) @group(0) var<uniform> modelUniforms: ModelUniforms;
+@binding(2) @group(0) var u_sampler: sampler;
+@binding(3) @group(0) var u_texture: texture_2d<f32>;
+
+struct VertexInput {
+    @location(0) a_position: vec3<f32>,
+    @location(1) a_normal: vec3<f32>,
+    @location(2) a_color: vec4<f32>,
+    @location(3) a_uv: vec2<f32>
+}
+
+struct VertexOutput {
+    @builtin(position) Position: vec4<f32>,
+    @location(0) v_position: vec4<f32>,
+    @location(1) v_normal: vec3<f32>,
+    @location(2) v_color: vec4<f32>,
+    @location(3) v_uv: vec2<f32>
+}
+
+@vertex
+fn main(input: VertexInput) -> VertexOutput {
+    var output: VertexOutput;
+    output.Position = viewUniforms.viewProjection * modelUniforms.model * vec4<f32>(input.a_position, 1.0);
+    output.v_position = output.Position;
+    output.v_normal = input.a_normal;
+    output.v_color = input.a_color * modelUniforms.color * modelUniforms.intensity;
+    output.v_uv = input.a_uv;
+    return output;
+}
+```
+
+`wgsl_reflect` can calculate the bind group information, including sizes and offsets for members of uniform buffers.
+
+```ts
+import { WgslReflect } from "./wgsl_reflect.module.js";
 
 
-## Exporting optimized code
-Generate optimized code per shader.
-- No wasted resources
-- Zero unused features in production
+const shader = `/* ... */`;
+
+const reflect = new WgslReflect(shader);
+
+console.log(reflect.functions.length); // 1
+console.log(reflect.structs.length); // 4
+console.log(reflect.uniforms.length); // 2
+
+// Shader entry points
+console.log(reflect.entry.vertex.length); // 1, there is 1 vertex entry function.
+console.log(reflect.entry.fragment.length); // 0, there are no fragment entry functions.
+console.log(reflect.entry.compute.length); // 0, there are no compute entry functions.
+
+console.log(reflect.entry.vertex[0].name); // "main", the name of the vertex entry function.
+
+console.log(reflect.entry.vertex[0].resources.length); // 2, main uses modelUniforms and viewUniforms resource bindings.
+console.log(reflect.entry.vertex[0].resources[0].name); // viewUniforms
+console.log(reflect.entry.vertex[0].resources[1].name); // modelUniforms
+
+// Vertex shader inputs
+console.log(reflect.entry.vertex[0].inputs.length); // 4, inputs to "main"
+console.log(reflect.entry.vertex[0].inputs[0].name); // "a_position"
+console.log(reflect.entry.vertex[0].inputs[0].location); // 0
+console.log(reflect.entry.vertex[0].inputs[0].locationType); // "location" (can be "builtin")
+console.log(reflect.entry.vertex[0].inputs[0].type.name); // "vec3"
+console.log(reflect.entry.vertex[0].inputs[0].type.format.name); // "f32"
+
+// Gather the bind groups used by the shader.
+const groups = reflect.getBindGroups();
+console.log(groups.length); // 1
+console.log(groups[0].length); // 4, bindings in group(0)
+
+console.log(groups[0][1].resourceType); // ResourceType.Uniform, the type of resource at group(0) binding(1)
+console.log(groups[0][1].size); // 96, the size of the uniform buffer.
+console.log(groups[0][1].members.length); // 3, members in ModelUniforms.
+console.log(groups[0][1].members[0].name); // "model", the name of the first member in the uniform buffer.
+console.log(groups[0][1].members[0].offset); // 0, the offset of 'model' in the uniform buffer.
+console.log(groups[0][1].members[0].size); // 64, the size of 'model'.
+console.log(groups[0][1].members[0].type.name); // "mat4x4", the type of 'model'.
+console.log(groups[0][1].members[0].type.format.name); // "f32", the format of the mat4x4.
+
+console.log(groups[0][2].resourceType); // ResourceType.Sampler
+
+console.log(groups[0][3].resourceType); // ResourceType.Texture
+console.log(groups[0][3].type.name); // "texture_2d"
+console.log(groups[0][3].type.format.name); // "f32"
+```
+
+
+The only missing parts in the WGSL standard we need are:
+- What initial values should the variables have?
+- How many times should the compute functions be dispatched?
+
+
+### Building a compiler
+
 
 ### Export process
 1. Reflection - parse shader and metadata
