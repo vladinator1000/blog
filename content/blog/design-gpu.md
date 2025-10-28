@@ -53,8 +53,8 @@ This little interaction here makes me so happy:
 
 
 
-## Betting on WebGPU
-GPUs are good at graphics because they excel in parallel computation, but they have been infamously hard to program in a performant way, until now.  The most used graphics API on the web currently is WebGL. It's great, widely supported accross browsers. Has a vibrant community, a plethora of tooling and content built around it. But it comes with limitations:
+## Choosing the graphics API
+If we're going to be running shaders, we need to choose a graphics API. GPUs are good at graphics because they excel in parallel computation, but they've been hard to program efficiently on the web. The most popular web graphics API at the time of writing is WebGL. It's great, widely supported accross browsers. Has a vibrant community, a plethora of tooling and content built around it. But it comes with limitations:
 - Based on OpenGL ES, which is [deprecated on Apple platforms](https://developer.apple.com/documentation/glkit/opengl_deprecated/).
 - Has [global state](https://webglfundamentals.org/webgl/lessons/resources/webgl-state-diagram.html), making it [hard to debug](https://kangz.net/posts/2016/07/11/lets-do-opengl-archeology/).
 - Doesn't support arbitrary computation with compute shaders.
@@ -127,7 +127,7 @@ In general, WebGPU supports 3 kinds of shaders: vertex, fragment and compute. He
 
 ![rasterization.png](/images/design-gpu/rasterization.png)
 
-For this demo we're making a 2D design app where users compose basic shapes to create designs. We'll make one architecturally defining choice here. We'll use the web platform and won't render every shape from scratch. The user will be mixing divs, text and canvas elements to create the final result. The only thing we'll be controlling the rendering of at a low level is the canvas elements. Each canvas gets its own GPU runner. (Naming things is hard.) This choice will let us reuse the existing capabilities of the browser, while allowing us to push the creative envelope in the canvas elements.
+For this demo we're making a 2D design app where users compose basic shapes to create designs. We'll make one architecturally defining choice here. We'll use the web platform and won't render every shape from scratch. The user will be mixing divs, text and canvas elements to create the final result. Each canvas element gets its own GPU runner. (Naming things is hard, let me know if you have a better name for this.) This choice will let us reuse the existing capabilities of the browser, while allowing us to push the creative envelope in the canvas elements.
 
 We'll draw 1 triangle per canvas in the vertex shader:
 
@@ -159,7 +159,7 @@ Then, in the fragment shader we'll fill the triangle with the texture from the c
 }
 ```
 
-## The shader element
+## Creating the shader element
 
 If we follow through this separate GPU runner per element architecture, we can get arbitrarily complex shaders running independently. Here's a sneak peek:
 
@@ -311,9 +311,9 @@ For now, it's important to understand that we're preparing commands on the CPU a
 
 This hot reloading of shaders allows us to regenerate the code necessary for the GPU on the fly, it doesn't matter where we're loading the shaders from. As long as they're written in WGSL, we can generate the code for them using reflection at run time.
 
-### Generating the parameter user interface
+## Generating the parameter editor
 
-We can also use reflection to generate a nice graphical user interface for the parameters and presets. WGSL lets you define uniform variables like this
+We can use reflection to generate a nice graphical user interface for parameters and presets. WGSL lets you define uniform variables like this
 
 ```wgsl
 @group(0) @binding(9) var<uniform> u_colorBack: vec4f;
@@ -327,7 +327,7 @@ We can also use reflection to generate a nice graphical user interface for the p
 @group(0) @binding(17) var<uniform> u_noiseFrequency: f32;
 ```
 
-The group and binding have to do with the memory layout of our shader, luckily `wgsl_reflect` provides us with memory offsets so we can write the buffers in our frame loop. Managing memory in WebGPU is explicit. I find it quite confusing so please take my code with a pinch of salt. [https://webgpufundamentals.org/webgpu/lessons/webgpu-memory-layout.html](https://webgpufundamentals.org/webgpu/lessons/webgpu-memory-layout.html)
+The group and binding have to do with the memory layout of our shader, luckily `wgsl_reflect` provides us with memory offsets so we can write the buffers in our frame loop. Managing memory in WebGPU is explicit. [https://webgpufundamentals.org/webgpu/lessons/webgpu-memory-layout.html](https://webgpufundamentals.org/webgpu/lessons/webgpu-memory-layout.html)
 
 ```ts
   // ...
