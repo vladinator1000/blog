@@ -10,13 +10,15 @@ This article is for product designers who want a sneak peek of a new product des
 Imagine if you could quickly create these kind of designs in the browser:
 {% video src="/images/design-gpu/slime-mold.mp4" alt="Slime mold simulation blending with text" /%}
 
-What if you could also stack simulations to create emergent visuals?
+What if you could stack simulations to create emergent visuals?
 
 {% video src="/images/design-gpu/game-of-life-pong.mp4" alt="Game of life simulation blending with pong" /%}
 
-This paradigm behind the tool in the videos above lets us gain variety, fidelity and performance, at the expense of learning how to write compute shaders.
+This paradigm behind the demo you're seeing lets us gain variety, fidelity and performance, at the expense of learning how to write compute shaders.
 
-Let's call this **technical design**. The idea is to create experiences by combining GPU programs and HTML. This combination allows us to innovate in visuals and interaction, without having to re-invent technology that works well. We're trying to pick constraints in good taste (if there is such a thing), so the important part is we're aiming to make GPUs accessible to designers without sacrificing performance.
+Let's call it **technical design**. The idea is to create visual experiences by combining shaders and HTML. This combination will allow us to innovate in the areas of visuals, interaction and emergent behavior, without having to re-invent technology that works well. In other words:
+
+Picking constraints that increase expression without sacrificing performance.
 
 The flow we're targeting:
 1. Create your own shaders using the WebGPU shading language.
@@ -31,39 +33,46 @@ The benefits:
 Let's also mention some drawbacks so that we know what we're getting into:
 - Browser support is still limited. 
 - There's a learning curve to overcome.
-- It's hard to reuse data between the document and the shader.
+- It's hard to reuse data between the document object model and the shader.
 
-Now that we've established the constraints, it's time to dive in, and explore the technical aspects of building a design application that works within them.
+Now that we've established the constraints, it's time to dive in, and explore the technical aspects of building a product design application that works within them.
 
-## Code as a storage format
-The demo you're seeing is inspired by [Paper](https://paper.design/), with a twist. Treating code as a first class citizen. Anything you see on the canvas, you can edit the source of.
+## Code as the source of truth
+The demo you're seeing is inspired by [Paper](https://paper.design/), with a twist. Treating code as a first class citizen. Anything you see on the canvas, you can edit the source of. Very much like [compute.toys](https://compute.toys/).
 
-todo: add diagram here
+Storing assets as standard code:
+- Makes them shareable, editable and reusable.
+- Opens the door to using text generation tools such as language models.
+
+The tricky part is making them editable both textually and visually. This article will focus on textual editing of shaders and visual editing of parameters.
 
 Here's how it feels to edit a shader and see it update in real time:
 
 {% video src="/images/design-gpu/inline-editor.mp4" alt="" /%}
 
-Even though we're persisting the designs as code, we can still have a nice editor experience with parameters and presets. 
-This little interaction here makes me so happy:
-- Preview shaders on hover.
-- Flip through presets for the current shader using the mouse wheel.
+Even though we're persisting the designs as code, we can improve the editor experience with parameters and presets. Having unique controls per shader gives us the ability to quickly explore the "good looking possibility space" each of them has to offer.
+
+The interaction here makes me so happy! You can preview shaders on hover and flip through presets for the current shader using the mouse wheel.
 
 {% video src="/images/design-gpu/preset-tweaking.mp4" alt="Exploring variations of presets and parameters" /%}
 
 
 
 ## Choosing the graphics API
-If we're going to be running shaders, we need to choose a graphics API. GPUs are good at graphics because they excel in parallel computation, but they've been hard to program efficiently on the web. The most popular web graphics API at the time of writing is WebGL. It's great, widely supported accross browsers. Has a vibrant community, a plethora of tooling and content built around it. But it comes with limitations:
+What is a shader anyway? It's a program that gets executed in parallel by the GPU.
+
+If we're going to be running these programs, we need to choose a graphics API. GPUs are good at graphics because they excel in parallel computation, but from the point of view of an average designer, they're not exactly easy to program efficiently on the web.
+
+The most popular web graphics API at the time of writing is WebGL. It's great, widely supported accross browsers. Has a vibrant community, a plethora of tooling and content built around it. But it comes with limitations:
 - Based on OpenGL ES, which is [deprecated on Apple platforms](https://developer.apple.com/documentation/glkit/opengl_deprecated/).
 - Has [global state](https://webglfundamentals.org/webgl/lessons/resources/webgl-state-diagram.html), making it [hard to debug](https://kangz.net/posts/2016/07/11/lets-do-opengl-archeology/).
 - Doesn't support arbitrary computation with compute shaders.
 
-There is a new API standard that aims to succeed it. It's called WebGPU.
+There is a new API that aims to succeed it. It's called WebGPU.
 - It's more [performant](https://www.youtube.com/watch?v=PPmkMe4dDl0).
+- Is easier to debug.
 - Supports compute shaders.
 - Gives you fine-grained control over resources.
-- Is easier to debug.
 - But comes with a steeper learning curve.
 
 To [quote François Beaufort](https://developer.chrome.com/docs/web-platform/webgpu/from-webgl-to-webgpu) from Google:
@@ -71,13 +80,44 @@ To [quote François Beaufort](https://developer.chrome.com/docs/web-platform/web
 
 The elephant in the room here is [browser support](https://caniuse.com/webgpu). At the time of writing, WebGPU is supported on Chromium, with partial support in Firefox and Safari, but development is [progressing steadily](https://github.com/gpuweb/gpuweb/wiki/Implementation-Status).
 
-Product design is a discipline of exploring possibility spaces. It should be a few steps ahead of what's currently feasible across platforms. Think of applications like Blender, Substance Painter, Unreal Engine and Houdini, we're only catching up to them now.
+Product design is a discipline of exploring possibility spaces. It should be a few steps ahead of what's currently feasible across platforms. Think of applications like Blender, Substance Painter, Unreal Engine and Houdini. We're starting to catching up to them now that WebGPU browser support is increasing.
 
-This is why I'm placing my bet on WebGPU.
 
-### Running compute shaders in the browser
+## Running compute shaders in the browser
 
-Here's a WebGPU shader:
+This article only covers the broad strokes of rendering with WebGPU. If you'd like to learn how it works in detail, I recommend reading [WebGPU Fundamentals](https://webgpufundamentals.org/webgpu/lessons/).
+
+In general, it supports 3 kinds of shaders: vertex, fragment and compute. Here's what they do in rough terms:
+- Vertex shaders calculate the positions of triangle vertices.
+- Fragment shaders determine the color of the fragments inside the triangles.
+- Compute shaders can do arbitrary calculations.
+
+![rasterization.png](/images/design-gpu/rasterization.png)
+
+For this demo we're making a 2D design app where users compose basic shapes to create designs. We'll make one architecturally defining choice here. We'll use the web platform and won't render every shape from scratch. The user will be mixing divs, text and canvas elements to create the final result. Each canvas element gets its own GPU runner. (Naming things is hard, let me know if you have a better name for this.) This choice will let us reuse the existing capabilities of the browser, while allowing us to push the creative envelope in the canvas elements.
+
+
+We'll draw 1 triangle per canvas in the vertex shader:
+
+```wgsl
+struct VSOut {
+  @builtin(position) pos: vec4f,
+  @location(0) uv: vec2f
+};
+
+@vertex fn vertex_main(@builtin(vertex_index) vertexIndex: u32) -> VSOut {
+  var pos = array<vec2f, 3>(vec2f(-1.0,-3.0), vec2f(-1.0,1.0), vec2f(3.0,1.0));
+  var uv  = array<vec2f, 3>(vec2f(0.0, 2.0), vec2f(0.0,0.0), vec2f(2.0,0.0));
+
+  var out: VSOut;
+  out.pos = vec4f(pos[vertexIndex],0.0,1.0);
+  out.uv = uv[vertexIndex]; 
+
+  return out;
+}
+```
+
+We'll do most of the logic for our particular design in the compute shader:
 
 ```wgsl
 struct Time {
@@ -114,42 +154,7 @@ fn main_image(@builtin(global_invocation_id) id: vec3u) {
 }
 ```
 
-It looks like this:
-
-![default-shader.png](/images/design-gpu/default-shader.png)
-
-If you'd like to learn how to wire it up, I recommend reading [WebGPU Fundamentals](https://webgpufundamentals.org/webgpu/lessons/webgpu-fundamentals.html). It takes some setting up, so we'll only cover the broader strokes here.
-
-In general, WebGPU supports 3 kinds of shaders: vertex, fragment and compute. Here's what they do in rough terms:
-- Vertex shaders calculate the positions of triangle vertices.
-- Fragment shaders determine the color of the fragments inside the triangles.
-- Compute shaders can do arbitrary calculations.
-
-![rasterization.png](/images/design-gpu/rasterization.png)
-
-For this demo we're making a 2D design app where users compose basic shapes to create designs. We'll make one architecturally defining choice here. We'll use the web platform and won't render every shape from scratch. The user will be mixing divs, text and canvas elements to create the final result. Each canvas element gets its own GPU runner. (Naming things is hard, let me know if you have a better name for this.) This choice will let us reuse the existing capabilities of the browser, while allowing us to push the creative envelope in the canvas elements.
-
-We'll draw 1 triangle per canvas in the vertex shader:
-
-```wgsl
-struct VSOut {
-  @builtin(position) pos: vec4f,
-  @location(0) uv: vec2f
-};
-
-@vertex fn vertex_main(@builtin(vertex_index) vertexIndex: u32) -> VSOut {
-  var pos = array<vec2f, 3>(vec2f(-1.0,-3.0), vec2f(-1.0,1.0), vec2f(3.0,1.0));
-  var uv  = array<vec2f, 3>(vec2f(0.0, 2.0), vec2f(0.0,0.0), vec2f(2.0,0.0));
-
-  var out: VSOut;
-  out.pos = vec4f(pos[vertexIndex],0.0,1.0);
-  out.uv = uv[vertexIndex]; 
-
-  return out;
-}
-```
-
-Then, in the fragment shader we'll fill the triangle with the texture from the compute shader
+Then, in the fragment shader we'll color the triangle with data from the texture we wrote to in the compute shader.
 ```wgsl
 @group(0) @binding(0) var screen: texture_2d<f32>;
 @group(0) @binding(1) var defaultSampler: sampler;
@@ -159,31 +164,45 @@ Then, in the fragment shader we'll fill the triangle with the texture from the c
 }
 ```
 
+And here's the rendered result.
+
+![default-shader.png](/images/design-gpu/default-shader.png)
+
+
+Some readers might ask themselves "Why is the rendering logic of the final image not in the fragment shader?". I'm putting it in the compute shader for this demo because WebGPU requires a somewhat manual style of resource management. You might notice that the binding groups are different for each shader type. It's easier to implement if we only allow the user to edit the compute shader bindings and keep the vertex and fragment shaders "static". With that said, it would probably be a good idea if the final product also exposed the fragment shader to the user.
+
+
 ## Creating the shader element
 
-If we follow through this separate GPU runner per element architecture, we can get arbitrarily complex shaders running independently. Here's a sneak peek:
+If we follow through with this separate GPU runner per element architecture, we can get arbitrarily complex shaders running independently. Here's a sneak peek:
 
 ![shader-elements.png](/images/design-gpu/shader-elements.png)
 
-We'll put all of the DOM events and user interactions in this React element:
-- Element position and scale
-- Mix blend modes
-- Input handling
+We'll put all of the DOM events and user interactions in a React element:
+- Element position and scale.
+- Mix blend mode.
+- Input handling.
+- Instantiating a "GPU runner".
 ```tsx
 export function Shader() {}
 ```
 
-The GPU work will be handled by this class:
-- Parsing and hot loading shaders
-- Setting up resources such as buffers and textures
-- Dispatching compute and render passes
+The GPU work:
+- Parsing and reloading shaders on change.
+- Setting up resources such as buffers and textures.
+- Dispatching compute and render passes.
+
+Will be handled by this class.
 ```tsx
 export class GPURunner {}
 ```
 
-How do you render arbitrary shaders?
+## Rendering user shaders
 
-First, we need to parse them, we'll start with a library of built-in shaders such as the compute shader you saw above, but even they need to be treated the same way as user shaders. For this, we'll use Brendan Duncan's [wgsl_reflect](https://github.com/brendan-duncan/wgsl_reflect/). It can parse a WGSL shader and analyze its contents.
+We'll start with a library of built-in shaders such as the compute shader you saw above. If we treat them the same as user shaders, whatever tools we build for the stock shaders can also work for the users. 
+
+
+First, we need to parse the shader source. We'll use Brendan Duncan's excellent [wgsl_reflect](https://github.com/brendan-duncan/wgsl_reflect/). It can parse a WGSL shader and analyze its contents.
 
 ```ts
 export class GPURunner {
@@ -196,7 +215,7 @@ export class GPURunner {
 ```
 
 
-For example we can use it to create the memory layout of our program
+We can use the reflection data to create the memory layout of our program.
 ```ts
     this.computeBindGroupLayout = device.createBindGroupLayout({
       label: `${this.id}::bindGroupLayout::compute`,
@@ -222,9 +241,9 @@ For example we can use it to create the memory layout of our program
     })
 ```
 
-We can also read the compute entrypoints (functions), and then generate pipelines using using the layout
+Then generate pipelines using the compute entrypoints and the layout we just created.
 ```ts
-    for (const entryPoint of this.reflection.entry.compute) { // <-- reflect the functions, e.g. fn main_image() {}
+    for (const entryPoint of this.reflection.entry.compute) { // <-- the compute functions, e.g. main_image
       const pipeline = device.createComputePipeline({
         label: `${this.id}::pipeline::compute::${entryPoint.name}`,
         layout: device.createPipelineLayout({
@@ -237,9 +256,9 @@ We can also read the compute entrypoints (functions), and then generate pipeline
     }
 ```
 
-Following this pattern we can tell WebGPU what to expect and start rendering frame by frame. There's a lot that goes into this function, if you'd like to delve deeper: [WebGPU Fundamentals](https://webgpufundamentals.org/webgpu/lessons/).
+Following this pattern we can tell WebGPU what to expect and start rendering frame by frame. There's a lot that goes into this, for a more detailed explanation: [WebGPU Fundamentals](https://webgpufundamentals.org/webgpu/lessons/webgpu-fundamentals.html).
 
-For now, it's important to understand that we're preparing commands on the CPU and sending them to the GPU for execution every frame. 
+In general, the `frame()` function is preparing commands on the CPU and sending them to the GPU for execution every frame. 
 
 ```ts
   startRendering() {
@@ -274,10 +293,14 @@ For now, it's important to understand that we're preparing commands on the CPU a
         // ...
         pass.setPipeline(computePipeline)
         pass.setBindGroup(0, this.computeBindGroup)
+
+        // You can think of a workgroup as a collection of threads. Each thread runs in parallel. 
+        // For more information on workgroups: https://webgpufundamentals.org/webgpu/lessons/webgpu-compute-shaders.html
+        // We can also let the user specify their own workgroup counts, but we'll try to keep it simple in this demo and derive them from the screen size.
         pass.dispatchWorkgroups(
-          workgroupCount?.[0] ?? Math.ceil(width / workgroupSize[0]),
-          workgroupCount?.[1] ?? Math.ceil(height / workgroupSize[1]),
-          workgroupCount?.[2] ?? workgroupSize[2] ?? undefined,
+          Math.ceil(this.canvas.width / workgroupSize[0]),
+          Math.ceil(this.canvas.height / workgroupSize[1]),
+          workgroupSize[2] ?? undefined,
         )
         pass.end()
       }
@@ -309,11 +332,11 @@ For now, it's important to understand that we're preparing commands on the CPU a
 
 ```
 
-This hot reloading of shaders allows us to regenerate the code necessary for the GPU on the fly, it doesn't matter where we're loading the shaders from. As long as they're written in WGSL, we can generate the code for them using reflection at run time.
+This hot reloading of shaders allows us to regenerate the code necessary for the GPU on the fly, it doesn't matter where we're loading the shaders from. As long as they're written in standard WGSL, we can generate the code for them at run time.
 
 ## Generating the parameter editor
 
-We can use reflection to generate a nice graphical user interface for parameters and presets. WGSL lets you define uniform variables like this
+We can use the shader reflection data to generate a nice user interface for parameters and presets. WGSL lets you define uniform variables like this
 
 ```wgsl
 @group(0) @binding(9) var<uniform> u_colorBack: vec4f;
@@ -327,7 +350,7 @@ We can use reflection to generate a nice graphical user interface for parameters
 @group(0) @binding(17) var<uniform> u_noiseFrequency: f32;
 ```
 
-The group and binding have to do with the memory layout of our shader, luckily `wgsl_reflect` provides us with memory offsets so we can write the buffers in our frame loop. Managing memory in WebGPU is explicit. [https://webgpufundamentals.org/webgpu/lessons/webgpu-memory-layout.html](https://webgpufundamentals.org/webgpu/lessons/webgpu-memory-layout.html)
+The group and binding have to do with the memory layout of our shader, luckily `wgsl_reflect` provides us with memory offsets so we can write the buffers in our frame loop. The layout in WebGPU is explicit: [https://webgpufundamentals.org/webgpu/lessons/webgpu-memory-layout.html](https://webgpufundamentals.org/webgpu/lessons/webgpu-memory-layout.html)
 
 ```ts
   // ...
@@ -466,7 +489,7 @@ export function ParameterList({ elementId, shaderId }: Props) {
 }
 ```
 
-Structs are also an option. We can't have a huge list of uniforms anyway, because WebGPU gives us a limited number of bindings.
+Structs are also an option. We can't have a lot of uniform variables anyway, because WebGPU gives us a limited number of bindings.
 
 ```wgsl
 /*
@@ -518,13 +541,13 @@ With the above configuration we generate these parameter controls:
 ![struct-param.png](/images/design-gpu/struct-param.png)
 
 
-By deriving from source, we can edit the shader inline and have both the element visuals the editor UI update at the blink of an eye. Take a look at this port of [baxin1919's rain shader](https://www.shadertoy.com/view/WfsBRS) and see how fast we can add a color gradient parameter:
+By deriving from source, we can edit the shader inline and have both the canvas element and the editor UI update at the blink of an eye. Take a look at this port of [baxin1919's rain shader](https://www.shadertoy.com/view/WfsBRS) and see how fast we can add a color gradient parameter:
 
 {% video src="/images/design-gpu/creating-uniform.mp4" alt="" /%}
 
 ## Creating your own shaders
 
-You can start with one of the built-in shaders, using the inline editor like the example above, or open the big editor and create your own from scratch. Let's make a painting:
+You can start with one of the built-in shaders, using an inline editor like the example above, or open a big editor and create your own from scratch. Let's make a painting:
 
 {% video src="/images/design-gpu/painting.mp4" alt="" /%}
 
@@ -706,7 +729,7 @@ Let's corrupt it by inverting the glow parameter and increasing the fade.
 
 {% video src="/images/design-gpu/dark-flower.mp4" alt="" /%}
 
-There's a Bulgarian saying I reflexively told myself when I realized the possibility space this paradigm unlocks.
+There's a Bulgarian saying I reflexively told myself when I realized the levels of expression this paradigm unlocks.
 
 > Направо ти е бедна фантазията.
 
@@ -714,6 +737,6 @@ It doesn't translate to English cleanly, but the literal translation is somethin
 
 Thank you for reading.
 
-This article is part 1 of a series on a shader editor for product designers. Part 2 will be about writing a compiler that generates portable and efficient programs from `.wgsl` shaders. 
+This article is part 1 of a series. Part 2 will be about writing a compiler that generates portable and efficient programs from shaders. Coming soon ™.
 
 [Compiling shaders.](./shader-editor-part-2-compiler)

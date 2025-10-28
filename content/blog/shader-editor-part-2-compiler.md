@@ -9,12 +9,12 @@ todo: write outline
 
 This article is a continuation of [part 1](./shader-editor-part-1). It assumes the reader is familiar with the [WebGPU Fundamentals](https://webgpufundamentals.org/webgpu/lessons/webgpu-fundamentals.html).
 
-We now have the tools to create gorgeous designs. They have the potential to run in any browser, because they're using WebGPU.
-To enable that, we need a compiler that can generate the JavaScript that will instruct browsers how to render our designs.
+We now have the tools to express unique designs. They have the potential to run in any browser, because they're using WebGPU. To enable that, we need a compiler that can generate the JavaScript that will instruct browsers how to render our designs.
 
 A couple of runtime constraints for our programs before we start:
 - Don't waste memory.
 - Don't waste compute cycles.
+- No external dependencies.
 
 With those in mind, let's begin by taking a look at what information [wgsl_reflect](https://github.com/brendan-duncan/wgsl_reflect/) can give us.
 - How many compute entrypoints are there?
@@ -148,8 +148,9 @@ export class BloomGPURunner {
 ```
 
 ## Generating code like cavemen
-- (Ab)using string templates
-- Sticking shader reflection deta in one big pile and reading it
+- Writing code that writes code.
+- (Ab)using string templates.
+- Sticking shader reflection data in one big pile and reading it.
 
 ## Not wasting memory
 - Intro [https://webgpufundamentals.org/webgpu/lessons/webgpu-memory-layout.html](https://webgpufundamentals.org/webgpu/lessons/webgpu-memory-layout.html)
