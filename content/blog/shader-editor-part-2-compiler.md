@@ -4,7 +4,13 @@ title: "Compiling shaders (coming soon)"
 description: "Generating portable and efficient programs from .wgsl shaders (shader editor - part 2)"
 date: 2025-10-28
 ---
+
+--- danger-zone ---
+
+--- not yet finished ---
+
 --- draft 1 ---
+
 todo: write outline
 
 This article is a continuation of [part 1](./shader-editor-part-1). It assumes the reader is familiar with the [WebGPU Fundamentals](https://webgpufundamentals.org/webgpu/lessons/webgpu-fundamentals.html).
