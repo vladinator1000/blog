@@ -738,5 +738,3 @@ It doesn't translate to English cleanly, but the literal translation is somethin
 Thank you for reading.
 
 This article is part 1 of a series. Part 2 will be about writing a compiler that generates portable and efficient programs from shaders. Coming soon ™.
-
-[Compiling shaders.](./shader-editor-part-2-compiler)
