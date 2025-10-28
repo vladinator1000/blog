@@ -120,9 +120,9 @@ It looks like this:
 
 If you'd like to learn how to wire it up, I recommend reading [WebGPU Fundamentals](https://webgpufundamentals.org/webgpu/lessons/webgpu-fundamentals.html). It takes some setting up, so we'll only cover the broader strokes here.
 
-In general, WebGPU supports 3 kinds of shaders: vertex, fragment and compute.
+In general, WebGPU supports 3 kinds of shaders: vertex, fragment and compute. Here's what they do in rough terms:
 - Vertex shaders calculate the positions of triangle vertices.
-- Fragment shaders fill (rasterize) the triangles.
+- Fragment shaders determine the color of the fragments inside the triangles.
 - Compute shaders can do arbitrary calculations.
 
 ![rasterization.png](/images/design-gpu/rasterization.png)
