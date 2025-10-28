@@ -1,6 +1,6 @@
 ---
 external: false
-title: "Building a shader editor for designers"
+title: "Writing a shader editor for designers"
 description: "Composable shader editor for product design using WebGPU. (Shader editor for designers - part 1)"
 date: 2025-10-23
 ---
