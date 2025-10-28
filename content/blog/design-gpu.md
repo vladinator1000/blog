@@ -16,19 +16,24 @@ What if you could also stack simulations to create emergent visuals?
 
 This paradigm behind the tool in the videos above lets us gain variety, fidelity and performance, at the expense of learning how to write compute shaders.
 
-Let's call this paradigm **technical design**. The idea is to create experiences by combining GPU programs and HTML. This combination allows us to innovate in visuals and interaction, without having to re-invent technology that works well. We're trying to pick constraints in good taste (if there is such a thing), so the important part is we're aiming to make GPUs accessible to designers without sacrificing performance.
+Let's call this **technical design**. The idea is to create experiences by combining GPU programs and HTML. This combination allows us to innovate in visuals and interaction, without having to re-invent technology that works well. We're trying to pick constraints in good taste (if there is such a thing), so the important part is we're aiming to make GPUs accessible to designers without sacrificing performance.
 
 The flow we're targeting:
 1. Create your own shaders using the WebGPU shading language.
 1. Treat shaders as React components with props and presets.
 1. Layer them as HTML elements using CSS blend modes.
 
-Benefits of each step:
+The benefits:
 1. Distinctive visuals with high performance and fidelity.
 1. Building blocks that are easy to tweak, reuse, and share.
 1. Visual variety and interoperability with the web platform.
 
-This article explores the technical aspects of building a tool that enables that.
+Let's also mention some drawbacks so that we know what we're getting into:
+- Browser support is still limited. 
+- There's a learning curve to overcome.
+- It's hard to reuse data between the document and the shader.
+
+Now that we've established the constraints, it's time to dive in, and explore the technical aspects of building a design application that works within them.
 
 ## Code as a storage format
 The demo you're seeing is inspired by [Paper](https://paper.design/), with a twist. Treating code as a first class citizen. Anything you see on the canvas, you can edit the source of.
