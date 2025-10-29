@@ -1,5 +1,6 @@
 ---
 external: false
+draft: true
 title: "Compiling shaders (coming soon)"
 description: "Generating portable and efficient programs from .wgsl shaders (shader editor - part 2)"
 date: 2025-10-28
