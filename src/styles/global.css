@@ -23,8 +23,8 @@
     --color-text-bold: 55 65 81;
     /* Tailwind gray-500 #6b7280 */
     --color-text-muted: 107 114 128;
-    /* Tailwind orange-500 #f97316 */
-    --color-text-link: 82 82 91;
+
+    --color-text-link: 0 166 244;
     /* black */
     --color-text-code: 0 0 0;
     /* black */
@@ -34,8 +34,8 @@
     --color-bg-body: 255 255 255;
     /* Tailwind orange-50 #fff7ed */
     --color-bg-code: 255 247 237;
-    /* Tailwind amber-200 #fde68a */
-    --color-bg-selection: 253 230 138;
+
+    --color-bg-selection: 205 225 255;
 
     /* Tailwind orange-100 #ffedd5 */
     --color-border-code: 255 237 213;
@@ -110,17 +110,17 @@
         just add a class `unset` to it. 
     */
   a:not(.unset) {
-    text-decoration: none;
     background-repeat: no-repeat;
     background-size: 100% 1.5px;
     background-position: 0 100%;
-    background-image: linear-gradient(to right,
+    /* background-image: linear-gradient(to right,
         theme("colors.text.link"),
-        theme("colors.text.link"));
+        theme("colors.text.link")); */
+        color: theme("colors.text.link");
   }
 
   a:not(.unset):hover {
-    color: theme("colors.text.link");
+    /* text-decoration:  */
   }
 
   code:not(pre code):not(.unset) {
@@ -196,8 +196,8 @@
     height: 2px;
     position: absolute;
     transform: translateZ(0) scaleX(0);
-    transform-origin: top center;
-    transition: all 0.05s ease-in-out;
+    transform-origin: top left;
+    transition: all 0.05s ease-in;
     background-image: linear-gradient(to bottom,
         theme("colors.text.link"),
         theme("colors.text.link"));
