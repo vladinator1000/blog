@@ -78,6 +78,10 @@ There is a new API that aims to succeed it. It's called WebGPU.
 To [quote François Beaufort](https://developer.chrome.com/docs/web-platform/webgpu/from-webgl-to-webgpu) from Google:
 > As WebGL’s global state model made creating robust, composable libraries and applications difficult and fragile, WebGPU significantly reduced the amount of state that developers needed to keep track of while sending commands to the GPU.
 
+It might feel like the cutting edge, but WebGPU is nothing new in terms of API design. If we start using it we'll only be 10 years behind, instead of 20 years behind the latest graphics APIs.
+
+![Seb Aaltonen on WebGPU](/images/design-gpu/seb-aaltonen-webgpu.png)
+
 The elephant in the room here is [browser support](https://caniuse.com/webgpu). At the time of writing, WebGPU is supported on Chromium, with partial support in Firefox and Safari, but development is [progressing steadily](https://github.com/gpuweb/gpuweb/wiki/Implementation-Status).
 
 Product design is a discipline of exploring possibility spaces. It should be a few steps ahead of what's currently feasible across platforms. Think of applications like Blender, Substance Painter, Unreal Engine and Houdini. We're starting to catching up to them now that WebGPU browser support is increasing.
