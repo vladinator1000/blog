@@ -165,9 +165,16 @@ You can create and edit branches manually or re-prompt a branch as you groom the
 
 I'm not using Johno and Jeremy's tool, because it costs $500 just to sign up (holy pricing), it's very opinionated and doesn't run on your computer. I'm not super convinced about the Python (eugh...) notebook running on a server part, but the tree user interface combined with personal agency feels like it supports the long term understanding idea.
 
-## Conclusion
+## In conclusion
 
-Language models are useful. No doubt about it. But if I hear the word "agentic" one more time, I swear...
+1. Using language models comes with trade-offs.
+1. Ignoring trade-offs bad.
+1. Cognitive debt bad.
+1. Gambling dynamics bad.
+1. Personal agency good.
+1. Focus good.
+
+Language models are useful. No doubt about it, but if I hear the word "agentic" one more time, I swear...
 
 
 Thank you for reading.
