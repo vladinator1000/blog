@@ -169,7 +169,7 @@ I'm not using Johno and Jeremy's tool, because it costs $500 just to sign up (ho
 
 ## In conclusion
 
-1. Using language models comes with trade-offs.
+1. Using coding agents comes with long term trade-offs.
 1. Ignoring trade-offs bad.
 1. Cognitive debt bad.
 1. Gambling dynamics bad.
