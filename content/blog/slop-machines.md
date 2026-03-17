@@ -163,7 +163,9 @@ Doing things  sequentially, in small steps, and without distractions seems cruci
 
 You can create and edit branches manually or re-prompt a branch as you groom the tree, as well as pin/unpin branches from context if you want to generate a new branch using a subset of the tree.
 
-I'm not using Johno and Jeremy's tool, because it costs $500 just to sign up (holy pricing), it's very opinionated and doesn't run on your computer. I'm not super convinced about the Python (eugh...) notebook running on a server part, but the tree user interface combined with personal agency feels like it supports the long term understanding idea.
+I'm not using Johno and Jeremy's tool, because it costs $500 just to sign up (holy pricing), it's very opinionated and doesn't run on your computer. I'm not super convinced about the Python (eugh...) notebook running on a server part, but the tree user interface combined with personal agency feels like it supports the long term understanding idea. And they're not the only ones thinking about this:
+
+![david-k](/images/slop-machines/david-k.png)
 
 ## In conclusion
 
