@@ -86,6 +86,10 @@ Makers don't want to be managers!
 
 It's one thing to context switch every hour. But if we do it every 15 minutes, we're purposefully shooting ourselves in the foot. Don't you want to feel powerful, don't you want to be a manager? Now you can! You just don't get to do it with actual people, you get to cosplay as a manager while another person is telling *you* what to do. 
 
+I also wonder why so many entry-level roles get cut in response to LM progress. I bet that will lead to a shortage of skilled software engineers in the future. It puts whole companies under suspicion in my eyes, because:
+1. If they're doing something a language model can handle without a problem, they're not working on hard enough problems and are at risk of being outcompeted by someone who is.
+2. It signals a disregard for building institutional knowledge, which is a fundamental economic moat in the technology sphere.
+
 > It's funny how often proponents of AI say "I started to enjoy programming for the first time in years" and yet they're surprised when people who *currently* enjoy programming aren't as enthusiastic about the change. (My pal Joe)
 
 Ideas are back in style. We could use some more time [writing them down](https://rfd.shared.oxide.computer/rfd/0001) and iterating on them. It's easier than ever to spend capital on boneheaded ideas. All it takes is to psych yourself out with an LLM. At least before there was more friction (like getting high in the desert with your co-founder, or listening to an a16z podcast for an hour) before you burn a million on something nobody asked for. 
