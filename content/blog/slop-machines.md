@@ -171,7 +171,7 @@ I'm not using Johno and Jeremy's tool, because it costs $500 just to sign up (ho
 
 Language models are useful. No doubt about it, but if I hear the word "agentic" one more time, I swear...
 
-> How can a system possibly plan a sequence of actions, if it can't predict the consequences of its actions? (Yann LeCun)
+> How can a system possibly plan a sequence of actions if it can't predict the consequences of its actions? (Yann LeCun)
 
 
 Thank you for reading.
