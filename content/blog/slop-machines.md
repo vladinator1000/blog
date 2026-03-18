@@ -13,7 +13,7 @@ Coding agents are useful, but something feels off.
 
 I developed two features for my app using coding agents. When adding a third one, the system started breaking in funny little ways. Prompting to fix one kept breaking another. I didn't  understand how they fit together. It felt paralysing.
 
-Everyone's either building with agents or building agents... And I'm sitting here feeling like "this can't be worth it in the long run". Setting up customers to spend their limited cognitive energy to avoid brain rot at every turn is, at best, a product mistake, and at worst - a deliberate attempt to turn users into cattle.
+Everyone's either building with agents or building agents... And I'm sitting here feeling like "this can't be worth it in the long run". Setting up customers to spend their limited cognitive energy to avoid brain rot at every turn is, at best, a product mistake, and at worst, a deliberate attempt to turn users into cattle.
 
 I'm not the only one feeling this, here's Fred Durst on the matter: 
 
@@ -57,7 +57,7 @@ If your personality is anything like mine, having a big pile of stuff to go thro
 
 Language models are undoubtfully useful, but they have become synonymous with artificial intelligence, while being only a subset of it.
 
-As humans, we are constantly engaged in the process of gathering evidence for our existence. The less often we see this evidence - the less often we learn. 
+As humans, we are constantly engaged in the process of gathering evidence for our existence. The less often we see this evidence, the less often we learn. 
 
 This idea is based on [Active Inference](https://direct.mit.edu/books/oa-monograph/5299/Active-InferenceThe-Free-Energy-Principle-in-Mind) - a way of understanding sentient behavior. It looks at perception, planning and action from the perspective of probabilistic inference. Based on an optimization theory called the Free Energy Principle, which is about making a prediction, sampling the world, measuring your "surprise" and minimizing it over time.
 
@@ -94,7 +94,7 @@ I also wonder why so many entry-level roles get cut in response to LM progress. 
 
 Ideas are back in style. We could use some more time [writing them down](https://rfd.shared.oxide.computer/rfd/0001) and iterating on them. It's easier than ever to spend capital on boneheaded ideas. All it takes is to psych yourself out with an LLM. At least before there was more friction (like getting high in the desert with your co-founder, or listening to an a16z podcast for an hour) before you burn a million on something nobody asked for. 
 
-There is only one type of meeting we need more of - meeting with customers.
+There is only one type of meeting we need more of, and that's meeting with customers.
 
 ## Agents are slot machines
 
@@ -141,7 +141,7 @@ The illusion of progress we get when we see the tests pass and the happy path wo
 
 Imagine you're in front of a vending machine. You put a quarter in, nothing drops, then put another quarter in and it gives you nothing a second time. Would you put a 3rd quarter in?
 
-The one part where language models and slot machines differ - you're mathematically guaranteed to lose in slots. Language models won't inherently make you lose, but the actor model-based user interface will. We are playing the wrong game.
+The one part where language models and slot machines differ. You're mathematically guaranteed to lose in slots. Language models won't inherently make you lose, but the actor model-based user interface will. We are playing the wrong game.
 
 ![zozin](/images/slop-machines/zozin.png)
 
