@@ -11,9 +11,7 @@ Coding agents are useful, but something feels off.
 > 
 > Johno Whitaker, fast.ai
 
-I developed two features for my app using coding agents. When adding a third one, the system started breaking in funny little ways. Prompting to fix one kept breaking another. I didn't  understand how they fit together. It felt paralysing.
-
-Everyone's either building with agents or building agents... And I'm sitting here feeling like "this can't be worth it in the long run". Setting up customers to spend their limited cognitive energy to avoid brain rot at every turn is, at best, a product mistake, and at worst, a deliberate attempt to turn users into cattle.
+I spent half a year using coding agents, going through incredible highs and incredible lows. Prompting to fix one bug introduced another subtle one for me to discover further down the line. Everyone's either building with agents or building agents... And I'm sitting here feeling like "this can't be worth it in the long run". Setting up customers to spend their limited cognitive energy to avoid brain rot at every turn is, at best, a product mistake, and at worst, a deliberate attempt to turn users into cattle.
 
 I'm not the only one feeling this, here's Fred Durst on the matter: 
 
