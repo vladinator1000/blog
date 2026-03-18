@@ -167,14 +167,6 @@ I'm not using Johno and Jeremy's tool, because it costs $500 just to sign up (ho
 
 ![david-k](/images/slop-machines/david-k.png)
 
-## In conclusion
-
-1. Using coding agents comes with long term trade-offs.
-1. Ignoring trade-offs bad.
-1. Cognitive debt bad.
-1. Gambling dynamics bad.
-1. Personal agency good.
-1. Focus good.
 
 Language models are useful. No doubt about it, but if I hear the word "agentic" one more time, I swear...
 
