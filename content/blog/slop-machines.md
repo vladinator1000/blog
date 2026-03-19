@@ -86,7 +86,7 @@ Makers don't want to be managers!
 
 It's one thing to context switch every hour. But if we do it every 15 minutes, we're purposefully shooting ourselves in the foot. Don't you want to feel powerful, don't you want to be a manager? Now you can! You just don't get to do it with actual people, you get to cosplay as a manager while another person is telling *you* what to do. 
 
-I also wonder why so many entry-level roles get cut in response to LM progress. I bet that will lead to a shortage of skilled software engineers in the future. It puts whole companies under suspicion in my eyes, because:
+I also wonder why so many entry-level roles get cut in response to LM progress. I bet that will lead to a shortage of skilled software engineers in the future.
 1. If they're doing something a language model can handle without a problem, they're not working on hard enough problems and are at risk of being outcompeted by someone who is.
 2. It signals a disregard for building institutional knowledge, which is a fundamental economic moat in the technology sphere.
 3. Signals a lack of faith in the broader economy long-term.
