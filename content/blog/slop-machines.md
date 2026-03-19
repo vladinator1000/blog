@@ -93,6 +93,8 @@ I also wonder why so many entry-level roles get cut in response to LM progress. 
 
 > It's funny how often proponents of AI say "I started to enjoy programming for the first time in years" and yet they're surprised when people who *currently* enjoy programming aren't as enthusiastic about the change. (My pal Joe)
 
+![zozin-2](/images/slop-machines/zozin-2.png)
+
 Ideas are back in style. We could use some more time [writing them down](https://rfd.shared.oxide.computer/rfd/0001) and iterating on them. It's easier than ever to spend capital on boneheaded ideas. All it takes is to psych yourself out with an LLM. At least before there was more friction (like getting high in the desert with your co-founder, or listening to an a16z podcast for an hour) before you burn a million on something nobody asked for. 
 
 There is only one type of meeting we need more of, and that's meeting with customers.
