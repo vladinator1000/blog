@@ -5,13 +5,13 @@ description: ""
 date: 2026-03-17
 ---
 
-Coding agents are useful, but something feels off.
+Language models are useful.
 
 > It’s a strange time to be a programmer. It’s easier than ever to get started, but also easier than ever to let AI steer you into a situation where you’re overwhelmed by code you don’t understand.
 > 
 > Johno Whitaker, fast.ai
 
-I spent half a year using coding agents, going through incredible highs and incredible lows. Prompting to fix a bug introduced other subtle bugs. Everyone's either building with agents or building agents... And I'm sitting here feeling like "this can't be worth it in the long run".
+Coding agents, however... I spent half a year using them, going through incredible highs and incredible lows. Prompting to fix a bug introduced other subtle bugs. Everyone's either building with agents or building agents... And I'm sitting here feeling like "this can't be worth it in the long run".
 
 Setting up customers to spend their limited cognitive energy to avoid brain rot at every turn is, at best, a product mistake, and at worst, a deliberate attempt to turn users into cattle.
 
