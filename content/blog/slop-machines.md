@@ -11,9 +11,9 @@ Language models are useful.
 > 
 > Johno Whitaker, fast.ai
 
-Coding agents, however... I spent half a year using them, going through incredible highs and incredible lows. Prompting to fix a bug introduced other subtle bugs. Everyone's either building with agents or building agents... And I'm sitting here feeling like "this can't be worth it in the long run".
+Coding agents, however... They make you feel incredible highs and incredible lows. Exclusively using prompting to fix bugs introduces other subtle bugs. Everyone's either building with agents or building agents... And I'm sitting here like "there has to be a trade-off here".
 
-Setting up customers to spend their limited cognitive energy to avoid brain rot at every turn is, at best, a product mistake, and at worst, a deliberate attempt to turn users into cattle.
+LM coding harnesses in their current state are setting us up to spend our limited cognitive energy on avoiding brain rot at every turn. At best, this is a product mistake, and at worst, a deliberate attempt to turn users into cattle. This article won't be just all negative, but to get to the positive section, you'll have to suffer through it first.
 
 I'm not the only one feeling this, here's Fred Durst on the matter: 
 
