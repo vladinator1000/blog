@@ -1,0 +1,154 @@
+---
+import PageLayout from "../../layouts/PageLayout.astro"
+import PageMeta from "../../components/PageMeta.astro"
+import { SITE_TITLE } from "../../config"
+
+export const prerender = false
+
+const ADMIN_PASSWORD = "kieran-stag-admin-2026"
+
+interface RSVPData {
+  name: string
+  attending: "yes" | "no"
+  guests: number
+  dietary: string
+  message: string
+  timestamp: string
+}
+
+let authenticated = false
+let error = ""
+let rsvps: RSVPData[] = []
+let totalAttending = 0
+let totalGuests = 0
+
+const method = Astro.request.method
+const contentType = Astro.request.headers.get("content-type") || ""
+
+if (method === "POST" && contentType.includes("application/x-www-form-urlencoded")) {
+  const formData = await Astro.request.formData()
+  const password = formData.get("password") as string
+
+  if (password === ADMIN_PASSWORD) {
+    authenticated = true
+  } else {
+    error = "Wrong admin password."
+  }
+}
+
+if (authenticated || (method === "GET" && Astro.url.searchParams.get("auth") === "1")) {
+  const kv = Astro.locals.runtime.env.RSVP_KV
+  const list = await kv.list({ prefix: "rsvp:" })
+
+  for (const key of list.keys) {
+    const value = await kv.get(key.name)
+    if (value) {
+      try {
+        rsvps.push(JSON.parse(value))
+      } catch {
+        // skip malformed entries
+      }
+    }
+  }
+
+  rsvps.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
+
+  totalAttending = rsvps.filter((r) => r.attending === "yes").length
+  totalGuests = rsvps.filter((r) => r.attending === "yes").reduce((sum, r) => sum + r.guests, 0)
+}
+---
+
+<PageLayout showHeader={false}>
+  <PageMeta title={`RSVP Admin | ${SITE_TITLE}`} slot="meta" />
+  <section slot="main" class="prose max-w-none">
+    <h1>📋 RSVP Admin — Kieran's Bachelor Party</h1>
+
+    {error && (
+      <p style="color: #e11d48; font-weight: 600;">{error}</p>
+    )}
+
+    {!authenticated && (
+      <form method="POST" class="mt-6">
+        <label for="password" class="block mb-2 font-semibold">Admin Password</label>
+        <input
+          type="password"
+          name="password"
+          id="password"
+          required
+          class="block w-full max-w-md px-3 py-2 mb-4 rounded border border-gray-300 dark:border-gray-600 bg-transparent"
+          placeholder="Enter admin password"
+        />
+        <button
+          type="submit"
+          class="px-4 py-2 rounded bg-blue-600 text-white font-semibold hover:bg-blue-700 transition-colors"
+        >
+          View RSVPs
+        </button>
+      </form>
+    )}
+
+    {authenticated && (
+      <div class="mt-6">
+        <div class="grid grid-cols-3 gap-4 mb-6 not-prose">
+          <div class="p-4 rounded bg-blue-100 dark:bg-blue-900/30 border border-blue-300 dark:border-blue-700 text-center">
+            <div class="text-3xl font-bold">{rsvps.length}</div>
+            <div class="text-sm text-gray-600 dark:text-gray-400">Total Responses</div>
+          </div>
+          <div class="p-4 rounded bg-green-100 dark:bg-green-900/30 border border-green-300 dark:border-green-700 text-center">
+            <div class="text-3xl font-bold">{totalAttending}</div>
+            <div class="text-sm text-gray-600 dark:text-gray-400">Attending</div>
+          </div>
+          <div class="p-4 rounded bg-purple-100 dark:bg-purple-900/30 border border-purple-300 dark:border-purple-700 text-center">
+            <div class="text-3xl font-bold">{totalGuests}</div>
+            <div class="text-sm text-gray-600 dark:text-gray-400">Total Guests</div>
+          </div>
+        </div>
+
+        {rsvps.length === 0 ? (
+          <p class="text-gray-500 italic">No RSVPs yet. Check back later!</p>
+        ) : (
+          <div class="overflow-x-auto not-prose">
+            <table class="w-full text-sm border-collapse">
+              <thead>
+                <tr class="border-b border-gray-300 dark:border-gray-600">
+                  <th class="text-left py-2 px-3">Name</th>
+                  <th class="text-center py-2 px-3">Attending</th>
+                  <th class="text-center py-2 px-3">Guests</th>
+                  <th class="text-left py-2 px-3">Dietary</th>
+                  <th class="text-left py-2 px-3">Message</th>
+                  <th class="text-left py-2 px-3">Submitted</th>
+                </tr>
+              </thead>
+              <tbody>
+                {rsvps.map((rsvp) => {
+                  const date = new Date(rsvp.timestamp).toLocaleString("en-us", {
+                    month: "short",
+                    day: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })
+                  return (
+                    <tr class="border-b border-gray-200 dark:border-gray-700">
+                      <td class="py-2 px-3 font-semibold">{rsvp.name}</td>
+                      <td class="py-2 px-3 text-center">
+                        {rsvp.attending === "yes" ? (
+                          <span style="color: #16a34a; font-weight: 600;">Yes ✅</span>
+                        ) : (
+                          <span style="color: #e11d48; font-weight: 600;">No ❌</span>
+                        )}
+                      </td>
+                      <td class="py-2 px-3 text-center">{rsvp.guests}</td>
+                      <td class="py-2 px-3 text-gray-600 dark:text-gray-400">{rsvp.dietary || "—"}</td>
+                      <td class="py-2 px-3 text-gray-600 dark:text-gray-400 max-w-xs">{rsvp.message || "—"}</td>
+                      <td class="py-2 px-3 text-gray-500 text-xs whitespace-nowrap">{date}</td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+    )}
+  </section>
+</PageLayout>

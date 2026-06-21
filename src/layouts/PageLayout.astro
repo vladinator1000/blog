@@ -14,6 +14,11 @@ import FontAwesome from "./FontAwesome.astro"
 import ThemeScript from "./ThemeScript.astro"
 import Header from "../components/Header.astro"
 import Footer from "../components/Footer.astro"
+export interface Props {
+  showHeader?: boolean
+}
+
+const { showHeader = true } = Astro.props
 ---
 
 <!DOCTYPE html>
@@ -30,7 +35,7 @@ import Footer from "../components/Footer.astro"
   </head>
 
   <body class="min-h-screen max-w-3xl mx-auto px-6 sm:px-8">
-    <Header />
+    {showHeader && <Header />}
     <main id="main">
       <slot name="main" />
     </main>

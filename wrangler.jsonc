@@ -1,0 +1,22 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "vladinator-blog",
+  "main": "./dist/_worker.js/index.js",
+  "compatibility_date": "2026-06-22",
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
+  "assets": {
+    "binding": "ASSETS",
+    "directory": "./dist"
+  },
+  "kv_namespaces": [
+    {
+      "binding": "RSVP_KV",
+      "id": "b911c42eb0fe4f74a266e9497deafbd8"
+    }
+  ],
+  "observability": {
+    "enabled": true
+  }
+}
