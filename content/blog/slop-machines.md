@@ -13,7 +13,7 @@ Language models are useful.
 
 Coding agents, however... They make you feel incredible highs and incredible lows. Exclusively using prompting to fix bugs introduces other subtle bugs. Everyone's either building with agents or building agents... And I'm sitting here like "there has to be a trade-off here".
 
-LM coding harnesses in their current state are setting us up to spend our limited cognitive energy on avoiding brain rot at every turn. At best, this is a product mistake, and at worst, a deliberate attempt to turn users into cattle. This article won't be just all negative, but to get to the positive section, you'll have to suffer through it first.
+LM coding harnesses in their current state are setting us up to spend our limited cognitive energy on avoiding brain rot at every turn.
 
 I'm not the only one feeling this, here's Fred Durst on the matter: 
 
