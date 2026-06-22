@@ -1,5 +1,5 @@
 /* eslint-disable turbo/no-undeclared-env-vars */
-import { defineConfig } from "astro/config";
+import { defineConfig, passthroughImageService } from "astro/config";
 import sitemap from "@astrojs/sitemap";
 import tailwind from "@astrojs/tailwind";
 import cloudflare from "@astrojs/cloudflare";
@@ -46,6 +46,9 @@ export default defineConfig({
   ],
   output: "server",
   adapter: cloudflare(),
+  image: {
+    service: passthroughImageService(),
+  },
   redirects: {
     "0x": "https://confident-hopper-36c819.netlify.app/",
     zoo: "https://rad-salamander-8f971d.netlify.app/"

@@ -10,7 +10,8 @@
 		"astro": "astro",
 		"clean": "rm -rf dist",
 		"format": "prettier -w ./src",
-		"convert-videos": "node scripts/convert-design-gpu-videos.mjs"
+		"convert-videos": "node scripts/convert-design-gpu-videos.mjs",
+		"compress-images": "node scripts/compress-kieran-images.mjs"
 	},
 	"dependencies": {
 		"@astrojs/cloudflare": "^12.6.9",
