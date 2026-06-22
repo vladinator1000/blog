@@ -5,9 +5,15 @@
   "compatibility_flags": [
     "nodejs_compat"
   ],
+  "routes": [
+    {
+      "pattern": "vladinator.net",
+      "custom_domain": true
+    }
+  ],
   "assets": {
     "binding": "ASSETS",
-    "directory": "./dist"
+    "directory": "./dist/client"
   },
   "kv_namespaces": [
     {
