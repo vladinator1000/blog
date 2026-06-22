@@ -1,15 +1,17 @@
 import type { z } from "zod"
-import path from "path"
 import matter from "gray-matter"
-import fs from "fs/promises"
-import { globby } from "globby"
 import Markdoc from "@markdoc/markdoc"
 import { config } from "./markdoc.config"
 
-// path is relative to where you run the `yarn build` command
-const contentDirectory = path.normalize("./content")
+// Vite resolves these at build time, inlining file contents into the bundle.
+// This avoids fs access during Cloudflare's miniflare prerendering.
+const contentModules = import.meta.glob("../../../content/**/*.md", {
+  eager: true,
+  query: "?raw",
+  import: "default",
+}) as Record<string, string>
 
-async function parseAndTransform({ content }: { content: string }) {
+function parseAndTransform({ content }: { content: string }) {
   const ast = Markdoc.parse(content)
 
   const errors = Markdoc.validate(ast, config)
@@ -43,16 +45,17 @@ function validateFrontmatter<T extends z.ZodTypeAny>({
   }
 }
 
-export async function read<T extends z.ZodTypeAny>({
-  filepath,
+function readFromRaw<T extends z.ZodTypeAny>({
+  rawString,
   schema,
+  filepath,
 }: {
-  filepath: string
+  rawString: string
   schema: T
+  filepath: string
 }) {
-  const rawString = await fs.readFile(filepath, "utf8")
   const { content, data: frontmatter } = matter(rawString)
-  const transformedContent = await parseAndTransform({ content })
+  const transformedContent = parseAndTransform({ content })
   const validatedFrontmatter = validateFrontmatter({
     frontmatter,
     schema,
@@ -81,10 +84,16 @@ export async function readOne<T extends z.ZodTypeAny>({
   slug: string
   frontmatterSchema: T
 }) {
-  const filepath = path.join(contentDirectory, directory, `${slug}.md`)
-  return read({
-    filepath,
+  const globKey = Object.keys(contentModules).find((key) =>
+    key.endsWith(`/content/${directory}/${slug}.md`)
+  )
+  if (!globKey || !contentModules[globKey]) {
+    throw new Error(`File not found: content/${directory}/${slug}.md`)
+  }
+  return readFromRaw({
+    rawString: contentModules[globKey],
     schema,
+    filepath: globKey,
   })
 }
 
@@ -95,8 +104,11 @@ export async function readAll<T extends z.ZodTypeAny>({
   directory: string
   frontmatterSchema: T
 }) {
-  const pathToDir = path.posix.join(contentDirectory, directory)
-  const paths = await globby(`${pathToDir}/*.md`)
+  const entries = Object.entries(contentModules).filter(([key]) =>
+    key.includes(`/content/${directory}/`) && key.endsWith(".md")
+  )
 
-  return Promise.all(paths.map((path) => read({ filepath: path, schema })))
+  return entries.map(([key, rawString]) =>
+    readFromRaw({ rawString, schema, filepath: key })
+  )
 }

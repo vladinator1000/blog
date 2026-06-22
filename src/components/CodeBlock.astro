@@ -1,10 +1,61 @@
 ---
-import { Prism } from "@astrojs/prism"
+import Prism from "prismjs"
 
 const { language, content } = Astro.props
+const lang = language || "plaintext"
+const classLanguage = `language-${lang}`
+
+const languageAliases: Record<string, string> = {
+  ts: "typescript",
+}
+const actualLang = languageAliases[lang] || lang
+
+const languageLoaders: Record<string, () => Promise<unknown>> = {
+  typescript: () => import("prismjs/components/prism-typescript.js"),
+  tsx: () => import("prismjs/components/prism-tsx.js"),
+  jsx: () => import("prismjs/components/prism-jsx.js"),
+  json: () => import("prismjs/components/prism-json.js"),
+  wgsl: () => import("prismjs/components/prism-wgsl.js"),
+}
+const languageDeps: Record<string, string[]> = {
+  typescript: [],
+  tsx: ["typescript", "jsx"],
+  jsx: ["markup"],
+  json: [],
+  wgsl: [],
+}
+
+const loaded = new Set<string>()
+async function ensureLanguage(name: string) {
+  if (!loaded.has(name) && !Prism.languages[name]) {
+    globalThis.Prism = Prism
+    const loader = languageLoaders[name]
+    if (loader) {
+      for (const dep of languageDeps[name] || []) {
+        await ensureLanguage(dep)
+      }
+      try {
+        await loader()
+        loaded.add(name)
+      } catch {
+        console.warn(`Unable to load language: ${name}`)
+      }
+    }
+  }
+}
+
+if (actualLang !== "plaintext") {
+  await ensureLanguage(actualLang)
+}
+
+let html = content
+const grammar = Prism.languages[actualLang]
+if (grammar) {
+  html = Prism.highlight(content, grammar, actualLang)
+}
 ---
 
-<Prism lang={language} code={content} />
+<pre class={classLanguage}><code class={classLanguage} set:html={html} />
 
 <style is:global>
   /**
