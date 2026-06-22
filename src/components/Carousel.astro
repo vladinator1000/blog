@@ -1,0 +1,78 @@
+---
+import { Image } from "astro:assets"
+import type { ImageMetadata } from "astro"
+
+interface Props {
+  images: { src: ImageMetadata; alt: string }[]
+  class?: string
+}
+
+const { images, class: className } = Astro.props
+---
+
+<div class:list={["carousel", className]} data-carousel data-interval={2000}>
+  <div class="carousel-track" data-carousel-track>
+    {images.map((img, i) => (
+      <div class={`carousel-slide${i === 0 ? " is-active" : ""}`} data-carousel-slide={i}>
+        <Image src={img.src} alt={img.alt} loading="eager" width={800} height={600} />
+      </div>
+    ))}
+  </div>
+</div>
+
+<style>
+  .carousel {
+    position: relative;
+    max-width: 800px;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+  }
+
+  .carousel-track {
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+
+  .carousel-slide {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity;
+  }
+
+  .carousel-slide.is-active {
+    opacity: 1;
+  }
+
+  .carousel-slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    margin: 0;
+  }
+</style>
+
+<script>
+  const carousels = document.querySelectorAll<HTMLElement>("[data-carousel]")
+
+  carousels.forEach((carousel) => {
+    const slides = carousel.querySelectorAll<HTMLElement>("[data-carousel-slide]")
+    const interval = parseInt(carousel.dataset.interval || "5000", 10)
+    let current = 0
+
+    function show(index: number) {
+      slides.forEach((slide, i) => {
+        slide.classList.toggle("is-active", i === index)
+      })
+      current = index
+    }
+
+    setInterval(() => {
+      show((current + 1) % slides.length)
+    }, interval)
+  })
+</script>

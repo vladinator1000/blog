@@ -1,7 +1,19 @@
 ---
+import { Image } from "astro:assets"
 import PageLayout from "../layouts/PageLayout.astro"
 import PageMeta from "../components/PageMeta.astro"
+import Carousel from "../components/Carousel.astro"
 import { SITE_TITLE } from "../config"
+
+import img4507 from "../assets/kieran/IMG_4507.jpg"
+import img4508 from "../assets/kieran/IMG_4508.jpg"
+import img4510 from "../assets/kieran/IMG_4510.jpg"
+import img4511 from "../assets/kieran/IMG_4511.jpg"
+import img4512 from "../assets/kieran/IMG_4512.jpg"
+import img4522 from "../assets/kieran/IMG_4522.jpg"
+import img4653 from "../assets/kieran/IMG_4653.jpg"
+import img4664 from "../assets/kieran/IMG_4664.jpg"
+import kieranStagQr from "../assets/kieran/kieran-stag-qr.jpg"
 
 export const prerender = false
 
@@ -62,7 +74,18 @@ if (method === "POST" && contentType.includes("application/x-www-form-urlencoded
 <PageLayout showHeader={false}>
   <PageMeta title={`Kieran's stag RSVP | ${SITE_TITLE}`} slot="meta" />
   <section slot="main" class="prose max-w-none">
-    <h1>🍻 Kieran's stag</h1>
+    <h1 class="mb-6">🍻 Kieran's stag</h1>
+
+    <Carousel class="mb-6" images={[
+      { src: img4507, alt: "Kieran photo 1" },
+      { src: img4508, alt: "Kieran photo 2" },
+      { src: img4510, alt: "Kieran photo 3" },
+      { src: img4511, alt: "Kieran photo 4" },
+      { src: img4512, alt: "Kieran photo 5" },
+      { src: img4522, alt: "Kieran photo 6" },
+      { src: img4653, alt: "Kieran photo 7" },
+      { src: img4664, alt: "Kieran photo 8" },
+    ]} />
 
     {error && (
       <p style="color: #e11d48; font-weight: 600;">{error}</p>
@@ -91,7 +114,6 @@ if (method === "POST" && contentType.includes("application/x-www-form-urlencoded
 
     {authenticated && (
       <div class="px-6 rounded bg-blue-50 dark:bg-blue-900/20 border border-blue-300 dark:border-blue-700">
-        <h2 class="mt-4 my-2">Info</h2>
         <ul>
           <li>18 July 2026, time: TBC</li>
           <li><strong>Pub</strong> location TBC (kitty on the night money-wise)</li>
@@ -146,7 +168,7 @@ if (method === "POST" && contentType.includes("application/x-www-form-urlencoded
         <p>Aww yeah! 🚀 Next steps if you're attending:</p>
         <p><a href="https://chat.whatsapp.com/Gn2Pc12PFu6FvVBQQyet9v?mode=gi_t" target="_blank" rel="noopener noreferrer" style="color: #2563eb; font-weight: 600;">Join WhatsApp Group</a></p>
         <p>Comedy club ticket: <a href="https://monzo.me/vladislavveselinov/23.00?h=B6jWQn&d=Kieran%20comedy%20club&account_type=personal" target="_blank" rel="noopener noreferrer" style="color: #2563eb; font-weight: 600;">Pay £23</a></p>
-        <img class="my-0" src="/images/kieran/kieran-stag-qr.jpg" alt="Monzo payment QR code" width="200" height="200" class="rounded" />
+        <Image src={kieranStagQr} alt="Monzo payment QR code" width={200} height={200} class="my-0 rounded" />
       </div>
     )}
   </section>
