@@ -74,11 +74,11 @@ if (method === "POST" && contentType.includes("application/x-www-form-urlencoded
 ---
 
 <PageLayout showHeader={false}>
-  <PageMeta title={`Kieran's stag RSVP | ${SITE_TITLE}`} slot="meta" />
+  <PageMeta title={`Kieran's stag party RSVP | ${SITE_TITLE}`} slot="meta" />
   <section slot="main" class="prose max-w-none">
-    <h1 class="mb-6">🍻 Kieran's stag</h1>
+    <h1 class="mb-6">🍻 Kieran's stag party</h1>
 
-    <Carousel class="mb-6" images={[
+    {authenticated && <Carousel class="mb-6" images={[
       { src: img4507, alt: "Kieran photo 1" },
       { src: img4508, alt: "Kieran photo 2" },
       { src: img4510, alt: "Kieran photo 3" },
@@ -87,7 +87,7 @@ if (method === "POST" && contentType.includes("application/x-www-form-urlencoded
       { src: img4522, alt: "Kieran photo 6" },
       { src: img4653, alt: "Kieran photo 7" },
       { src: img4664, alt: "Kieran photo 8" },
-    ]} />
+    ]} />}
 
     {error && (
       <p style="color: #e11d48; font-weight: 600;">{error}</p>
