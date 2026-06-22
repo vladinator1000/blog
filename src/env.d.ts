@@ -8,15 +8,10 @@ interface KVNamespace {
     delete(key: string): Promise<void>
 }
 
-declare namespace App {
-    interface Locals {
-        runtime: {
-            env: {
-                ASSETS: { fetch: (request: Request) => Promise<Response> }
-                RSVP_KV: KVNamespace
-            }
-            cf: Record<string, unknown>
-            caches: CacheStorage
-        }
+declare module "cloudflare:workers" {
+    interface Env {
+        ASSETS: { fetch: (request: Request) => Promise<Response> }
+        RSVP_KV: KVNamespace
     }
+    export const env: Env
 }

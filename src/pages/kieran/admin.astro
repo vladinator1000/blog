@@ -1,6 +1,7 @@
 ---
 import PageLayout from "../../layouts/PageLayout.astro"
 import PageMeta from "../../components/PageMeta.astro"
+import { getEnv } from "../../lib/cloudflare-env"
 import { SITE_TITLE } from "../../config"
 
 export const prerender = false
@@ -37,7 +38,8 @@ if (method === "POST" && contentType.includes("application/x-www-form-urlencoded
 }
 
 if (authenticated || (method === "GET" && Astro.url.searchParams.get("auth") === "1")) {
-  const kv = Astro.locals.runtime.env.RSVP_KV
+  const env = getEnv()
+  const kv = env.RSVP_KV
   const list = await kv.list({ prefix: "rsvp:" })
 
   for (const key of list.keys) {

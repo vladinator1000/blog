@@ -3,6 +3,7 @@ import { Image } from "astro:assets"
 import PageLayout from "../layouts/PageLayout.astro"
 import PageMeta from "../components/PageMeta.astro"
 import Carousel from "../components/Carousel.astro"
+import { getEnv } from "../lib/cloudflare-env"
 import { SITE_TITLE } from "../config"
 
 import img4507 from "../assets/kieran/IMG_4507.webp"
@@ -59,7 +60,8 @@ if (method === "POST" && contentType.includes("application/x-www-form-urlencoded
           timestamp: new Date().toISOString(),
         }
 
-        const kv = Astro.locals.runtime.env.RSVP_KV
+        const env = getEnv()
+        const kv = env.RSVP_KV
         const key = `rsvp:${Date.now()}:${name.toLowerCase().replace(/\s+/g, "-")}`
         await kv.put(key, JSON.stringify(rsvpData))
         submitted = true

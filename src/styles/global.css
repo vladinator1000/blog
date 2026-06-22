@@ -1,81 +1,116 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
 
-/* 
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-body: "Open Sans", sans-serif;
+  --font-heading: "Open Sans", sans-serif;
+
+  --color-primary-main: rgb(var(--raw-primary-main));
+  --color-text-body: rgb(var(--raw-text-body));
+  --color-text-bold: rgb(var(--raw-text-bold));
+  --color-text-heading: rgb(var(--raw-text-heading));
+  --color-text-muted: rgb(var(--raw-text-muted));
+  --color-text-code: rgb(var(--raw-text-code));
+  --color-text-link: rgb(var(--raw-text-link));
+  --color-text-selection: rgb(var(--raw-text-selection));
+  --color-bg-body: rgb(var(--raw-bg-body));
+  --color-bg-code: rgb(var(--raw-bg-code));
+  --color-bg-selection: rgb(var(--raw-bg-selection));
+  --color-border-code: rgb(var(--raw-border-code));
+}
+
+/*
     Tailwind colors listed here: https://tailwindcss.com/docs/customizing-colors
-    
+
     Why colors are written in rgb format (255 255 255) instead of hex (#ffffff)
-    https://tailwindcss.com/docs/customizing-colors#using-css-variables 
+    https://tailwindcss.com/docs/customizing-colors#using-css-variables
 */
 @layer base {
+
+  /* light theme (defaults) */
+  :root {
+    --raw-primary-main: 82 82 91;
+    --raw-text-body: 55 65 81;
+    --raw-text-heading: 55 65 81;
+    --raw-text-bold: 55 65 81;
+    --raw-text-muted: 107 114 128;
+    --raw-text-link: 0 166 244;
+    --raw-text-code: 0 0 0;
+    --raw-text-selection: 0 0 0;
+    --raw-bg-body: 255 255 255;
+    --raw-bg-code: 255 247 237;
+    --raw-bg-selection: 205 225 255;
+    --raw-border-code: 255 237 213;
+  }
 
   /* light theme */
   .theme-sleek {
     /* Tailwind zink-600 #52525b */
-    --color-primary-main: 82 82 91;
+    --raw-primary-main: 82 82 91;
 
     /* Tailwind gray-700 #374151 */
-    --color-text-body: 55 65 81;
+    --raw-text-body: 55 65 81;
     /* Tailwind gray-700 #374151 */
-    --color-text-heading: 55 65 81;
+    --raw-text-heading: 55 65 81;
     /* Tailwind gray-700 #374151 */
-    --color-text-bold: 55 65 81;
+    --raw-text-bold: 55 65 81;
     /* Tailwind gray-500 #6b7280 */
-    --color-text-muted: 107 114 128;
+    --raw-text-muted: 107 114 128;
 
-    --color-text-link: 0 166 244;
+    --raw-text-link: 0 166 244;
     /* black */
-    --color-text-code: 0 0 0;
+    --raw-text-code: 0 0 0;
     /* black */
-    --color-text-selection: 0 0 0;
+    --raw-text-selection: 0 0 0;
 
     /* white */
-    --color-bg-body: 255 255 255;
+    --raw-bg-body: 255 255 255;
     /* Tailwind orange-50 #fff7ed */
-    --color-bg-code: 255 247 237;
+    --raw-bg-code: 255 247 237;
 
-    --color-bg-selection: 205 225 255;
+    --raw-bg-selection: 205 225 255;
 
     /* Tailwind orange-100 #ffedd5 */
-    --color-border-code: 255 237 213;
+    --raw-border-code: 255 237 213;
   }
 
   /* dark theme */
   .theme-sleek.dark {
     /* Tailwind yellow-400 #facc15 */
-    --color-primary-main: 250 204 21;
+    --raw-primary-main: 250 204 21;
 
     /* Tailwind stone-300 #d6d3d1 */
-    --color-text-body: 214 211 209;
+    --raw-text-body: 214 211 209;
     /* white */
-    --color-text-heading: 255 255 255;
+    --raw-text-heading: 255 255 255;
     /* white */
-    --color-text-bold: 255 255 255;
+    --raw-text-bold: 255 255 255;
     /* Tailwind stone-400 #a8a29e */
-    --color-text-muted: 168 162 158;
+    --raw-text-muted: 168 162 158;
     /* Tailwind yellow-400 #facc15 */
-    --color-text-link: 250 204 21;
+    --raw-text-link: 250 204 21;
     /* black */
-    --color-text-code: 255 255 255;
+    --raw-text-code: 255 255 255;
     /* black */
-    --color-text-selection: 0 0 0;
+    --raw-text-selection: 0 0 0;
 
     /* #0e141b */
-    --color-bg-body: 14 20 27;
+    --raw-bg-body: 14 20 27;
     /* Tailwind yellow-500 #eab308 */
-    --color-bg-code: 234 179 8;
+    --raw-bg-code: 234 179 8;
     /* Tailwind yellow-300 #fde047 */
-    --color-bg-selection: 253 224 71;
+    --raw-bg-selection: 253 224 71;
 
     /* Tailwind yellow-100 #fef9c3 */
-    --color-border-code: 254 243 199;
+    --raw-border-code: 254 243 199;
   }
 
   :root {
-    font-family: theme("fontFamily.body");
-    background-color: theme("colors.bg.body");
-    color: theme("colors.text.body");
+    font-family: var(--font-body);
+    background-color: var(--color-bg-body);
+    color: var(--color-text-body);
     /* base font-size 1px larger for better visibility */
     font-size: 1.0625em;
     line-height: 1.75;
@@ -88,7 +123,7 @@
   h4,
   h5,
   h6 {
-    font-family: theme("fontFamily.heading");
+    font-family: var(--font-heading);
   }
 }
 
@@ -97,26 +132,23 @@
   /* ------ GLOBAL STYLES - START ------ */
   strong {
     font-weight: 600;
-    color: theme("colors.text.bold");
+    color: var(--color-text-bold);
   }
 
   mark {
-    background-color: theme("colors.bg.selection");
-    color: theme("colors.text.selection");
+    background-color: var(--color-bg-selection);
+    color: var(--color-text-selection);
   }
 
-  /* 
-        if you want an anchor tag to not have this style, 
-        just add a class `unset` to it. 
+  /*
+        if you want an anchor tag to not have this style,
+        just add a class `unset` to it.
     */
   a:not(.unset) {
     background-repeat: no-repeat;
     background-size: 100% 1.5px;
     background-position: 0 100%;
-    /* background-image: linear-gradient(to right,
-        theme("colors.text.link"),
-        theme("colors.text.link")); */
-        color: theme("colors.text.link");
+    color: var(--color-text-link);
   }
 
   a:not(.unset):hover {
@@ -124,19 +156,19 @@
   }
 
   code:not(pre code):not(.unset) {
-    background-color: theme("colors.bg.code");
-    color: theme("colors.text.code");
+    background-color: var(--color-bg-code);
+    color: var(--color-text-code);
     padding: 0.125rem 0.25rem;
     border-radius: 0.25rem;
     font-size: 0.875em;
     font-weight: 600;
-    border: 1px solid theme("colors.border.code");
+    border: 1px solid var(--color-border-code);
     margin-bottom: 1.25em;
   }
 
   html.dark code:not(pre code) {
-    background-color: rgb(var(--color-bg-code) / 0.15);
-    border-color: rgb(var(--color-border-code) / 0.15);
+    background-color: rgb(var(--raw-bg-code) / 0.15);
+    border-color: rgb(var(--raw-border-code) / 0.15);
   }
 
   ul:not(.unset):not(:where([class~="prose"] *)) {
@@ -153,7 +185,7 @@
     position: absolute;
     left: 0;
     content: "»";
-    color: rgb(var(--color-text-muted));
+    color: var(--color-text-muted);
   }
 
   ol:not(.unset):not(:where([class~="prose"] *)) {
@@ -161,7 +193,7 @@
   }
 
   ol:not(.unset):not(:where([class~="prose"] *))>li::marker {
-    color: rgb(var(--color-text-muted));
+    color: var(--color-text-muted);
   }
 
   ul:not(.unset):not(:where([class~="prose"] *))>li,
@@ -171,8 +203,8 @@
   }
 
   ::selection {
-    background: theme("colors.bg.selection");
-    color: theme("colors.text.selection");
+    background: var(--color-bg-selection);
+    color: var(--color-text-selection);
   }
 
   /* ------ GLOBAL STYLES - END ------ */
@@ -199,8 +231,8 @@
     transform-origin: top left;
     transition: all 0.05s ease-in;
     background-image: linear-gradient(to bottom,
-        theme("colors.text.link"),
-        theme("colors.text.link"));
+        var(--color-text-link),
+        var(--color-text-link));
   }
 
   .animated-link.show:after {
@@ -208,4 +240,87 @@
   }
 
   /* ------ REUSABLE UTILS - END ------ */
+}
+
+/* ------ TYPOGRAPHY PLUGIN OVERRIDES ------ */
+.prose {
+  --tw-prose-body: var(--color-text-body);
+  --tw-prose-headings: var(--color-text-heading);
+  --tw-prose-lead: var(--color-text-body);
+  --tw-prose-links: var(--color-text-body);
+  --tw-prose-bold: var(--color-text-bold);
+  --tw-prose-counters: var(--color-text-body);
+  --tw-prose-bullets: var(--color-text-body);
+  --tw-prose-hr: var(--color-text-muted);
+  --tw-prose-quotes: var(--color-text-body);
+  --tw-prose-quote-borders: var(--color-primary-main);
+  --tw-prose-captions: var(--color-text-heading);
+  --tw-prose-quote-captions: var(--color-text-heading);
+  --tw-prose-code: var(--color-text-code);
+  --tw-prose-pre-code: var(--color-text-code);
+  --tw-prose-pre-bg: var(--color-bg-code);
+  --tw-prose-th-borders: var(--color-text-muted);
+  --tw-prose-td-borders: var(--color-text-muted);
+}
+
+.prose a {
+  text-decoration: none;
+  background-repeat: no-repeat;
+  background-size: 100% 1.5px;
+  background-position: 0 100%;
+  background-image: linear-gradient(to right, var(--color-text-link), var(--color-text-link));
+}
+
+.prose a:hover {
+  color: var(--color-text-link);
+}
+
+.prose h1,
+.prose h2,
+.prose h3,
+.prose h4,
+.prose h5 {
+  color: var(--color-text-heading);
+}
+
+.prose code::before {
+  content: none;
+}
+
+.prose code::after {
+  content: none;
+}
+
+.prose blockquote {
+  border: none;
+  position: relative;
+  width: 96%;
+  margin: 0 auto;
+  font-size: 1.0625em;
+  padding-top: 1.5rem;
+  padding-bottom: 0.5rem;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+
+.prose blockquote::before {
+  font-family: Arial;
+  content: '"';
+  font-size: 4em;
+  color: var(--color-text-link);
+  position: absolute;
+  left: -10px;
+  top: -10px;
+}
+
+.prose blockquote::after {
+  content: "";
+}
+
+.prose blockquote p:first-of-type::before {
+  content: "";
+}
+
+.prose blockquote p:last-of-type::after {
+  content: "";
 }

@@ -1,7 +1,7 @@
 /* eslint-disable turbo/no-undeclared-env-vars */
 import { defineConfig, passthroughImageService } from "astro/config";
 import sitemap from "@astrojs/sitemap";
-import tailwind from "@astrojs/tailwind";
+import tailwindcss from "@tailwindcss/vite";
 import cloudflare from "@astrojs/cloudflare";
 
 /* 
@@ -37,11 +37,6 @@ export default defineConfig({
   site: BASE_URL,
   integrations: [
     sitemap(),
-    tailwind({
-      config: {
-        applyBaseStyles: false
-      }
-    }),
     react()
   ],
   output: "server",
@@ -54,6 +49,7 @@ export default defineConfig({
     zoo: "https://rad-salamander-8f971d.netlify.app/"
   },
   vite: {
+    plugins: [tailwindcss()],
     resolve: {
       // Use react-dom/server.edge instead of react-dom/server.browser for React 19.
       // Without this, MessageChannel from node:worker_threads needs to be polyfilled.
