@@ -6,9 +6,7 @@ import Carousel from "../components/Carousel.astro"
 import { getEnv } from "../lib/cloudflare-env"
 import { SITE_TITLE } from "../config"
 
-import img4510 from "../assets/kieran/IMG_4510.webp"
 import img4511 from "../assets/kieran/IMG_4511.webp"
-import img4512 from "../assets/kieran/IMG_4512.webp"
 import img4522 from "../assets/kieran/IMG_4522.webp"
 import img4653 from "../assets/kieran/IMG_4653.webp"
 import img4664 from "../assets/kieran/IMG_4664.webp"
@@ -77,10 +75,8 @@ if (method === "POST" && contentType.includes("application/x-www-form-urlencoded
     <h1 class="mb-6">🍻 Kieran's stag party</h1>
 
     {authenticated && <Carousel class="mb-6" images={[
-      { src: img4510, alt: "Kieran photo 3" },
-      { src: img4511, alt: "Kieran photo 4" },
-      { src: img4512, alt: "Kieran photo 5" },
       { src: img4522, alt: "Kieran photo 6" },
+      { src: img4511, alt: "Kieran photo 4" },
       { src: img4653, alt: "Kieran photo 7" },
       { src: img4664, alt: "Kieran photo 8" },
     ]} />}
