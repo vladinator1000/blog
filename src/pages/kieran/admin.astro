@@ -14,9 +14,13 @@ interface RSVPData {
   timestamp: string
 }
 
+interface RSVPEntry extends RSVPData {
+  key: string
+}
+
 let authenticated = false
 let error = ""
-let rsvps: RSVPData[] = []
+let rsvps: RSVPEntry[] = []
 let totalAttending = 0
 
 const method = Astro.request.method
@@ -25,9 +29,19 @@ const contentType = Astro.request.headers.get("content-type") || ""
 if (method === "POST" && contentType.includes("application/x-www-form-urlencoded")) {
   const formData = await Astro.request.formData()
   const password = formData.get("password") as string
+  const action = formData.get("action")
 
   if (password === ADMIN_PASSWORD) {
     authenticated = true
+
+    if (action === "delete") {
+      const deleteKey = formData.get("key") as string
+      if (deleteKey && deleteKey.startsWith("rsvp:")) {
+        const env = getEnv()
+        const kv = env.RSVP_KV
+        await kv.delete(deleteKey)
+      }
+    }
   } else {
     error = "Wrong admin password."
   }
@@ -42,7 +56,7 @@ if (authenticated || (method === "GET" && Astro.url.searchParams.get("auth") ===
     const value = await kv.get(key.name)
     if (value) {
       try {
-        rsvps.push(JSON.parse(value))
+        rsvps.push({ ...JSON.parse(value), key: key.name })
       } catch {
         // skip malformed entries
       }
@@ -107,6 +121,7 @@ if (authenticated || (method === "GET" && Astro.url.searchParams.get("auth") ===
                   <th class="text-left py-2 px-3">Name</th>
                   <th class="text-center py-2 px-3">Attending</th>
                   <th class="text-left py-2 px-3">Submitted</th>
+                  <th class="text-center py-2 px-3">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -128,6 +143,20 @@ if (authenticated || (method === "GET" && Astro.url.searchParams.get("auth") ===
                         )}
                       </td>
                       <td class="py-2 px-3 text-gray-500 text-xs whitespace-nowrap">{date}</td>
+                      <td class="py-2 px-3 text-center">
+                        <form method="POST" class="inline">
+                          <input type="hidden" name="action" value="delete" />
+                          <input type="hidden" name="password" value={ADMIN_PASSWORD} />
+                          <input type="hidden" name="key" value={rsvp.key} />
+                          <button
+                            type="submit"
+                            class="px-2 py-1 rounded bg-red-600 text-white text-xs font-semibold hover:bg-red-700 transition-colors"
+                            onclick="return confirm('Delete RSVP for {rsvp.name}?')"
+                          >
+                            Delete
+                          </button>
+                        </form>
+                      </td>
                     </tr>
                   )
                 })}
