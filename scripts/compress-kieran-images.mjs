@@ -2,7 +2,7 @@ import sharp from "sharp"
 import { readdir, mkdir } from "fs/promises"
 import { join, extname, basename } from "path"
 
-const SRC_DIR = join(process.cwd(), "src", "assets", "kieran")
+const SRC_DIR = join(process.cwd(), "src", "assets", "kieran", "originals")
 const OUT_DIR = join(process.cwd(), "src", "assets", "kieran")
 
 const MAX_WIDTH = 1600
@@ -11,13 +11,13 @@ const QUALITY = 78
 
 async function main() {
   const files = await readdir(SRC_DIR)
-  const jpgs = files.filter((f) => extname(f).toLowerCase() === ".jpg")
+  const images = files.filter((f) => [".jpg", ".png"].includes(extname(f).toLowerCase()))
 
   // Backup dir
   const backupDir = join(SRC_DIR, "originals")
   await mkdir(backupDir, { recursive: true })
 
-  for (const file of jpgs) {
+  for (const file of images) {
     const srcPath = join(SRC_DIR, file)
     const backupPath = join(backupDir, file)
     const outName = basename(file, extname(file)) + ".webp"

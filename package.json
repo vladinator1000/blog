@@ -39,6 +39,7 @@
 	"devDependencies": {
 		"prettier": "^2.8.8",
 		"prettier-plugin-astro": "^0.7.2",
+		"sharp": "^0.35.2",
 		"typescript": "^5.9.3",
 		"wrangler": "^4.103.0"
 	}
