@@ -65,6 +65,14 @@ if (authenticated || (method === "GET" && Astro.url.searchParams.get("auth") ===
 
   rsvps.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
 
+  const seen = new Set<string>()
+  rsvps = rsvps.filter((rsvp) => {
+    const lower = rsvp.name.toLowerCase()
+    if (seen.has(lower)) return false
+    seen.add(lower)
+    return true
+  })
+
   totalAttending = rsvps.filter((r) => r.attending === "yes").length
 }
 ---
