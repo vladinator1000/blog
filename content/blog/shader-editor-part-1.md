@@ -38,7 +38,7 @@ Let's also mention some drawbacks so that we know what we're getting into:
 Now that we've established the constraints, it's time to dive in, and explore the technical aspects of building a product design application that works within them.
 
 ## Code as the source of truth
-The demo you're seeing is inspired by [Paper](https://paper.design/), with a twist. Treating code as a first class citizen. Anything you see on the canvas, you can edit the source of. Very much like [compute.toys](https://compute.toys/).
+Anything you see on the canvas, you can edit the source of.
 
 Storing assets as standard code:
 - Makes them shareable, editable and reusable.
