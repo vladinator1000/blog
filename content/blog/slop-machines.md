@@ -33,7 +33,7 @@ This is due to the fundamental way the technology works (auto-regression). It pr
 
 ## Personifying models discourages understanding
 
-Personification of tools leads us to think we can hand off work without consequences. It's hard to pull this off with people, let alone language models. Think about the amount of trust you need to build with someone before you can rely on them. Even when we trust each other, we still hold each other accountable for mistakes. A computer can't be held accountable, if it makes a mistake, someone else has to cover the costs.
+Personification of tools leads us to think we can hand off work without consequences. It's hard to pull this off with people, let alone language models. Think about the amount of trust you need to build with someone before you can rely on them. Even when we trust each other, we still hold each other accountable for mistakes. Generating code like this is a leveraged bet that has a downside risk that we're eagerly ignoring.
 
 > Do not fall into the trap of anthropomorphising Larry Ellison. You need to think of Larry Ellison the way you think of a lawnmower. You don't anthropomorphize your lawnmower, the lawnmower just mows the lawn, you stick your hand in there and it'll chop it off, the end. You don't think "the lawnmower hates me", the lawnmower doesn't give a shit about you, lawnmower can't hate you. (Bryan Cantrill, [https://youtu.be/-zRN7XLCRhc](https://youtu.be/-zRN7XLCRhc))
 
