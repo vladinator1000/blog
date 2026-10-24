@@ -5,25 +5,13 @@ description: ""
 date: 2026-03-17
 ---
 
-Language models are useful.
+We're about to experience a cognitive decline like we've never seen before.
 
-> It’s a strange time to be a programmer. It’s easier than ever to get started, but also easier than ever to let AI steer you into a situation where you’re overwhelmed by code you don’t understand.
-> 
-> Johno Whitaker, fast.ai
-
-Coding agents, however... They make you feel incredible highs and incredible lows. Exclusively using prompting to fix bugs introduces other subtle bugs. Everyone's either building with agents or building agents... And I'm sitting here like "there has to be a trade-off here".
-
-LM coding harnesses in their current state are setting us up to spend our limited cognitive energy on avoiding brain rot at every turn.
-
-I'm not the only one feeling this, here's Fred Durst on the matter: 
-
-![fred-durst](/images/slop-machines/fred-durst.png)
-
-We need ways of using language models that don't make us dumber in the long run.
-
-There are a couple of problems at the root of the cognitive decline we're experiencing:
+I believe there are a couple of problems at the root of it:
 1. Correcting a model after it makes a mistake increases the likelihood of future mistakes.
 2. Personifying models discourages understanding.
+
+We need ways of using language models that don't make us dumber in the long run.
 
 ## Increasing the likelihood of future mistakes
 
